@@ -5,6 +5,7 @@ description: >-
 github_username: twydev
 minimal_mistakes_skin: "dark"
 search: true
+logo: "/assets/images/nlogo40.png"
 
 # Build settings
 markdown: kramdown
