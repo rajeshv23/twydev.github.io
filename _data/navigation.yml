@@ -1,5 +1,5 @@
 main:
-  - title: "Notes"
+  - title: "notes"
     url: /notes/
   - title: "categories"
     url: /categories/
