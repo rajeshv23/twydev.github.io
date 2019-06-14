@@ -30,7 +30,7 @@ plugins:
 author:
   name   : "twydev"
   avatar : "/assets/images/penguin.png"
-  location: "SG"
+  location: "Singapore"
   bio    : "Hi"
   links:
     - label: "GitHub"
@@ -46,7 +46,7 @@ footer:
 defaults:
   # _posts
   - scope:
-      path: ""
+      path: "_posts"
       type: posts
     values:
       layout: single
