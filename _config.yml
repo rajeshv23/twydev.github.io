@@ -18,6 +18,7 @@ timezone: Asia/Singapore
 
 include:
   - _pages
+  - _digests
 
 # Plugins (previously gems:)
 plugins:
@@ -47,7 +48,7 @@ footer:
 defaults:
   # _posts
   - scope:
-      path: "_posts"
+      path: ""
       type: posts
     values:
       layout: single

@@ -8,10 +8,12 @@ tags:
   - writing
 ---
 
-This book contains a set of rules on writing to help writers feel more confident in writing for a wider audience. I like how the book provides examples to help readers better understand the application of each rule and how adopting the rules leads to better writing style.
-
 **The Elements of Style** - W. Strunk Jr. & E. B. White
 {: .notice--primary}
+
+This book contains a set of rules on writing to help writers feel more confident in writing for a wider audience. I like how the book provides examples to help readers better understand the application of each rule and how adopting the rules leads to better writing style.
+
+___
 
 ## Elementary Rules of Usage
 

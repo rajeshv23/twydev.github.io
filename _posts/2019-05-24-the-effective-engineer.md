@@ -9,13 +9,14 @@ tags:
   - management
 ---
 
-The book advocates effective time management to help you deliver your projects on time. Scenarios and examples provided in the book are very relevant and relatable to all professional engineers. The key to effectiveness is to focus on high impact activities. You may be surprised that some of the highest impact activities are not related to the actual work of delivering the projects. Building a strong foundation and culture for your engineering team is likely the best investment of your time.
-
-I encourage everyone to grab an actual copy of the book and start reading.
-
 **The Effective Engineer** *How to Leverage your Efforts in Software Engineering to Make a Disproportionate and Meaningful Impact* - Edmund Lau, 2015
 {: .notice--primary}
 
+The book advocates effective time management to help you deliver your projects on time. Scenarios and examples provided in the book are very relevant and relatable to all professional engineers. The key to effectiveness is to focus on high impact activities. You may be surprised that some of the highest impact activities are not related to the actual work of delivering the projects. Building a strong foundation and culture for your engineering team is likely the best investment of your time.
+
+I encourage everyone to grab a copy and start reading.
+
+___
 
 ## Introduction
 Effectiveness is determined by both time taken and value produced. An effective engineer produces high value in a short time.
