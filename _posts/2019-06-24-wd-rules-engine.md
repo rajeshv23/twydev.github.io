@@ -1,5 +1,7 @@
 ---
 title: "Weekly Digest 2019-06-24"
+author_profile: false
+read_time: false
 categories:
   - Weekly Digest
 tags:
