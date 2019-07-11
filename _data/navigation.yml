@@ -1,7 +1,11 @@
 main:
+  # - title: "notes"
+  #   url: /notes/
+  # - title: "categories"
+  #   url: /categories/
+  - title: "weekly-digest"
+    url: /digests/
   - title: "notes"
-    url: /notes/
-  - title: "categories"
     url: /categories/
   - title: "tags"
     url: /tags/
