@@ -3,8 +3,8 @@ main:
   #   url: /notes/
   # - title: "categories"
   #   url: /categories/
-  - title: "weekly-digest"
-    url: /digests/
+  # - title: "weekly-digest"
+  #   url: /digests/
   - title: "notes"
     url: /categories/
   - title: "tags"
