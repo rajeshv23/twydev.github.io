@@ -67,38 +67,38 @@ After taking the above steps, we will be left with a smaller, more focused and r
 
 A final note, Bounded Context is more than just the domain model. It consists of application and even infrastructure layers.
 
-{% include figure image_path="/assets/images/screenshots/layers-in-bounded-context.png" alt="" caption="Layers inside Bouned Context" %}
+{% include figure image_path="{{ site.url }}{{ site.baseurl }}/assets/images/screenshots/layers-in-bounded-context.png" alt="" caption="Layers inside Bouned Context" %}
 
 ### Chapter 3. Strategic design with Context Mapping
 Bounded Contexts can be linked through Context Mapping, which can represent different kinds of relationships:
 
-{% include figure image_path="/assets/images/screenshots/context-mapping-partnership.png" alt="" caption="Partnership relation" %}
+{% include figure image_path="{{ site.url }}{{ site.baseurl }}/assets/images/screenshots/context-mapping-partnership.png" alt="" caption="Partnership relation" %}
 
 **Partnership**: two Bounded Context will frequently synchronise what is happening within their context, and will succeed or fail together.
 
-{% include figure image_path="/assets/images/screenshots/context-mapping-shared-kernel.png" alt="" caption="Shared Kernel relation" %}
+{% include figure image_path="{{ site.url }}{{ site.baseurl }}/assets/images/screenshots/context-mapping-shared-kernel.png" alt="" caption="Shared Kernel relation" %}
 
 **Shared Kernal**: two Bounded Context sharing a model. We need to determine which context team is responsible for developing, testing, and maintaining the shared model. 
 
-{% include figure image_path="/assets/images/screenshots/context-mapping-customer-supplier.png" alt="" caption="Customer-Supplier relation" %}
+{% include figure image_path="{{ site.url }}{{ site.baseurl }}/assets/images/screenshots/context-mapping-customer-supplier.png" alt="" caption="Customer-Supplier relation" %}
 
 **Customer-Supplier**: two Bounded Context related in an upstream-downstream relationship where the Supplier context will pass information to the Customer context. The downstream context team may inform the upstream context team what they require, but it is still up to the upstream context team to implement those requirements within their own context.
 
-{% include figure image_path="/assets/images/screenshots/context-mapping-conformist.png" alt="" caption="Conformist relation" %}
+{% include figure image_path="{{ site.url }}{{ site.baseurl }}/assets/images/screenshots/context-mapping-conformist.png" alt="" caption="Conformist relation" %}
 
 **Conformist**: another upstream-downstream relationship, where the upstream context has no motivation to provide for the specific requirements of the downstream context, and the downstream context also has no means to translate the upstream information to fit their needs. Therefore, the downstream context simply conforms their model to the upstream model.
 
-{% include figure image_path="/assets/images/screenshots/context-mapping-anticorruption-layer.png" alt="" caption="Anticorruption Layer" %}
+{% include figure image_path="{{ site.url }}{{ site.baseurl }}/assets/images/screenshots/context-mapping-anticorruption-layer.png" alt="" caption="Anticorruption Layer" %}
 
 **Anticorruption Layer**: the most defensive upstream-downstream relationship, where the downstream creates a translation layer to isolate their model from the upstream model. It translates information from the upstream model to what the local model requires specifically.
 
-{% include figure image_path="/assets/images/screenshots/context-mapping-open-host-service.png" alt="" caption="Open Host Service" %}
+{% include figure image_path="{{ site.url }}{{ site.baseurl }}/assets/images/screenshots/context-mapping-open-host-service.png" alt="" caption="Open Host Service" %}
 
 **Open Host Service**: defines an interface that provides access to a Bounded Context as a set of services. it is open so all other contexts may use it freely.
 
 **Published Language**: is a well documented language that enables translation by any number of consuming Bounded Context to easily translate from their own model into and out of the published language. Often, an Open Host Service will provide a published language.
 
-{% include figure image_path="/assets/images/screenshots/context-mapping-separate-ways.png" alt="" caption="Separate Ways" %}
+{% include figure image_path="{{ site.url }}{{ site.baseurl }}/assets/images/screenshots/context-mapping-separate-ways.png" alt="" caption="Separate Ways" %}
 
 **Separate Ways**: is a special case where no integration would produce sufficient value to meet your needs. Therefore it is more optimal for each Bounded Context to implement their models in separate ways.
 
