@@ -6,12 +6,11 @@ categories:
   - Online Course
 tags:
   - domain driven design
-  - vaughn vernon
 ---
 
 Domain Driven Design (DDD) is a software development approach to implement complex software by dividing the solution into domains that serves specific purposes. This way of thinking not only helps us to keep the software maintainable as it scales up in complexity, but also guides the behavior of a cross-functional development team, consisting of software developers and domain experts, towards higher efficiency.
 
-These are my notes from Vaugh Vernon's introductory course to DDD.
+These are my notes from Vaughn Vernon's introductory course to DDD.
 
 ___
 
@@ -67,18 +66,18 @@ After taking the above steps, we will be left with a smaller, more focused and r
 
 A final note, Bounded Context is more than just the domain model. It consists of application and even infrastructure layers.
 
-{% include figure image_path="/assets/images/screenshots/layers-in-bounded-context.png" alt="" caption="Layers inside Bouned Context" %}
+{% include figure image_path="/assets/images/screenshots/layers-in-bounded-context.png" alt="" caption="Layers inside Bounded Context" %}
 
 ### Chapter 3. Strategic design with Context Mapping
 Bounded Contexts can be linked through Context Mapping, which can represent different kinds of relationships:
 
 {% include figure image_path="/assets/images/screenshots/context-mapping-partnership.png" alt="" caption="Partnership relation" %}
 
-**Partnership**: two Bounded Context will frequently synchronise what is happening within their context, and will succeed or fail together.
+**Partnership**: two Bounded Context will frequently synchronize what is happening within their context, and will succeed or fail together.
 
 {% include figure image_path="/assets/images/screenshots/context-mapping-shared-kernel.png" alt="" caption="Shared Kernel relation" %}
 
-**Shared Kernal**: two Bounded Context sharing a model. We need to determine which context team is responsible for developing, testing, and maintaining the shared model. 
+**Shared Kernel**: two Bounded Context sharing a model. We need to determine which context team is responsible for developing, testing, and maintaining the shared model. 
 
 {% include figure image_path="/assets/images/screenshots/context-mapping-customer-supplier.png" alt="" caption="Customer-Supplier relation" %}
 
@@ -88,9 +87,9 @@ Bounded Contexts can be linked through Context Mapping, which can represent diff
 
 **Conformist**: another upstream-downstream relationship, where the upstream context has no motivation to provide for the specific requirements of the downstream context, and the downstream context also has no means to translate the upstream information to fit their needs. Therefore, the downstream context simply conforms their model to the upstream model.
 
-{% include figure image_path="/assets/images/screenshots/context-mapping-anticorruption-layer.png" alt="" caption="Anticorruption Layer" %}
+{% include figure image_path="/assets/images/screenshots/context-mapping-anti-corruption-layer.png" alt="" caption="Anti-Corruption Layer" %}
 
-**Anticorruption Layer**: the most defensive upstream-downstream relationship, where the downstream creates a translation layer to isolate their model from the upstream model. It translates information from the upstream model to what the local model requires specifically.
+**Anti-Corruption Layer**: the most defensive upstream-downstream relationship, where the downstream creates a translation layer to isolate their model from the upstream model. It translates information from the upstream model to what the local model requires specifically.
 
 {% include figure image_path="/assets/images/screenshots/context-mapping-open-host-service.png" alt="" caption="Open Host Service" %}
 
@@ -102,7 +101,7 @@ Bounded Contexts can be linked through Context Mapping, which can represent diff
 
 **Separate Ways**: is a special case where no integration would produce sufficient value to meet your needs. Therefore it is more optimal for each Bounded Context to implement their models in separate ways.
 
-If you ever need to integrate with a legacy system containing tangled models, you may treat it as a single Bounded Context, and try to use an Anticorruption Layer to isolate your own Bounded Context from the mess.
+If you ever need to integrate with a legacy system containing tangled models, you may treat it as a single Bounded Context, and try to use an Anti-Corruption Layer to isolate your own Bounded Context from the mess.
 
 **Mechanism to provide integration of Bounded Contexts**
 
@@ -116,16 +115,16 @@ If you ever need to integrate with a legacy system containing tangled models, yo
 
 1. RPC is the least robust. 
     - If there is a network problem, or system problem in the host running the service, then communication between 2 bounded contexts will fail.
-    - However, if all infrastructure problems are prevented, it can work well with Open Host Service + Published Langauge (upstream) and Anticorruption Layer (downstream) integration design.
+    - However, if all infrastructure problems are prevented, it can work well with Open Host Service + Published Language (upstream) and Anti-Corruption Layer (downstream) integration design.
 2. RESTful API is more robust than RPC.
     - One advantage is the API naturally forming an Open Host Service + Published Language.
     - However, RESTful communication will still fail when infrastructure problems occur, just like RPC. RESTful communication has a better performance track record in terms of reliability and scalability since the entire internet is based on this architecture.
     - Be careful not to design API resources that directly reflect aggregates in the domain models, which forces a Conformist relationship on all the API consumers.
 3. Messaging mechanism is the most robust.
-    - Temporal coupling exists in both RPC and REST. Through a messaging mechanism, we elimiate temporal coupling between a context publishing domain events and a context subscribing to those messages.
+    - Temporal coupling exists in both RPC and REST. Through a messaging mechanism, we eliminate temporal coupling between a context publishing domain events and a context subscribing to those messages.
     - Downstream context may need to send commands to the upstream context to trigger events or query for additional information, but it should always receive events from the upstream through messages.
-    - The quality of the integration depends on the quality of the messaging mechanism. The mechanism should guarantee at-least-once delivery to ensure that all mesages will reach the downstream context in any situation.
-        - At-least-once delivery typically resends a message if there is a message loss, or if the receiver is slow, or if the receiver is down.
+    - The quality of the integration depends on the quality of the messaging mechanism. The mechanism should guarantee at-least-once delivery to ensure that all messages will reach the downstream context in any situation.
+        - At-least-once delivery typically re-sends a message if there is a message loss, or if the receiver is slow, or if the receiver is down.
         - Downstream receiver needs to be idempotent and needs to handle any repeated messages by de-duplication or by ignoring the message or by a safe re-run of the operation to get the exact same result.
 
 **Example of Context Mapping using Messaging Mechanism**
@@ -148,4 +147,4 @@ A Domain Event interface should minimally support the following attributes:
     - command name
     - command description
 
-It is important that when a command triggers a change, one single trancsaction saves both the state change (called aggregate) and the domain event to ensure consistency that an event has occurred.
+It is important that when a command triggers a change, one single transaction saves both the state change (called aggregate) and the domain event to ensure consistency that an event has occurred.

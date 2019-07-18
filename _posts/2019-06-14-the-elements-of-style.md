@@ -17,19 +17,19 @@ ___
 
 ## Elementary Rules of Usage
 
-1. **(Peter's. Charles's) Use 's for possessive singular of nouns.** Exceptions are ancient proper names and pronominal prossessives hers, its, theirs, yours, and oneself. 
-2. **(Apple, Banana, and Chiku) For series of terms with conjunction, use comma after the terms except for the last.** etc. is always preceeded by a comma.
+1. **(Peter's. Charles's) Use 's for possessive singular of nouns.** Exceptions are ancient proper names and pronominal possessives hers, its, theirs, yours, and oneself. 
+2. **(Apple, Banana, and Chiku) For series of terms with conjunction, use comma after the terms except for the last.** etc. is always preceded by a comma.
 3. **(This dude, who was indifferent, became more interested) Enclose parenthetic expressions between commas.** Applies to non-restrictive clauses introduced by which, when, where, who. Restrictive relative clauses do not require the commas. Example: The dude who is most interested will get the position.
 4. **(Something something happened, but another thing also happened) Place a comma before introducing an independent clause**
 5. **(This dude is cool; he was a former ninja) Do not join independent clauses by a comma.** Use a semicolon to form a compound sentence if necessary.
 6. **(This is. An apple) Do NOT break sentences in two**
-7. **(Being in a dilapitated condition, the house was a bargain for me) Participial phrase at the beginning of a sentence MUST refer to the grammatical subject (the house).** The counter example: Being in a dilapitated condition, I was able to buy the house cheap. (I became dilapitated LOL).
-8. **Wrap words getting cut of at the end of line to the next line by dividing it according to formation (know-ledge), or on vowel (propo-sition), or on double letters (refer-ring) unless they form a simple word (tell-ing).**
+7. **(Being in a dilapidated condition, the house was a bargain for me) Participial phrase at the beginning of a sentence MUST refer to the grammatical subject (the house).** The counter example: Being in a dilapidated condition, I was able to buy the house cheap. (I became dilapidated LOL).
+8. **Wrap words getting cut of at the end of line to the next line by dividing it according to formation (know-ledge), or on vowel (proposition), or on double letters (refer-ring) unless they form a simple word (tell-ing).**
 
 ## Elementary Principles of Composition
 
 9. **Paragraph is the unit of composition. One paragraph per topic.** Single sentences should not be a paragraph. In dialogue, each speech is a paragraph by itself.
-10. **(To achieve this, must do that. Blah blah reasons. And so again emphasise that must do that to achieve this) Begin each paragraph with a topic sentence; end it in conformity with the beginning.** In the body of the paragraph, you may include: 
+10. **(To achieve this, must do that. Blah blah reasons. And so again emphasize that must do that to achieve this) Begin each paragraph with a topic sentence; end it in conformity with the beginning.** In the body of the paragraph, you may include: 
   > - topic sentence clarified by denial of the contrary, 
   > - repeated topic sentence in abridged form, 
   > - topic sentence made clearer, 
@@ -68,7 +68,7 @@ ___
   > - Quotes following keyword **that** do not need quotation marks. 
   > - Proverbial expressions and familiar phrases of literary origin, colloquialisms and slang do not require quotation marks.
 - **References.** Abbreviate titles that occur frequently, giving full forms in an alphabetical list at the end. Give references in parenthesis or footnotes.
-- **Titles.** Prefers italics with capitalised initials. Omit initial "A" or "The" if you placed the possessive before them (e.g. *The Assasin's Creed* or Ubisoft's *Assasin's Creed*).
+- **Titles.** Prefers italics with capitalized initials. Omit initial "A" or "The" if you placed the possessive before them (e.g. *The Assassin's Creed* or Ubisoft's *Assassin's Creed*).
 
 ## Words and Expressions Commonly Misused
 
@@ -82,7 +82,7 @@ ___
   > - Compare to == imply resemblances between objects regarded as of different order. 
   > - Compare with == point out differences between objects regarded as of the same order.
 - **Dependable.** A needless substitute for reliable, trustworthy.
-- **Due to.** This is tricky. "Due to" should only be used to modify a noun and be preceeded by a form of the verb "to be / is".
+- **Due to.** This is tricky. "Due to" should only be used to modify a noun and be preceded by a form of the verb "to be / is".
   > - Wrong example: The game was cancelled **due to** the rain.
   > - "Due to" does not modify a noun or follows a form of the verb "to be / is".
   > - Correct sentence: The game was cancelled **because of** the rain.
@@ -106,7 +106,7 @@ ___
 - **Along this lines.** Avoid.
 - **Literal / Literally.** Often incorrectly abused to support exaggeration. Avoid. Use "Almost".
 - **Lose out.** Just use "lose". The two words do not form idiomatic combinations, like "find out".
-- **Near by.** Avoid. Use "near", "near at hand", or "neighbouring".
+- **Near by.** Avoid. Use "near", "near at hand", or "neighboring".
 - **Oftentimes.** Avoid. Use often.
 - **One of the most.** Avoid. Does not carry much impact.
 - **People.** this is a political term. Not to be confused with public. Not to be used with words of number, in place of persons.

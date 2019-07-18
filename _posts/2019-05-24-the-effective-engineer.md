@@ -43,7 +43,7 @@ For engineers, focusing on onboarding and mentoring programs to ensure new hires
 2. Increase output of certain tasks.
 3. Transition to higher leverage activities.
 
-For every actvity you perform, ask yourself if any or all of the three improvements can be applied.
+For every activity you perform, ask yourself if any or all of the three improvements can be applied.
 
 **Direct Energy towards Leverage Points, not just Easy Wins**
 
@@ -55,12 +55,12 @@ Optimizing for learning is a high-leverage activity for an effective engineer.
 
 **Adopt a Growth Mindset**
 
-Standford psychologist Carol Dweck found that people adopt one of two mindsets. I find her idea similar to the nature vs nurture debate.
+Stanford psychologist Carol Dweck found that people adopt one of two mindsets. I find her idea similar to the nature vs nurture debate.
 
 - Fixed mindset individuals
 	- believe that abilities are inherent
 	- believe that failure indicates that they are not talented
-	- tend to stick to activitie they perform well to validate their intelligence
+	- tend to stick to activities they perform well to validate their intelligence
 	- tend to give up early or easily, which enables them to point to a lack of effort rather than a lack of ability
 - Growth mindset individuals
 	- believe that abilities can be cultivated through effort
@@ -68,7 +68,7 @@ Standford psychologist Carol Dweck found that people adopt one of two mindsets. 
 	- tend to view challenges and failures as opportunities to learn
 	- less likely to give up on their path to success
 
-Tamar Bercovici, enginnering manager at Box:
+Tamar Bercovici, engineering manager at Box:
 
 > It's not about apologizing for where your resume doesn't line up but rather telling your story - who you are, what skills you've built, what you're excited about doing next and why
 
@@ -82,15 +82,15 @@ To be effective, take control of your own story, optimizing for experiences wher
 
 Stephen Cohen, co-founder of Palantir:
 
-> When companies pay you for cushy and unchallenging 9-to-5 jobs, they are actually paying you to accept a much lower intellectual growth rate. When you recognize that intelligence is compounding, the cost of missing long-term compounding is enormous.
+> When companies pay you for cushy and non-challenging 9-to-5 jobs, they are actually paying you to accept a much lower intellectual growth rate. When you recognize that intelligence is compounding, the cost of missing long-term compounding is enormous.
 
 **Seek Work Environment Conducive to Learning**
 
 Since you will be spending a lot of time at work, choose a work environment that promotes sustainable learning at both personal and professional level, using these criteria:
 
 1. Fast Growth - ample opportunities to make big impact and increase your responsibilities creates an environment that attracts strong talent, which generate a feedback to even faster growth. Environment that lacks growth leads to stagnation, politics and loss of talent.
-2. Training - effective teams recognise the importance of onboarding and mentorship. See the [earlier section.](#focus-on-high-leverage-activities)
-3. Openness - a culture that share feedback and information proactively, reflecting on failures and internalising lessons learnt.
+2. Training - effective teams recognize the importance of onboarding and mentorship. See the [earlier section.](#focus-on-high-leverage-activities)
+3. Openness - a culture that share feedback and information proactively, reflecting on failures and internalizing lessons learnt.
 4. Pace - iterating quickly provides faster feedback cycle and enables you to learn faster. Bureaucracy usually kills speed. However do find a sustainable pace and avoid burn out.
 5. People - working with people who are better than you means you will have better mentors and teachers. Your teammates can matter more than your actual job scope.
 6. Autonomy - freedom to choose what and how to work drives learning. Smaller companies usually provide more diverse learning opportunities.
@@ -128,7 +128,7 @@ Here are some other points to cultivate a habit of learning outside of work:
 
 
 ### 3. Prioritize Regularly
-Prioritising regularly is a most highly leveraging activity as it determines the amount of leverage for the rest of your time.
+Prioritizing regularly is a most highly leveraging activity as it determines the amount of leverage for the rest of your time.
 
 **Track To-Dos in a Single, Easily Accessible List**
 
@@ -136,16 +136,16 @@ Convenience will encourage yourself to use the to-do list. The list helps to pre
 
 **Focus on What Directly Produces Value**
 
-- Make pairwise comparison between items on the to-do list and prioritise those that directly produces value.
-- After which prioritise those that creates the most impact.
+- Make pairwise comparison between items on the to-do list and prioritize those that directly produces value.
+- After which prioritize those that creates the most impact.
 - Showing that you have delivered high impact helps you get away with dodging unnecessary meetings, emails, non-urgent bugs etc.
 - Learn to say "No" to people who are not respecting the opportunity cost of your time.
 
 **Focus on the Important and Non-Urgent**
 
-- All tasks can be mapped on a graph with 2 axis, Urgency and Importancy.
+- All tasks can be mapped on a graph with 2 axis, Urgency and Importance.
 - We often neglect non-urgent tasks even though they may be important.
-- Prioritising important but non-urgent tasks (which are usually planning and strategic in nature) can prevent important and urgent tasks, which are usually crisis, from happening.
+- Prioritizing important but non-urgent tasks (which are usually planning and strategic in nature) can prevent important and urgent tasks, which are usually crisis, from happening.
 - Label all to-dos in the list with Importance and Urgency indicator.
 
 **Protect Your Maker's Schedule**
@@ -217,11 +217,11 @@ Programming environment do not change drastically. Mastering the standard tools 
 2. Decision making bottleneck - get buy-in from key decision maker early, before heavily investing your development. Constantly communicate your ideas to them, and understand their priorities to align your project.
 3. Review process bottleneck - plan ahead, communicate and coordinate with teams involved to smoothen the process.
 
-Some bottlenecks may be outside your sphere of influence. Just do your best to optimise the biggest bottleneck within your control.
+Some bottlenecks may be outside your sphere of influence. Just do your best to optimize the biggest bottleneck within your control.
 
 
 ### 5. Measure What You Want to Improve
-Having a good metric to quantify user happiness is important. Example given in the book for Google Search's succss is using long click (duration user spent on the linked page before returning to the search result page) as a measure for user satisfaction with the search results.
+Having a good metric to quantify user happiness is important. Example given in the book for Google Search's success is using long click (duration user spent on the linked page before returning to the search result page) as a measure for user satisfaction with the search results.
 
 **Use Metrics to Drive Progress**
 
@@ -229,11 +229,11 @@ Having a good metric to quantify user happiness is important. Example given in t
 2. Tracking metrics over time guard against future regressions.
 3. Good metric drives forward progress. Setting a ratchet on the metric ensure that updates that worsen the metric cannot be deployed until another improvement counterbalances the change.
 
-**Pick the Right Metric to Incentivize the Behaviour You Want**
+**Pick the Right Metric to Incentivize the Behavior You Want**
 
-A good metric guides our decisions and focus to high leverage activities. A poor metric is counter productive and incentivise bad behaviour. Choose a metric that:
+A good metric guides our decisions and focus to high leverage activities. A poor metric is counter productive and incentivize bad behavior. Choose a metric that:
 
-- *maximise impact*. something focused on the most important aspect of your product, unified across all teams.
+- *maximize impact*. something focused on the most important aspect of your product, unified across all teams.
 - is *actionable*. can be related directly back to engineering changes made by the team.
 - is *responsive yet robust*. responds to changes quickly yet does not pick up much noise.
 
@@ -246,7 +246,7 @@ Engineering team at Etsy:
 
 > Measure anything. Measure Everything.
 
-A lot of insights are gathered through exploratory data analysis. Having dashboards, tools, and instruments to measure operations is essential to help achieve the main over arching goals mentioned in the previous secions. If not, everyone is just flying blind.
+A lot of insights are gathered through exploratory data analysis. Having dashboards, tools, and instruments to measure operations is essential to help achieve the main over arching goals mentioned in the previous sections. If not, everyone is just flying blind.
 
 **Internalize Useful Numbers**
 
@@ -259,10 +259,10 @@ Jeff Dean, Googler, recommends the following latency numbers to keep in mind:
 | L2 Cache Ref | 7 ns |
 | Mutex lock/unlock | 100 ns |
 | Main Memory Ref | 100 ns |
-| Compress 1KB w Snappy | 10 microsec |
-| Send 2KB over 1Gbps network | 20 microsec |
-| Read 1MB sequentially from memory | 250 microsec |
-| RTT within same datacenter | 500 microsec |
+| Compress 1KB w Snappy | 10 micro-sec |
+| Send 2KB over 1Gbps network | 20 micro-sec |
+| Read 1MB sequentially from memory | 250 micro-sec |
+| RTT within same data center | 500 micro-sec |
 | Disk seek | 10 ms |
 | Read 1MB sequentially from network | 10 ms |
 | Read 1MB sequentially from disk | 30 ms |
@@ -313,7 +313,7 @@ Faster iteration helps us get more things done. Frequent validation helps us get
 
 Invest a small amount of work to gather data to validate your project assumptions and goals in order to save a lot more wasted effort in the long run.
 
-- Dropbox used a video to showcase the target app behaviour to measure user interest, without building an actual prototype.
+- Dropbox used a video to showcase the target app behavior to measure user interest, without building an actual prototype.
 - 42Floors used mock up pages in their site to test out 8 different designs with users and only select the winning design for production.
 - Asana created a sign up form button to gather user clicks response before deciding to implement sign up feature.
 
@@ -328,7 +328,7 @@ A/B test feeds a random subset of users a change or a new feature while the rest
 
 **Beware the One-Person Team**
 
-Working alone runs the risk of getting blindsided by design flaws that surface too late, jeopardising entire project. Working in a team also improves morale and sustain momentum. Try the following strategies for a start:
+Working alone runs the risk of getting blindsided by design flaws that surface too late, jeopardizing entire project. Working in a team also improves morale and sustain momentum. Try the following strategies for a start:
 
 - be open and receptive to feedbacks.
 - commit code early and often.
@@ -339,7 +339,7 @@ Working alone runs the risk of getting blindsided by design flaws that surface t
 - structure ongoing projects so that there is some shared context with your teammates. this promotes collaboration and sharing.
 - solicit buy-in for controversial features before investing too much effort.
 
-These also applies if you truly are working as a one-man team. There are always avenue to incoporate the feedback of others, and they do not even need to be engineers.
+These also applies if you truly are working as a one-man team. There are always avenue to incorporate the feedback of others, and they do not even need to be engineers.
 
 **Build Feedback Loops for Your Decision**
 
@@ -356,7 +356,7 @@ For more radical changes, perhaps a thought experiment amd soliciting feedback f
 
 
 ### 7. Improve Your Project Estimation Skills
-Based on a study done in 2009, out of 50,000 software projects survey, 44% are delivered late, overbudgeted or missing requirements.
+Based on a study done in 2009, out of 50,000 software projects survey, 44% are delivered late, over-budgeted or missing requirements.
 
 **Use Accurate Estimate to Drive Project Planning**
 
@@ -371,7 +371,7 @@ To produce better estimates:
 - Beware of anchoring bias. avoid giving initial guesstimate and committing to the number without outlining the tasks.
 - Use multiple approaches to estimate the same task for more confidence. based on tasks, based on empirical data, based on number of systems etc.
 - Beware the mythical man-month. number of persons assigned to the task and time spent are not interchangeable, hence be very careful using man-day metrics.
-- Use timeboxing to constraint tasks that can grow in scope. examples are research and evaluation, set a hard deadline and force a decision within a time box.
+- Use time-boxing to constraint tasks that can grow in scope. examples are research and evaluation, set a hard deadline and force a decision within a time box.
 - Allow others to challenge the estimates.
 - iteratively improve the estimate. measure the actual effort and time taken, estimates can be refined to be more accurate as the project progresses, and reflect on making better estimates in future.
 
@@ -380,27 +380,27 @@ To produce better estimates:
 Changes may occur during the project that affects timeline:
 
 - creating new framework to follow best practices but this was not anticipated before project begins.
-- interrupted by high priority customers adhoc requests/incidents.
+- interrupted by high priority customers ad-hoc requests/incidents.
 - debugging for difficult-to-reproduce bugs.
 - tackle scalability problems.
 - manpower movements.
 - creating new subsystems for optimal performance when the original plan was to use third party libraries.
 - improving DevOps tools and processes to go faster, but required migration effort.
 
-The longer the project timeline, the higher the probability of disruption occuring. Build buffer time into the effort estimate. Simple exercise to keep track of time spent on tasks can bring awareness to all the other competing priorities distracting you from the work and provide a sanity check for the projected completion time.
+The longer the project timeline, the higher the probability of disruption occurring. Build buffer time into the effort estimate. Simple exercise to keep track of time spent on tasks can bring awareness to all the other competing priorities distracting you from the work and provide a sanity check for the projected completion time.
 
 **Define Specific Project Goals and Measurable Milestones**
 
 Setting a concrete project goal helps to:
 
-- distinguish between the must-haves and the nice-to-have in the list of tasks, and prioritise work accordingly.
+- distinguish between the must-haves and the nice-to-have in the list of tasks, and prioritize work accordingly.
 - build clarity and alignment across key stakeholders.
 
 In addition, setting measurable milestones that generate value will keep the project on track and keep everyone focused on delivering the essentials. This also helps with communicating progress to management.
 
 **Reduce Risk Early**
 
-- Prioritise the hardest tasks in the project first, so that we may address any likely error in the effort estimation and adjust accordingly while there are still ahead of time.
+- Prioritize the hardest tasks in the project first, so that we may address any likely error in the effort estimation and adjust accordingly while there are still ahead of time.
 - Integration usually has a higher risk due to numerous and complex interactions between systems and the difficulty in splitting the work into smaller tasks. Try building end-to-end scaffolding and do system testing as soon as possible, even if it is partly functional and stubs need to be used.
 
 **Approach Rewrite Projects with Extreme Caution**
@@ -409,7 +409,7 @@ In addition, setting measurable milestones that generate value will keep the pro
 - it is easy to introduce too many additional improvements as part of the rewrite.
 - any new features requested during rewriting must be added to both software, which increases risks and complexity the longer the project runs.
 
-In general, try to rewrite a large piece of code in smaller chunks and refactor incrementally while preserving system behaviour. This also provides flexibility to make changes during the rewrite.
+In general, try to rewrite a large piece of code in smaller chunks and refactor incrementally while preserving system behavior. This also provides flexibility to make changes during the rewrite.
 
 If this approach is not feasible as traffic cannot be sliced between new and old versions running simultaneously, then perform the rewrite in different targeted phases. For example, first migrate the language of the code base as phase 1, then fix problems in phase 2.
 
@@ -422,7 +422,7 @@ Adding more hours to catch deadlines usually doesn't work:
 - you are probably way behind schedule that the extra hours don't matter.
 - extra hours can hurt team dynamics.
 - communication overhead increases as deadline draws near.
-- sprint towards deadline incentivises technical debt.
+- sprint towards deadline incentivize technical debt.
 
 In general, it is more realistic to either extend the deadline or deliver what is possible. If overtime has to happen, try these approach:
 
@@ -435,7 +435,7 @@ In general, it is more realistic to either extend the deadline or deliver what i
 
 ### 8. Balance Quality with Pragmatism
 
-High software quality enables you to scale and also speed of delivery, however it is also possible to create too much overhead with code reviews, standardisation, and test coverage that it produces diminishing returns and improvement in quality reduces effectiveness instead. Striking a balance is essential.
+High software quality enables you to scale and also speed of delivery, however it is also possible to create too much overhead with code reviews, standardization, and test coverage that it produces diminishing returns and improvement in quality reduces effectiveness instead. Striking a balance is essential.
 
 **Establish a Sustainable Code Review Process**
 
@@ -478,13 +478,13 @@ Features of a good abstraction:
 To aid in your learning, start with:
 
 - studying popular abstraction in your work codebase/GitHub repository, and try extending them.
-- studying key abstractions released by large tech companies (ProtoBuff, Thrift, Hive, MapReduce etc.) to understand what makes them essential to other developers.
+- studying key abstractions released by large tech companies (Protocol Buffer, Thrift, Hive, MapReduce etc.) to understand what makes them essential to other developers.
 - studying other popular APIs to learn what makes them easy to use.
 
 **Automate Testing**
 
-- Having a library of tests in place builds confidence and overcomes the fear of making changes, especially when these changes are not implemented by the origical code authors.
-- It may be hard to introduce testing bacause of the investment required or because of organisational inertia. Take baby steps and start from the test with highest impact to exhibit value.
+- Having a library of tests in place builds confidence and overcomes the fear of making changes, especially when these changes are not implemented by the original code authors.
+- It may be hard to introduce testing because of the investment required or because of organizational inertia. Take baby steps and start from the test with highest impact to exhibit value.
 - Automated testing allows you to quickly zoom in to bugs and find the party accountable to make the fixes.
 
 In conclusion, automated testing reduces overall error rates of each iteration, compounding the benefit, making it a high leverage activity despite its initial cost.
@@ -497,7 +497,7 @@ Incurring technical debt allows you to deliver faster in the short run, only if 
 
 Technical debt can happen when we take shortcuts using quick and dirty workarounds, or when we did not fully understood the problem space and implemented a primitive solution.
 
-Try having a regular schedule to fix technical debt. Also, try to prioritise fixing the highest leverage code first.
+Try having a regular schedule to fix technical debt. Also, try to prioritize fixing the highest leverage code first.
 
 
 ### 9. Minimize Operational Burden
@@ -521,16 +521,16 @@ In general, try to always use the simplest solution that can get the job done wh
 
 **Build Systems to Fail Fast**
 
-The more directly we can link a bug to the source, the more quickly we can reproduce the problem and resolve the issue. An approach to achieve this is to Fail Fast = failiing immediately and visibly.
+The more directly we can link a bug to the source, the more quickly we can reproduce the problem and resolve the issue. An approach to achieve this is to Fail Fast = failing immediately and visibly.
 
 - crashing at startup when there is config errors.
 - input validation.
-- throw error from external service instead of surpressing it.
-- throw exception when changes in data structure causes dependants to be unusable.
+- throw error from external service instead of suppressing it.
+- throw exception when changes in data structure causes dependents to be unusable.
 - throw exception when data structure is corrupted instead of propagating the corruption.
 - assert key invariants before and after complex logic.
 
-This does not mean crashing the system, but to highlight problems as close to the source as possible. A typical flow could be to handle issues by a global exception handler that reports to engineers while failing gracefully for the end users. The handler can even log the exception, and aggregate it to show engineers the problem in a visualised manner to facilitate debugging.
+This does not mean crashing the system, but to highlight problems as close to the source as possible. A typical flow could be to handle issues by a global exception handler that reports to engineers while failing gracefully for the end users. The handler can even log the exception, and aggregate it to show engineers the problem in a visualized manner to facilitate debugging.
 
 **Relentlessly Automate Mechanical Tasks**
 
@@ -564,7 +564,7 @@ Note that automating mechanics is straight forward, but automating decision maki
 
 idempotency = produces the same results regardless of whether a process is run once or multiple times.
 
-If idempotence is not possible, at least make your process retryable. This can help you manage script crashes. Also, processes that cannot be retry typically leaves side effect that affect certain global state.
+If idempotence is not possible, at least make your process retry-able. This can help you manage script crashes. Also, processes that cannot be retry typically leaves side effect that affect certain global state.
 
 Idempotence allows you to run processes more frequently to expose problems earlier. This can also help to reduce the chances of logging false positives as incidents.
 
@@ -627,13 +627,13 @@ Sharing ownership helps everyone in the team. No one is held solely responsible 
 - document complex workflow and non-obvious workarounds.
 - invest time to teach and mentor others.
 
-**Build Collective Wisdom through Post-Mortems**
+**Build Collective Wisdom through Post-Mortem**
 
 After a high priority incident, the goal of post-mortem is not to assign blame, which is counterproductive, but to work together to identify better solutions.
 
 If situation is not preventable, then focus on making recovery easier.
 
-Post-mortems help to measure success, provided the metric is well-defined.
+Post-mortem help to measure success, provided the metric is well-defined.
 
 Document and distribute post-mortem information will help other teams avoid the same problems, and prevent loss of knowledge from manpower movements.
 
@@ -643,7 +643,7 @@ Ultimately, compiling lessons learned requires honest conversation, in a culture
 
 From  the author's past experience, a great engineering culture has the following characteristics, many are covered in earlier chapters:
 
-1. Optimised for iteration speed.
+1. Optimized for iteration speed.
 2. Push relentlessly for automation.
 3. Build the right software abstraction.
 4. Focus on high code quality through code reviews.
