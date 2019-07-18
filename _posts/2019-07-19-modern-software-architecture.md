@@ -10,6 +10,9 @@ tags:
   - event sourcing
 ---
 
+A course by Dino Esposito on PluralSight.
+Dino recommends following this project https://github.com/mastreeno/Merp which is an open source ERP system built using DDD and CQRS architecture.
+
 1. Repositioning DDD as the ideal methodology to conduct domain analysis.
 2. Explore architectures supporting DDD that are implemented in software systems (domain models, CQRS, event sourcing)
 3. UX-first approach to designing software system.
