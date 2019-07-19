@@ -14,9 +14,7 @@ These are my notes from Vaughn Vernon's introductory course to DDD.
 
 ___
 
-## Distilling Domain-Driven Design
-
-### Chapter 1: Introduction and Overview
+## Chapter 1: Introduction and Overview
 There are two parts to DDD, Strategic and Tactical Design.
 
 **Strategic Design**
@@ -32,7 +30,7 @@ There are two parts to DDD, Strategic and Tactical Design.
 - Modelling your domain in the most explicit way possible using **Domain Events**. Domain Events share happenings within a model with other systems that needs to be informed, which may exist within the same Bounded Context or a different Bounded Context.
 - Aggregate Entities and Values objects together into a right-sized cluster using a tool called **Aggregate Pattern**. (Unfortunately the course video link to this chapter is broken).
 
-### Chapter 2. Strategic Design with Bounded Context:
+## Chapter 2. Strategic Design with Bounded Context:
 DDD is essentially modelling an Ubiquitous Language in an explicitly Bounded Context.
 
 Within a contextual boundary, each component of the software model has a specific meaning and does specific action. The software model reflects a language spoken by the team that created the model, called the Ubiquitous Language.
@@ -68,7 +66,7 @@ A final note, Bounded Context is more than just the domain model. It consists of
 
 {% include figure image_path="/assets/images/screenshots/layers-in-bounded-context.png" alt="" caption="Layers inside Bounded Context" %}
 
-### Chapter 3. Strategic design with Context Mapping
+## Chapter 3. Strategic design with Context Mapping
 Bounded Contexts can be linked through Context Mapping, which can represent different kinds of relationships:
 
 {% include figure image_path="/assets/images/screenshots/context-mapping-partnership.png" alt="" caption="Partnership relation" %}
@@ -134,7 +132,7 @@ If you ever need to integrate with a legacy system containing tangled models, yo
 - Downstream Bounded Context that is subscribing to the source context acts on the event, and stores the reference identifier so that we have the ability to trace back the what has happened if an issue were to occur.
 - Downstream context can query source context using that reference identifier for more information (this query mechanism can be implemented using RESTful API).
 
-### Chapter 4. Tactical Design with Domain Events
+## Chapter 4. Tactical Design with Domain Events
 Domain Events are used in the communication between Bounded Contexts.
 
 A Domain Event interface should minimally support the following attributes:
