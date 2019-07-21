@@ -94,7 +94,7 @@ Three main tools:
 
 ### Ubiquitous Language
 A business oriented language to help the entire development team unify their mental model of the domain. It should be:
-- **Vocabulary of domain-specifc terms**, such as nouns, verbs, adjectives, idiomatic expressions and even adverbs
+- **Vocabulary of domain-specific terms**, such as nouns, verbs, adjectives, idiomatic expressions and even adverbs
 - **Shared by all parties involved in the project**, to avoid misunderstandings.
 - **Used in all forms of spoken and written communication**, adopted as the universal language of the business conducted in the organization.
 - **Natural language not artificial language**, so that it uses most of the business terminology.
@@ -113,7 +113,7 @@ A glossary of terms is an artifact of the language, made available to everyone a
 
 1. Start from user stories, identify all the keywords related to the domain, such as nouns and verbs.
 2. Next form the glossary of terms and use them consistently across the project.
-3. Hold meetings for domain and technical experts to agree on using consistent langauge expressions to avoid ambiguity. For example, "delete an order" is a technical expression while "cancel an order" is a business expression, but since both expressions refer to the same action in the domain, the team should standardise to use a single expression.
+3. Hold meetings for domain and technical experts to agree on using consistent language expressions to avoid ambiguity. For example, "delete an order" is a technical expression while "cancel an order" is a business expression, but since both expressions refer to the same action in the domain, the team should standardize to use a single expression.
 4. Iteratively refine the glossary of terms to better reflect the domain.
 5. The source code and technical documents should be updated regularly and be in-sync with changes in the glossary of terms.
 
@@ -135,7 +135,7 @@ Bounded Context is a tool that provides:
 - **Boundaries to the context**, and each context has its own Ubiquitous Language. Beyond the boundaries, the language changes and terms no longer carry the same meaning.
 - **Splitting of business domain into a web of interconnected contexts**, each context has its own architecture and implementation.
 
-Through the use of Bounded Contexts, we remove ambiguity and duplication in the software. Breaking down the domain into contexts simplify design of software modules, and provides an approach to integrating external components. Here is how we may visualise the problem and solution space:
+Through the use of Bounded Contexts, we remove ambiguity and duplication in the software. Breaking down the domain into contexts simplify design of software modules, and provides an approach to integrating external components. Here is how we may visualize the problem and solution space:
 
 {% include figure image_path="/assets/images/screenshots/bounded-context-problem-solution-space.png" alt="" caption="Mapping from Problem Space to Solution Space" %}
 
@@ -202,7 +202,7 @@ Just to clarify the terms, a *Layer* refers to a logical container for a portion
 
 The classic "3-Tier" architecture, by the strict terminology, is actually 3 layers (Presentation, Business, Data), deployed across 2 tiers (web server, database server)
 
-DDD layered architecture is a variation of the classic architecture which attempts to enforce seperation of concerns by containing the business logic within the Application and Domain layers without leaking to the other layers.
+DDD layered architecture is a variation of the classic architecture which attempts to enforce separation of concerns by containing the business logic within the Application and Domain layers without leaking to the other layers.
 - **Presentation Layer**: same as classic presentation layer.
 - **Application Layer**: bridges model and services with the presentation layer.
 - **Domain Layer**: contains model and services.
@@ -228,9 +228,9 @@ A good Presentation layer has the following attributes:
 - faithful to real-world processes
 
 ### Application Layer
-This layer separates Presentation from Domain and is where the software orchastrates the implementation of use-cases. 
+This layer separates Presentation from Domain and is where the software orchestrate the implementation of use-cases. 
 
-Application layer has 2 key responsiblities:
+Application layer has 2 key responsibilities:
 - reports to the Presentation: serves ready-to-use data in required format
 - orchestrates tasks triggered by Presentation: satisfying use-cases of the application's frontend
 
@@ -242,7 +242,7 @@ The abstract definition of Business Logic in DDD is made up of 2 parts:
 - **Application Logic**: which are dependent on user-cases, contains Data Transfer Objects (containers of data flowing to and from Presentation) and Application Services (orchestrate tasks and workflows).
 - **Domain Logic**: Invariant to use-cases, contains Domain Model (holds data and behavior) and Domain Services.
 
-Domain Logic is all about embedding business rules into code. Business rules are statements that detail the implementation of a business process or describe a business policy to be taken into acccount. A few patterns are available for organizing business logic:
+Domain Logic is all about embedding business rules into code. Business rules are statements that detail the implementation of a business process or describe a business policy to be taken into account. A few patterns are available for organizing business logic:
 - *Transaction Script Pattern*: this is a procedural approach. Each user action from the Presentation layer triggers an Application layer endpoint, that invokes a script. The script will see the entire logical transaction end-to-end.
 - *Table Module Pattern*: this is a database-centric approach. One module is created per table in the database and contains all the queries and commands to interact with that particular table. The Application layer will need to determine which module to call for different steps of a workflow.
 - *Domain Model Pattern*: is an object-oriented model that fully represents the behavior and processes of the business domain. Classes represents live entities in the domain, and contain properties and methods reflecting actual behavior of these entities and associated business rules. *Aggregate Model* refers to the core object of a domain model. These classes are persistence agnostic, and access domain services to interact with persistence layer.
