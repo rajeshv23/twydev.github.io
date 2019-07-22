@@ -290,12 +290,12 @@ Fundamental facilities and services required for software to operate. Includes:
 This layer holds concrete details of technologies, such as connection strings, file paths, TCP addresses, and HTTP URLs, but it should not bind the system to any specific products. This means that technology details should be hidden from view, and can be easily replaced with other equivalent technologies.
 
 ## Supporting Architecture: Domain Model Pattern
-In this pattern, we will focus on the Domain Model, which implemented using object-oriented model, and Domain Services which deal with crosss entity logic and data access. We can imagine this layer as an API to the business domain, and we should make sure that wrong calls to the API do not break the integrity of the business. Therefore, it is all about mapping the correct behavior from business into software.
+In this pattern, we will focus on the Domain Model, which implemented using object-oriented model, and Domain Services which deal with cross entity logic and data access. We can imagine this layer as an API to the business domain, and we should make sure that wrong calls to the API do not break the integrity of the business. Therefore, it is all about mapping the correct behavior from business into software.
 
 To address some misconceptions up front:
 - this pattern is not a simple and typical object model with some special characteristics, even though we are using object model for the purpose of this course. Context mapping is paramount, and as long as good principles are followed, we can implement domain model even with functional models or anemic models.
 - database is not merely part of the infrastructure which can be neglected. Although the focus on the object model is to capture the business domain, it must still be easy to persist as we must eventually store the data somewhere.
-- ubiquitout language is not just a guide to naming classes in the object model. As stated earlier, it is a unified understanding of the business.
+- ubiquitous language is not just a guide to naming classes in the object model. As stated earlier, it is a unified understanding of the business.
 
 ### Domain Model
 Domain models are essentially the logical organization of entities and values in the domain.
@@ -458,7 +458,7 @@ Domain Services comes from requirements approved by domain experts and are stric
 ### Domain Events
 Use of events is an increasingly popular way to express the interactions in real-world business domains, that proved to be more effective and resilient. But it is not strictly necessary.
 
-If the business logic needs to be triggered sequentially, implementing those tasks in a single function or series of function calls will explicitly writes the sequence into code, which will lead to a monolithic structure that is difficult to maintain in future. By having a preceeding function emit an event instead, this event can be received and acted on by multiple listeners. The event bus can be handled by underlying infrastructure and the event logic is agnostic to the concrete technology.
+If the business logic needs to be triggered sequentially, implementing those tasks in a single function or series of function calls will explicitly writes the sequence into code, which will lead to a monolithic structure that is difficult to maintain in future. By having a preceding function emit an event instead, this event can be received and acted on by multiple listeners. The event bus can be handled by underlying infrastructure and the event logic is agnostic to the concrete technology.
 
 ### Anemic Models
 Using Code First approach with Entity Framework (or making any ORM the central approach to your software design) inevitably leads to:
@@ -474,7 +474,7 @@ Command Query Responsibility Segregation emerged as a new alternative to object-
 
 Looking back at the two implementation to the domain layer, 
 - using Domain Model Pattern / Behavior-Rich Classes is great for commands that mutates the state of the system. However, it will require fixes to fully support persistence via ORM to read data, and it may expose unnecessary behavior to the presentation layer.
-- using Anemic Model / Database-Centric Approach is greate for queries that simple needs to read data from the system. However, the danger of such interface with no business rules means that the system may potentially end up in an incongruent state.
+- using Anemic Model / Database-Centric Approach is great for queries that simple needs to read data from the system. However, the danger of such interface with no business rules means that the system may potentially end up in an incongruent state.
 
 (*Command alters state but doesn't return data. Query returns data but doesn't alter state.*)
 
@@ -486,7 +486,148 @@ Here is a comparison between the layered architecture and CQRS:
 
 {% include figure image_path="/assets/images/screenshots/cqrs-vs-layered-architecture.png" alt="" caption="CQRS and Traditional Architecture" %}
 
-### CQRS Basic / Advanced
+### CQRS Basic Implementation
+To implement the most basic CQRS for a CRUD use case, the course suggested:
+- for Command stack use any pattern that fits better.
+- for Query stack use any code that does the job.
+
+You may even use existing technologies and skills, just need to have a separation between Command and Query.
+
+If this CRUD feature is implemented for a REST API, then Commands should respond with a POST-REDIRECT-GET pattern to redirect the user client to make a Query. This ensures that when user attempts to perform browser refresh to repeat the last action, it is always a Query, not a Command.
+
+Example pseudo code below:
+
+```java
+public class APIController implements Controller{
+
+    private ServiceInterface _crudService;
+
+    public APIController(ServiceInterface service) {
+        this._crudService = service;
+    }
+
+    @GET
+    public APIResult readRecord() {
+        OutputModel model = _crudService.get();
+        return new APIResult(model);
+    }
+
+    @POST
+    public APIResult createRecord(InputModel model) {
+        _crudService.write(model);
+        return redirectToGetRequest();
+    }
+}
+
+public class CrudService implements ServiceInterface {
+
+    private DbContext readOnlyContext;
+    private DbContext fullContext;
+
+    public OutputModel get() {
+         return readOnlyContext.query(); // uses a read-only context
+    }
+
+    public void write(InputModel model) {
+        fullContext.add(model); // uses a full-access context
+        fullContext.commit();
+    }
+}
+```
+
+### CQRS Intermediate Implementation
+Now for a more sophisticated implementation, the underlying storage technology used by Command and Query may be different, and each may be optimized independently.
+- Command stack can be optimized to be more task-oriented, focused on processing with no regards for data model, and even use ad-hoc storage technologies.
+- Query stack may use any ORM or any database query expression library, but the underlying storage should still be relational database for the best query performance in most cases.
+
+The problem facing such design is the stale data residing on the Query stack. There are a number of ways to keep data in sync between the two stacks.
+
+{% include figure image_path="/assets/images/screenshots/cqrs-storage-synchronization.png" alt="" caption="CQRS Data Synchronization Strategies" %}
+
+Example pseudo code using the simplest synchronous strategy below:
+
+```java
+public class APIController implements Controller{
+
+    private CommandService _cmdService;
+    private QueryService _qryService;
+
+    public APIController(CommandService service) {
+        this._cmdService = service;
+    }
+
+    @GET
+    public APIResult readRecord(String id) {
+        OutputModel model = _qryService.get(id);
+        return new APIResult(model);
+    }
+
+    @POST
+    public APIResult runTask(String id, EventType type) {
+        _cmdService.processAction(id, type);
+        return redirectToGetRequest(id);
+    }
+}
+
+public class CommandService {
+
+    public void processAction(String id, EventType type) {
+        switch (type) {
+            case EventType.CREATE:
+                EventManager.log(id, type, new Datetime());
+                break;
+            case EventType.RUN:
+                EventManager.log(id, type, new Datetime());
+                break;
+            case EventType.UNDO:
+                EventManager.remove(id);
+                break;
+        }
+    }
+}
+
+public class EventManager {
+
+    private static EventStore db = new EventStore();
+
+    public static void log(String id, EventType type, Datetime time) {
+        EventObj event = EventBuilder.build(id, type, time);
+        db.write(event);
+        db.commit();
+
+        OutputModel model = db.read(id); // immediately synchronize with Query stack
+        QueryViewStore.save(model);
+    }
+}
+```
+
+### CQRS Advanced Implementation
+The more sophisticated implementations use message-based communication.
+
+**Message** can either be a Command or an Event. It typically has a base class to specify essential attributes such as:
+- Date Time Stamp
+- An Identifier
+
+Then each Command or Event may extend the base class and include more details to describe the command or the event.
+
+User actions, asynchronous streams, or receiving other events may cause the Application layer to send a new message to the Command stack. Therefore, this task-oriented approach mirrors business processes closely and allows new events and actions to weave in and out of the existing system easily.
+
+- Command stack has a shared message bus that allows Application layer to push new Commands or Events to the other components listening to the bus that need to respond to these messages.
+    - A long running process that may need to act on a sequence of Commands/Events before it terminates is called a **Saga**.
+    - A short-lived executor that start-up and shutdown just to act on a Command/Events is called a **Handler**
+    - Both Sagas and Handlers may be implemented by Domain Models and Domain Services (mentioned in previous chapter) to reflect the business domain. The Domain Services will help to persist the updated system state in storage.
+    - (if the messages in the bus is persisted in a storage, the storage can act as an event store, and that forms the basis of Event Sourcing)
+- Query stack can be implemented with any technology, but relational database as the underlying storage will likely give the best performance. It can even be implemented as a Handler, listening to the same message bus.
+
+**More on Sagas**
+
+- Sagas need to have unique identifier. 
+- The bus will only keep track of the list of listening Sagas and Handlers and dispatch messages to them. (this makes the bus a fairly dumb and simple mechanism)
+- Within the Saga, it handles the business process triggered by the Command or Event.
+- Within the Saga, it also lists all the Commands/Events that it can handle or is interested in.
+- Sagas may require persistence of the incoming messages, and this is typically handled by the bus.
+- Sagas may either be state-ful or stateless.
+- New features can be added to the system simply by writing a new Saga/Handler and registering it with the bus.
 
 ## Supporting Architecture: Event Sourcing
 
