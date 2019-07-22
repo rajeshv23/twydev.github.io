@@ -36,7 +36,7 @@ This chapter showcase a small program that is part of a larger software, respons
 9. **Tradeoff between extensible code and optimized code**. Worry about optimization later. Refactor to make the code easier to maintain is the top priority.
 10. **Replacing conditionals with polymorphism**. If the different conditions are subclasses of a main interface, then overriding methods in each subclasses will provide you the desired conditional logic while keeping the code easy to read and maintain.
 
-```Java
+```java
 // Pseudo code in main object
 
 class Main {

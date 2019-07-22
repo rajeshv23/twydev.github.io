@@ -10,8 +10,10 @@ tags:
   - event sourcing
 ---
 
-A course by Dino Esposito on PluralSight.
-Dino recommends following this project https://github.com/mastreeno/Merp which is an open source ERP system built using DDD and CQRS architecture.
+**Modern Software Architecture** *Domain Models, CQRS, and Event Sourcing* - Dino Esposito, accessed on PluralSight 2019
+{: .notice--primary}
+
+This course is a great introduction to domain driven design. The course seems to suggests that our usual practice of writing database-centric software is the root cause of our applications eventually growing into unmaintainable monstrosities. I find that mind-blowing, to think that our traditional approach to building software is wrong.
 
 ___
 
@@ -19,9 +21,10 @@ ___
 The course covers 3 topics.
 
 1. Repositioning Domain Driven Design (DDD) as the ideal methodology to conduct domain analysis.
-2. Explore architectures supporting DDD that are implemented in software systems (domain models, CQRS, event sourcing)
+2. Explore architectures supporting DDD that are implemented in software systems (Domain Model Pattern, CQRS, Event Sourcing)
 3. UX-first approach to designing software system.
 
+For extra reading, Esposito recommends following this project https://github.com/mastreeno/Merp which is an open source ERP system built using DDD and CQRS architecture.
 
 ## Domain Driven Design Overview
 
@@ -61,7 +64,7 @@ Dream of every developer is to build an all-encompassing object model describing
 {% include figure image_path="/assets/images/screenshots/graph-data-centric-vs-domain-driven.png" alt="" caption="Data-centric vs Domain-driven" %}
 
 In 2009, DDD shifted focus. It became a tool used for discovering domain architecture more than organizing business logic.
-Domain Model remains a valid pattern to organize business logic bit other patterns can be used as well:
+Domain Model Pattern remains a valid pattern to organize business logic bit other patterns can be used as well:
 - Object-oriented models
 - Functional models
 - CQRS
@@ -69,10 +72,9 @@ Domain Model remains a valid pattern to organize business logic bit other patter
 - client/server 2-tier
 More info in youtube video: Eric Evans talk at QCON 2009
 
-DDD Misconceptions
-Common misconception of DDD is:
-- building object model for the business domain and call it "domain model"
-- consume the model in a multi-layer architecture (with app layer, domain layer, etc.)
+DDD Misconceptions:
+- it is about building object model for the business domain and calling it "domain model"
+- consume the domain model in a multi-layer architecture (with app layer, domain layer, etc.)
 
 But in actual fact the most valuable part of DDD is the tools it provides to help us make sense of a domain. This enables you to **Design** the system, **Driven** by your knowledge of the **Domain**.
 
@@ -83,7 +85,7 @@ DDD actually has 2 distinct parts.
 2. the Strategic component:
     - relates to the definition of supporting architecture for each of the identified Bounded Contexts.
 
-The Analytical component is valuable to everyone. However, the Strategic component, which uses Domain Models pattern and multi-layered software architecture, is just one of several possible supporting architectures and it is not necessary for every project to use the Strategic component when practicing DDD.
+The Analytical component is valuable to everyone. However, the Strategic component, which uses Domain Model Pattern and multi-layered software architecture, is just one of several possible supporting architectures and it is not necessary for every project to use the Strategic component when practicing DDD.
 
 ## Domain Analysis
 
@@ -197,7 +199,7 @@ https://blog.eriksen.com.br/en/mapping-domain-knowledge
 A talk about how Event Storming has evolved over time:
 https://youtu.be/1i6QYvYhlYQ
 
-## DDD Layered Architecture
+## Layered Architecture
 Just to clarify the terms, a *Layer* refers to a logical container for a portion of code, while a *Tier* refers to a physical container or process space in which the code is deployed.
 
 The classic "3-Tier" architecture, by the strict terminology, is actually 3 layers (Presentation, Business, Data), deployed across 2 tiers (web server, database server)
@@ -247,16 +249,245 @@ Domain Logic is all about embedding business rules into code. Business rules are
 - *Table Module Pattern*: this is a database-centric approach. One module is created per table in the database and contains all the queries and commands to interact with that particular table. The Application layer will need to determine which module to call for different steps of a workflow.
 - *Domain Model Pattern*: is an object-oriented model that fully represents the behavior and processes of the business domain. Classes represents live entities in the domain, and contain properties and methods reflecting actual behavior of these entities and associated business rules. *Aggregate Model* refers to the core object of a domain model. These classes are persistence agnostic, and access domain services to interact with persistence layer.
 
-Note: The term "Domain Model" may lead to some confusion. Here we are referring to a pattern proposed by Martin Fowler, and this is not strictly part of the DDD theory. The term "Domain Model" used by Eric Evans is a generic term that simply means modelling software components according to business domain.
+**Important Note 1:** The term "Domain Model Pattern" may lead to some confusion. 
 
-**Important Note**
+Here we are referring to a pattern proposed by Martin Fowler, and this is not strictly part of the DDD theory. The term "Domain Model" used by Eric Evans is a generic term that simply means modelling software components according to business domain. When DDD was first introduced, many adopted the 
 
-Just to summarize and reiterate the concepts and Application and Domain logic. 
+**Important Note 2:** Just to summarize and reiterate the concepts and Application and Domain logic. 
 
-The Application logic deals with data coming from user interface, and handles it to ensure that use-cases are satisfied. (Important! use-cases are defined as what you can do on the user interface, and the outcome it produces).
+The Application logic deals with data coming from user interface, and handles it to ensure that use-cases are satisfied. (**Important! use-cases are defined as what you can do on the user interface, and the outcome it produce**).
 
-The Domain logic however represents invariant properties of business that must still work regardless of use-cases. For example, if we are modelling a financial accounting system, then the important accounting rules should still holds in the system regardless of user interface and use-cases, and such rules belongs to Domain logic.
+The Domain logic however represents **invariant properties of business that must still work regardless of use-cases**. For example, if we are modelling a financial accounting system, then the important accounting rules should still holds in the system regardless of user interface and use-cases, and such rules belongs to Domain logic.
 
 ### Domain Layer
+This layer holds the essential logic of the business, invariant to user-cases. It consists of:
+- Domain Models (**not necessarily** domain model pattern)
+- Domain Services (handles persistence)
 
-TBC
+**Domain Models**
+
+Can be created as object-oriented entity model or functional model. Object-oriented model should follow DDD conventions (using factories instead of constructors, using value types over primitive types, avoid private setters, expose both data and behavior).
+
+**Anemic Domain Models**
+
+Implementing the domain models using an anti-pattern. Objects are plain data containers instead, and all behavior and rules are moved to domain services.
+
+**Domain Services**
+
+The broader definition is pieces of domain logic that do not fit into any of the existing entities. There are only two scenarios:
+1. Behaviors that span multiple domain entities and hence cannot be fit into any domain models.
+2. Implementation that requires access to persistence layer or external services.
+
+### Infrastructure Layers
+Fundamental facilities and services required for software to operate. Includes:
+- Persistence
+- Security
+- Logging and Tracing
+- Inversion of Control
+- Caching
+- Networks
+
+This layer holds concrete details of technologies, such as connection strings, file paths, TCP addresses, and HTTP URLs, but it should not bind the system to any specific products. This means that technology details should be hidden from view, and can be easily replaced with other equivalent technologies.
+
+## Supporting Architecture: Domain Model Pattern
+In this pattern, we will focus on the Domain Model, which implemented using object-oriented model, and Domain Services which deal with crosss entity logic and data access. We can imagine this layer as an API to the business domain, and we should make sure that wrong calls to the API do not break the integrity of the business. Therefore, it is all about mapping the correct behavior from business into software.
+
+To address some misconceptions up front:
+- this pattern is not a simple and typical object model with some special characteristics, even though we are using object model for the purpose of this course. Context mapping is paramount, and as long as good principles are followed, we can implement domain model even with functional models or anemic models.
+- database is not merely part of the infrastructure which can be neglected. Although the focus on the object model is to capture the business domain, it must still be easy to persist as we must eventually store the data somewhere.
+- ubiquitout language is not just a guide to naming classes in the object model. As stated earlier, it is a unified understanding of the business.
+
+### Domain Model
+Domain models are essentially the logical organization of entities and values in the domain.
+
+**Modules** are like namespace in the code. Entities and values are grouped into modules.
+
+**Value Objects** are fully identified by a collection of attributes. The attributes are never changed once the instance of the object has been created. Therefore:
+- value types are a collection of individual values.
+- and they are immutable.
+- and they can more precisely and accurately represent business quantities than primitive types but to the custom definition we have given to them.
+
+**Entities** also have a collection of attributes, but it must have an identifier. Therefore:
+- uniqueness of the object is important for the business.
+- it consists of data and behavior.
+- but does not contain persistence logic.
+
+**Aggregates** are a few individual entities constantly used and referenced together.
+- they are a cluster of associated objects, including their relationships, treated as "one entity" for making data changes or queries.
+- the cluster has a root object called **Aggregate Root** which is the public endpoint. Access to members of the aggregate is always mediated by the root.
+- Aggregates are separated by a consistency boundary. Design of aggregates are inspired by business transactions. An aggregate preserves the transactional integrity and ensures consistency of the business process it is trying to render.
+
+{% include figure image_path="/assets/images/screenshots/domain-model-aggregate-root.png" alt="" caption="Interactions mediated by Aggregate Roots" %}
+
+**Persistence Model vs Domain Model**
+
+Persistence Model is what we are familiar with, the data model in traditional object-oriented software design. The model closely reflects the underlying data storage (think ORM) and does not include business logic except for simple data fields validation.
+
+A Domain Model focus on business logic, with no awareness of how data are stored in underlying persistence.
+
+So this is ultimately a decision between maintaining objects as pure data containers and having the logic in some other services, or storing business logic directly within objects.
+
+**What is Behavior?**
+- Methods that validate the state of the object
+- Methods that invoke business actions to perform on the object
+- Methods that express business processes involving the object
+
+The fundamental problem of not baking behavior into objects and having public getters and setters that can directly modify objects as pure data containers, is that **there is no guarantee that the consumer of the domain model will maintain the integrity data and consistency with the business domain**. For example, the setting a data object defined as Int32 to a negative value is consistent and valid according to the technical implementation, but this negative value may not make business sense if it was supposed to be representing the age of the user.
+
+Here is an example of data-centric object model design:
+
+```java
+// Person.java
+public class Person {
+	public Person() {};
+    private Age ageObj;
+    private String name;
+
+    // Getters
+    public Age getAge() {
+        return age;
+    }
+    public String getName() {
+        return name;
+    }
+
+    // Setters
+    public void setAge(Age ageObj) {
+        this.ageObj = ageObj;
+    }
+        public void setName(String name) {
+        this.name = name;
+    }
+}
+
+// Age.java
+public class Age {
+	public Age() {};
+    private Integer currentAge;
+
+    public Integer getAge() {
+        return currentAge;
+    }
+    public void setAge(Integer age) {
+        this.currentAge = age;
+    }
+}
+```
+
+Re-writing the above using a domain model approach, we have the following:
+
+```java
+// Person.java
+public class Person {
+    private Age ageObj;
+    private String name;
+
+    public Person(String name) {
+    	this.name = name;
+    	this.ageObj = new Age();
+    };
+
+    // Informational
+    public Age getAge() {
+        return new Age(ageObj); // returns a copy of age
+    }
+    public String getName() {
+        return name;
+    }
+    public Boolean setAge(Integer age) { // behavior of object is constrained by logic
+        if (Age.aboveMinimum(age)) {
+        	this.ageObj = new Age(age);
+        	return true;
+        }
+        return false;
+    }
+
+    // Behavior
+    public void incrementAge() { // this logic would have been separately implemented by API caller
+    	this.ageObj = new Age(ageObj.getAge + 1);
+    }
+}
+
+// Age.java
+public class Age {
+	private Integer currentAge;
+
+	public Age(Integer age) {
+		this.currentAge = age;
+	}
+	public Age() {
+		Age(0);
+	}
+	public Age(Age ageObj) {
+		Age(ageObj.getAge());
+	}
+
+    public Integer getAge() {
+        return currentAge;
+    }
+
+    public static Boolean aboveMinimum(Integer age) {
+    	return age >= 0; // business logic baked into object
+    }
+}
+// was a bit lazy and used implicit type conversion from primitive to generics
+```
+
+**Aggregates and Value Types**
+
+Aggregates protect as much as possible the graph of entities from outsider access. The aggregate root ensures: 
+- the state of child entities is always consistent, 
+- takes care of persistance for all child entities, 
+- cascade updates and deletions, 
+- and ensures that access to child entities always happen by navigation from root only. 
+- (Each aggregate root has one dedicated repository service that implements consistent persistence for all of the objects).
+
+The actual boundaries of aggregates are determined by business rule and also what the architect envision of the domain.
+
+In the actual code, aggregates need not be created as features, but may be set as interfaces or abstract classes, implemented by entity classes.
+
+Factory methods has an advantage over constructors. The factory method names are self-documenting, and give a purpose to the creation of objects at the point of invocation.
+
+### Domain Services
+Even though Domain Services include logic that spans multiple aggregates and consume persistence or external service, it is not just a simple helper classes.
+
+Domain Services comes from requirements approved by domain experts and are strictly part of the ubiquitous language.
+
+**Repositories** are classes that handles persistence on behalf of entities that are ideally aggregate roots. It is the most popular type of domain service, has a direct dependency on the data stores and is where we actually deal with connection strings and SQL commands and etc.
+
+### Domain Events
+Use of events is an increasingly popular way to express the interactions in real-world business domains, that proved to be more effective and resilient. But it is not strictly necessary.
+
+If the business logic needs to be triggered sequentially, implementing those tasks in a single function or series of function calls will explicitly writes the sequence into code, which will lead to a monolithic structure that is difficult to maintain in future. By having a preceeding function emit an event instead, this event can be received and acted on by multiple listeners. The event bus can be handled by underlying infrastructure and the event logic is agnostic to the concrete technology.
+
+### Anemic Models
+Using Code First approach with Entity Framework (or making any ORM the central approach to your software design) inevitably leads to:
+- a persistence model as the classes cannot fully represent the domain.
+- adding behavior to the model to express the ubiquitous language may not always be possible, and if compromise have to be made, the ORM will always triumph.
+- database being the constraint of the domain model.
+
+Domain driven design can be adopted on a gray scale. People have widely adopted the anemic model alongside other good DDD practices. This may be due to legacy, habit, or simply their environment, and the resulting software has worked well for them. However, Martin Fowler has commented that these developers are robbing themselves of the true benefit of a domain model.
+
+
+## Supporting Architecture: CQRS
+Command Query Responsibility Segregation emerged as a new alternative to object-oriented approach of representing the business domain, the latter which has proven over the years to be inadequate in capturing all the domain complexities and intricacies. CQRS is essentially about separating commands and queries using distinct application stacks.
+
+Looking back at the two implementation to the domain layer, 
+- using Domain Model Pattern / Behavior-Rich Classes is great for commands that mutates the state of the system. However, it will require fixes to fully support persistence via ORM to read data, and it may expose unnecessary behavior to the presentation layer.
+- using Anemic Model / Database-Centric Approach is greate for queries that simple needs to read data from the system. However, the danger of such interface with no business rules means that the system may potentially end up in an incongruent state.
+
+(*Command alters state but doesn't return data. Query returns data but doesn't alter state.*)
+
+Since it is difficult to have one single implementation, CQRS emerged as an alternative to make the responsibilities distinct and each have its own implementation.
+
+The benefits of CQRS are the possibility of distinct optimization and higher scalability potential, simplified design and hassle-free stacks enhancement.
+
+Here is a comparison between the layered architecture and CQRS:
+
+{% include figure image_path="/assets/images/screenshots/cqrs-vs-layered-architecture.png" alt="" caption="CQRS and Traditional Architecture" %}
+
+### CQRS Basic / Advanced
+
+## Supporting Architecture: Event Sourcing
+
+## Designing Software, Driven by Domain
