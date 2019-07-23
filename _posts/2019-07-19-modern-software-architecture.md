@@ -13,7 +13,7 @@ tags:
 **Modern Software Architecture** *Domain Models, CQRS, and Event Sourcing* - Dino Esposito, accessed on PluralSight 2019
 {: .notice--primary}
 
-This course is a great introduction to domain driven design. The course seems to suggests that our usual practice of writing database-centric software is the root cause of our applications eventually growing into unmaintainable monstrosities. I find that mind-blowing, to think that our traditional approach to building software is wrong.
+This course is a great introduction to the state of modern software design. The course seems to suggests that our usual practice of writing database-centric software is the root cause of our applications eventually growing into unmaintainable monstrosities. I find that mind-blowing, to think that our traditional approach to building software is wrong.
 
 ___
 
@@ -630,5 +630,112 @@ User actions, asynchronous streams, or receiving other events may cause the Appl
 - New features can be added to the system simply by writing a new Saga/Handler and registering it with the bus.
 
 ## Supporting Architecture: Event Sourcing
+Events are what we actually observe in the real world, but when we try to create software to solve the real world problems we rarely use events. Instead we traditionally use abstract model to map out a logical path for what we observed in the domain, which often result in so-called God objects.
+
+The advantages of using Events in the software are:
+- they are immutable
+- they ensure you never miss a thing
+- and they can be replayed
+
+*CQRS vs Event Sourcing* - transitioning from a system focused on models to persist, to a system focused on events to log.
+
+Very often, software may not start out with a need to track history, but when the need arise, the data model design implemented only keeps track of the most current state of the system, and is unable to provide information on the historical state and specific points in time.
+
+All applications, even common applications, need to use Events. The use-case just has not arise yet.
+
+### Event Sourcing Overview
+Event Sourcing is about ensuring that all changes made to the applciation state during the entire lifetime of the application are stored as a sequence of events. The serialized events are actually the data source for the application. Key facts:
+- an Event is something that has **already happened in the past** (events can be duplicated or replicated for scalability purpose).
+- any behavior associated with the physical event has already been performed (it is not necessary to repeat the behavior when replaying an Event in the system).
+- everything that happened is tracked at the time it happened as Events (regardless the effects produced, in other words the latest system state, since such information are indirectly stored in the lower abstraction level of Events).
+- an Event is an expression of the ubiquitous language
+- Events are not imperative and are named using past tense verbs (to indicate that things have occurred)
+- have a persistent store for Events
+- append-only, no deletion
+- replay related Events to get the last known state of an entity, (instead of storing only the current state. to optimize performance, snapshot of states at a point in time can also be stored, so that replay only needs to start from snapshot.)
+
+**Transitioning to Event Sourcing**
+
+Two approach to get started transitioning a traditional data system:
+1. Continue to store current system state, but also start logging corresponding events that changed the state.
+2. Start storing events, and only build the latest system states from store of events.
+
+We will also need to transition to a CQRS architecture as a Command stack is more ideal to act on Event stream and a Query stack is more optimized to display data. However, it is up to us to decide whether the Query stack data is updated first and propagated to Command stack, or vice versa.
+
+**Event-based Persistence**
+
+Event store are transparent to storage, meaning almost all storage technologies are able to serve the purpose (relational, NoSQL, Graph). Events should ideally store the following:
+- Global event ID
+- Type of operation
+- Timestamp
+- Entity identifier
+- Transaction details / Changes applied / Reasons or Purpose / 
+
+We may consider storing the most updated state of the entity alongside the Event when logging to the event store, which will optimize query performance.
+
+We may implement undo feature for events by either physical deletion or logical deletion, but take note that there should be **no deletion in the middle of a stream** as this will result in corrupted and inconsistent system state.
+
+Since events are constant data (because of immutability), event store can be easily replicated, increasing the potential to scale the application up.
+
+**Data Projections for Stored Events**
+
+Replay of events is a two step process that rebuilds the state of the system:
+1. first, grab all events in the event store for a certain aggregate using the desired entity ID.
+2. next, iterate through those selected events and apply all the information to a new instance of the aggregate.
+
+Key functions that need to be in place:
+- the event store has to allow querying of partial or full event stream (by aggregate ID and timestamp).
+- events need to capture all key identifier and data
+- code that return new instance of aggregates with updated state by parsing an event stream.
+
+Snapshots can be created from events, which record the system state at a specific point in time, so that subsequent replay of events only need to start from the snapshot, improving replay processing speed.
+
+**Important Clarifications about Event Replay**
+
+- Replay is not about repeating the commands that generated the events. It is merely looking at events to extract information.
+- Replay merely copies the effects that occurred in the system when the events were first triggered, and applying them to fresh aggregate instances.
+- Replaying of the same event stream on different applications may require different processing logic.
+- Replaying is the projection of data (events) stored in lower abstraction level. Getting the most current state of the system is merely one variant of data projection. Replay can be used for business intelligence, business analysis, simulations and etc.
+
+**Event Stores API**
+
+Event-based data store products typically provides API to interact with event streams. Streams equate to aggregates in the domain.
+
+The API exposes the ability to write events to stream, read events from stream, and subscribing to stream for updates.
+
+There are 3 types of subscriptions to stream:
+1. Volatile: call back to a function will be triggered whenever an event is written to a given stream, until the subscription is stopped.
+2. Catch-up: call back to a function from a given event in a given stream, right up to the end of the stream, and then turns to a Volatile subscription.
+3. Persistent: multiple consumers are guaranteed to receive at least one notification of events. Delivery of events may be duplicated or out of order, and it is up to the consumer implementation to be idempotent.
+
+Volatile subscriptions are good for implementing Denomalizers in CQRS (which are responsible for projecting data to the Query stack).
 
 ## Designing Software, Driven by Domain
+
+### Applying DDD to Legacy Code 
+
+1. rewrite the system from scratch with only the abstractions you need.
+2. while rewriting, consider incorporating assets in the existing legacy system as services.
+3. Put legacy assets behind a facade and connect it to the core applications.
+4. Those that cannot be reused or exposed as a service, and if cost outweighs benefit, then perhaps we need a full rewrite.
+
+### UX-Driven Design
+
+A UX-driven design generally follows these steps:
+1. Build up UI forms that users love (followed by agreement and sign off on the specifications before step 2).
+2. Define workflow from UI.
+3. COnnect workflows with existing business logic.
+
+For each screen, have a basic flowchart:
+- determine what comes in and out, and create view model classes.
+- make application layer endpoints receive/return such DTO classes.
+- make application layer orchestrate tasks on layers down the stack.
+
+The UX Architect, who work alongside the software architect, defines the information architecture and content layout, defines the ideal interaction (storyboards for each screen and each UI trigger), defines the visual design, and conducts usability reviews.
+
+### Pillars of Modern Software
+
+1. Domain Analysis to address business needs.
+2. Layered architecture provides scalability.
+3. Top-down design approach, focused on tasks and on UX.
+4. CQRS powered by Events.
