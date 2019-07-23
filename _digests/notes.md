@@ -6,3 +6,6 @@ content ideas:
 - Software laws, rules, principles
 - Quick reference for storage, memory, latency, etc
 - cloud sizing and pricing
+
+#TODO
+Give credits to image owner
