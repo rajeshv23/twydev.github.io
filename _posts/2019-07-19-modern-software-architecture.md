@@ -644,7 +644,7 @@ Very often, software may not start out with a need to track history, but when th
 All applications, even common applications, need to use Events. The use-case just has not arise yet.
 
 ### Event Sourcing Overview
-Event Sourcing is about ensuring that all changes made to the applciation state during the entire lifetime of the application are stored as a sequence of events. The serialized events are actually the data source for the application. Key facts:
+Event Sourcing is about ensuring that all changes made to the application state during the entire lifetime of the application are stored as a sequence of events. The serialized events are actually the data source for the application. Key facts:
 - an Event is something that has **already happened in the past** (events can be duplicated or replicated for scalability purpose).
 - any behavior associated with the physical event has already been performed (it is not necessary to repeat the behavior when replaying an Event in the system).
 - everything that happened is tracked at the time it happened as Events (regardless the effects produced, in other words the latest system state, since such information are indirectly stored in the lower abstraction level of Events).
