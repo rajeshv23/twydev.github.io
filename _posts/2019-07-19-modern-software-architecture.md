@@ -669,7 +669,7 @@ Event store are transparent to storage, meaning almost all storage technologies 
 - Type of operation
 - Timestamp
 - Entity identifier
-- Transaction details / Changes applied / Reasons or Purpose / 
+- Transaction details / Changes applied / Reasons or Purpose
 
 We may consider storing the most updated state of the entity alongside the Event when logging to the event store, which will optimize query performance.
 
