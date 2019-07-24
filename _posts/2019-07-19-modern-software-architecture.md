@@ -486,7 +486,7 @@ Here is a comparison between the layered architecture and CQRS:
 
 {% include figure image_path="/assets/images/screenshots/cqrs-vs-layered-architecture.png" alt="" caption="CQRS and Traditional Architecture" %}
 
-### CQRS Basic Implementation
+### CQRS Basic: Single Database
 To implement the most basic CQRS for a CRUD use case, the course suggested:
 - for Command stack use any pattern that fits better.
 - for Query stack use any code that does the job.
@@ -535,7 +535,7 @@ public class CrudService implements ServiceInterface {
 }
 ```
 
-### CQRS Intermediate Implementation
+### CQRS Intermediate: Two Databases
 Now for a more sophisticated implementation, the underlying storage technology used by Command and Query may be different, and each may be optimized independently.
 - Command stack can be optimized to be more task-oriented, focused on processing with no regards for data model, and even use ad-hoc storage technologies.
 - Query stack may use any ORM or any database query expression library, but the underlying storage should still be relational database for the best query performance in most cases.
@@ -601,7 +601,7 @@ public class EventManager {
 }
 ```
 
-### CQRS Advanced Implementation
+### CQRS Advanced: Event Source
 The more sophisticated implementations use message-based communication.
 
 **Message** can either be a Command or an Event. It typically has a base class to specify essential attributes such as:

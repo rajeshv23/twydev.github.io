@@ -8,9 +8,10 @@ tags:
   - domain driven design
 ---
 
-Domain Driven Design (DDD) is a software development approach to implement complex software by dividing the solution into domains that serves specific purposes. This way of thinking not only helps us to keep the software maintainable as it scales up in complexity, but also guides the behavior of a cross-functional development team, consisting of software developers and domain experts, towards higher efficiency.
+**Distilling Domain-Driven Design** - Vaughn Vernon, accessed on Kalele 2019
+{: .notice--primary}
 
-These are my notes from Vaughn Vernon's introductory course to DDD.
+Domain Driven Design (DDD) is a software development approach to implement complex software by dividing the solution into domains that serves specific purposes. This way of thinking not only helps us to keep the software maintainable as it scales up in complexity, but also guides the behavior of a cross-functional development team, consisting of software developers and domain experts, towards higher efficiency.
 
 ___
 

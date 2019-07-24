@@ -9,3 +9,4 @@ content ideas:
 
 #TODO
 Give credits to image owner
+find out about ORM lazy load vs eager load vs more efficient projections
