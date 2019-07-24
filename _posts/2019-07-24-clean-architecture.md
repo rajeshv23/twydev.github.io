@@ -29,7 +29,7 @@ Some examples of domain-centric architecture:
 
 {% include figure image_path="/assets/images/screenshots/layered-dependency-inversion.png" alt="" caption="Inversion of Control + Dependency Inversion in Modern Architecture" %}
 
-Abstraction should not depend on details. Details should depend on abstraction. Hence dependency of Persistence and Infrastructure layer is inverted. However, flow of control is passed through the layers, down to the Persistence and Infrastucture layer, following Inversions of Control pattern.
+Abstraction should not depend on details. Details should depend on abstraction. Hence dependency of Persistence and Infrastructure layer is inverted. However, flow of control is passed through the layers, down to the Persistence and Infrastructure layer, following Inversions of Control pattern.
 
 We can achieve this by using Interfaces to abstract away the actual implementation of each layers / services (Dependency Injection pattern).
 
@@ -78,13 +78,13 @@ If we could instead, by designing our architecture in a testable way, use servic
 
 **Last Responsible Moment**
 
-Defering implementation decisions to the last responsible moment can be advantageous as it provides decision makers more information without causing too much delay. (from Lean Software Development: An Agile Toolkit, by Mary and Tom Poppendieck). 
+Deferring implementation decisions to the last responsible moment can be advantageous as it provides decision makers more information without causing too much delay. (from Lean Software Development: An Agile Toolkit, by Mary and Tom Poppendieck). 
 
 {% include figure image_path="/assets/images/screenshots/last-responsible-moment.png" alt="" caption="Decision making time window" %}
 
 **Evolutionary Architecture**
 
-Even after implementing the software, an evolutionary design coupled with agile development approach provides the flexibility for the softare to continually improve and adopt to changing market, changing technology, and changing preferences.
+Even after implementing the software, an evolutionary design coupled with agile development approach provides the flexibility for the software to continually improve and adopt to changing market, changing technology, and changing preferences.
 
 ### Further Readings
 
