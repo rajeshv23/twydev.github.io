@@ -11,7 +11,7 @@ tags:
 **Domain-Driven Design Fundamentals** - Steve Smith and Julie Lerman, accessed on PluralSight 2019
 {: .notice--primary}
 
-Great course that steps through the DDD process with a simple appointment scheduling software. Dog pictures used in the demo is a bonus. 
+I think so far this is the only course I have given a 5-star rating on PluralSight. Extremely clear explanations with walk through of source code applying concepts of DDD. This is an introductory course that I would highly recommend. The dog pictures used in the demo is a plus! 
 
 ___
 
@@ -178,4 +178,130 @@ Even though both return objects when called, Factories generate new objects and 
 
 ## Domain Events
 
-TBC
+### Tips for using Domain Events
+
+- Each event is its own class
+- Include time when the event took place
+- Capture event-specific details
+- Event fields are initialized in constructor
+- No behavior or side effects
+
+### Example of how Events logic works
+
+I have chosen to use JavaScript. If other OO language are chosen, the Services, Entities, Events, Repositories, Handlers should be established as Interfaces first, before implementing as Classes. Also this is just an example that I quickly came up with. Tons of smell.
+
+```javascript
+function mainApp() {
+	ScheduleApptService.scheduleAppt(email, apptTime);
+}
+
+class ScheduleApptService { // Service
+	static scheduleAppt(email, apptTime) {
+		const appt = Appt.create(email);
+		ApptRepository.save(appt); 
+	}
+}
+
+class Appt { // Entity
+	constructor(id = new Guid()) {
+		this.id = id;
+		this.email = null;
+	}
+	create(email) {
+		const appt = new Appt();
+		appt.email = email;
+		DomainEvents.raise(new ApptCreated(appt));
+		return appt;
+	}
+}
+
+class ApptCreated { // Event
+	constructor(appt) {
+		this.appt = appt;
+		this.datetimeOccurred = new Date();
+		this.type = 'ApptCreated';
+	}
+}
+
+class NotifyUIApptCreated { // Handler
+	static handle(apptCreated) {
+		/* trigger UI that appt has been created */
+	}
+	static subscribes(event) {
+		return event.type === 'ApptCreated';
+	}
+}
+
+
+// Event Manager
+const handlerContainter = [ 
+	NotifyUIApptCreated,
+];
+let eventActions = [];
+class DomainEvents { 
+	static register(callback) {
+		actions.push(callback);
+	}
+	static clearCallbacks() {
+		eventActions = [];
+	}
+	static raise(event) {
+		handlerContainer.map(handler => {
+			if (handler.subscribes(event)) {
+				handler.handle(event);
+			}
+		});
+		eventActions.map(action => {
+			if (action.subscribes(event)) {
+				action.handle(event);
+			}
+		});
+	}
+}
+
+class Schedule { // Entity
+	constructor(id, dateRange, apptList) {
+		/* create list of appts and set other attributes */
+		DomainEvents.register(handleConflict); // register the handler following Hollywood Principle
+	}
+	const handleConflict = { 
+		const subscribes = event => {
+			return event.type === 'ApptUpdated';
+		}
+		const handle = event => {
+			/* deconflict the appt */
+		}
+	}
+}
+```
+
+### Event Boundaries
+
+To prevent events from becoming bloated, consider using separate events for different clients. Also, sometimes we may need to receive an event, translate and publish as a separate new event.
+- separate event objects for specific clients
+- separate events for external clients
+- specific application events for presentation layer
+
+### Anti-corruption Layer
+Additional adapters and services to interface whatever is happening inside the bounded context with external clients.
+
+**Key Terms**
+
+- **Domain Event** is a class that captures the occurrence of an event in a domain object.
+- **Hollywood Principle** says that "Don't call us, we'll call you". Domain logic should not call events, events should trigger domain logic. (essentially the callback concept).
+- **Inversion of Control** is a pattern for loosely coupling a dependent object with an object it will need at runtime.
+
+
+## Final Notes
+
+### Consider the UI
+
+Sometimes, the problems we are trying to tackle in the domain can be easily solved in the UI. With good UI design, certain validations in the backend domain layer can be eliminated as we are guaranteed consistency from the frontend.
+
+### Fallacy of Perfectionism
+
+Eric Evans advised that there is no perfect design. Many people will get stuck in DDD trying to come up with the perfect design and every iteraction it never seems good enough. Let's be realistic, imperfection is fine, don't get stuck.
+
+### Advantage of DDD
+
+In a nutshell, DDD simplified the adding of new feature to a software.
