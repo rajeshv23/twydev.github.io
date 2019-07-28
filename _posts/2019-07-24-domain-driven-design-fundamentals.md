@@ -234,7 +234,7 @@ class NotifyUIApptCreated { // Handler
 
 
 // Event Manager
-const handlerContainter = [ 
+const handlerContainer = [ 
 	NotifyUIApptCreated,
 ];
 let eventActions = [];
@@ -269,7 +269,7 @@ class Schedule { // Entity
 			return event.type === 'ApptUpdated';
 		}
 		const handle = event => {
-			/* deconflict the appt */
+			/* de-conflict the appt */
 		}
 	}
 }
@@ -300,7 +300,7 @@ Sometimes, the problems we are trying to tackle in the domain can be easily solv
 
 ### Fallacy of Perfectionism
 
-Eric Evans advised that there is no perfect design. Many people will get stuck in DDD trying to come up with the perfect design and every iteraction it never seems good enough. Let's be realistic, imperfection is fine, don't get stuck.
+Eric Evans advised that there is no perfect design. Many people will get stuck in DDD trying to come up with the perfect design and every iteration it never seems good enough. Let's be realistic, imperfection is fine, don't get stuck.
 
 ### Advantage of DDD
 
