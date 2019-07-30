@@ -16,7 +16,7 @@ I intend to read these books recommended by various online and offline sources. 
 | Code Complete 2 | Steve McConnell | |
 | Clean Code | Robert C. Martin (Uncle Bob) | |
 | The Pragmatic Programmer | Andrew Hunt, David Thomas | |
-| Head FIrst Design Patterns | Eric Freeman, Elisabeth Robson, Bert Bates, Kathy Sierra | |
+| Head First Design Patterns | Eric Freeman, Elisabeth Robson, Bert Bates, Kathy Sierra | |
 | Patterns of Enterprise Application Architecture | Martin Fowler | |
 | Design Patterns | Ralph Johnson, Erich Gamma, John Vlissides, Richard Helm | |
 

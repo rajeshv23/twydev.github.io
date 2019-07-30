@@ -8,5 +8,7 @@ content ideas:
 - cloud sizing and pricing
 
 #TODO
-Give credits to image owner
+Draw all images as OC
 find out about ORM lazy load vs eager load vs more efficient projections
+find out about tramp data code smell for data passed down many levels of nested functions
+LinuxFoundation Course
