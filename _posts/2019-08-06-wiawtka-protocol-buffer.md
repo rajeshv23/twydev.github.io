@@ -29,3 +29,6 @@ JSON messages are human readable, and can be parsed without having any knowledge
 However, ProtoBuf offers huge performance improvement. Serializing and deserializing a ProtoBuf is much faster as compared to JSON messages. Also, the ProtoBuf messages are smaller since it is in binary.
 
 Also, as mentioned earlier, the code to handle communication messages can be auto generated. This means that the ProtoBuf definition file can be the basis for maintaining cross-platform, multi-language library code.
+
+**Any good library/framework to get started with?**
+
