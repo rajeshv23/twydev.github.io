@@ -6,7 +6,7 @@ tags:
   - data
 ---
 
-**Is Protocol Bufffer a data format, like JSON?**
+**Is Protocol Buffer a data format, like JSON?**
 
 It is not a data format. It is a method of serializing and deserializing structured data. Along with this method is an *interface definition language*, which can be used to define the structure of the data. 
 
