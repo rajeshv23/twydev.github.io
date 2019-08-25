@@ -224,7 +224,7 @@ Similar to classic load balancers:
 - LB based on hostname in URL
 - port mapping feature to redirect to dynamic port
 - stickiness provided by ALB directly, and can be enabled at target group level, to ensure same requests go to same instance.
-- supports HTTP/HTTPS/Websockets protocol
+- supports HTTP/HTTPS/Web sockets protocol
 - applications don't see client IP directly. ALB terminates client connection and start a new one with downstream.
     - client true IP is in the header **X-Forwarded-For**
     - **X-Forwarded-Port** and **X-Forwarded-Proto** contains port and proto information.
@@ -300,7 +300,7 @@ EBS Volume is a network drive you can attach to your instance while they run, en
 - after resizing, need to repartition the drive
 
 ### Snapshot
-- snapshot only take the actual space of the data, not the entire EBS volue
+- snapshot only take the actual space of the data, not the entire EBS value
 - used for backups
 - used for migration (resizing down, changing volume type, encrypting, changing AZ)
 
