@@ -5,7 +5,7 @@ toc_label: "Chapters"
 categories:
   - Online Course
 tags:
-  - engineering
+  - software development
   - best practice
 ---
 
@@ -14,7 +14,7 @@ tags:
 
 The most valuable diagram in this course is:
 
-{% include figure image_path="/assets/images/screenshots/clean-code-foundation.png" alt="" caption="Clean Code Foundation Stack" %}
+{% include figure image_path="/assets/images/screenshots/clean-code-foundation-stack.png" alt="" caption="Clean Code Foundation Stack" %}
 
 This pyramid provides a path for everyone to establish a strong foundation in software development.
 
