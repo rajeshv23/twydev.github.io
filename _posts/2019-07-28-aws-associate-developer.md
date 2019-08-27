@@ -1,5 +1,5 @@
 ---
-title: "Ultimate AWS Certified Developer Associate 2019"
+title: "Ultimate AWS Certified Developer Associate 2019 - Part 1"
 toc: true
 toc_label: "Chapters"
 categories:
@@ -48,6 +48,8 @@ tags:
 - Use groups to assign permissions
 - Apply an IAM password policy
 - Delegate administrative permissions to an "admin" user group, and use those IAM account to manage AWS from now.
+
+# Fundamentals - EC2
 
 ## EC2 - Elastic Cloud Compute
 
@@ -326,4 +328,231 @@ Creating an encrypted EBS volume lets you benefit from the following:
 - EBS backup uses IO so should be run during your application off-peak window
 - by default Root EBS Volumes on EC2 instances will be deleted on termination, which you can disable this option.
 
-# ToBeContinued
+## Route 53 - Managed Domain Name System
+
+Route 53 is a global service not bounded by AWS regions.
+
+### Types of DNS records
+
+- A record: maps URL to IPv4
+- AAAA record: maps URL to IPv6
+- CNAME record: maps URL to URL
+- Alias record: maps URL to AWS resource
+
+### Route 53 usage
+
+- public DNS and private DNS (within AWS VPC)
+- DNS client load balancing
+- limited health checks
+- Routing policies:
+    - simple
+    - failover
+    - geolocation
+    - geoproximity
+    - latency
+    - weighted
+- Alias record provides better performance (than CNAME) when routing AWS resources
+
+# Fundamentals - Data Storage
+
+## RDS - Relational Database Service
+
+### RDS vs Hosting DB on EC2
+
+- Managed Service with hassle-free benefits
+    - OS patching
+    - Continuous Backup with Point in Time Restore
+        - Automated daily full snapshots.
+        - capture transaction logs in real time to enable restore to any point.
+        - 7 days retention (up to 35 days).
+        - Manually triggered snapshot has no expiry in retention.
+    - Monitoring Dashboards
+    - Read replicas for improved read performance
+        - replication is Asynchronous and data in replica will be eventually consistent.
+        - replicas may be promoted to become separate DB instances.
+        - application needs to explicitly connect to the read replicas.
+    - Multi-Availability Zones for Disaster Recovery
+        - Synchronous replication to a replica in a different AZ
+        - both master and replica only expose **one single DNS name**. 
+        - This allows automatic failover for the master DB.
+    - Maintenance windows for upgrades
+    - Horizontal and Vertical Scaling
+
+But since it is a managed DB, we are not able to SSH into the instance to administrate it.
+
+### Data Encryption
+
+Encryption at rest can be enabled with AWS KMS using AES-256 encryption.
+
+Encryption in flight can be enabled using SSL.
+
+- first, DB needs to **enforce** SSL, through the RDS console (PostgreSQL) or through SQL execution (MySQL).
+- next, clients needs to **connect** to DB using SSL, by obtaining the SSL Trust certificate from AWS, and specifying the option during connection.
+
+### Security
+
+- deploy RDS in private subnet
+- control network access using Security Groups
+- control permission to manage RDS using IAM
+- control user access through traditional DB username / password login
+    - grant IAM users access to DB is only supported for MySQL and Aurora.
+
+### Aurora
+
+- Aurora is a proprietary technology from AWS, compatible with PostgreSQL and MySQL drivers.
+- Cloud optimized with better performance on AWS than other RDS DB.
+- Supports incremental storage.
+- More replicas, and faster replication than other RDS.
+- Instantaneous failover and native High Availability
+- but costs 20% more than RDS.
+
+## ElastiCache - Managed Cache
+
+Comes in **Redis** or **Memcached** variants.
+
+- in-memory, high performance, low latency
+- reduce load off database for read intensive workloads
+- makes application stateless (by storing states in cache)
+- Write Scaling using sharding
+- Read Scaling using read replicas
+- Multi AZ failover capabiity
+- Managed OS maintenance, patching, optimizations, setup, configuration, monitoring, failure recovery and backup
+
+### Use Cases
+
+1. DB Cache
+    - application first queries ElastiCache for data. 
+    - Only queries DB if data is not found. 
+    - Cache response from DB so that subsequent call is faster.
+    - Requires a cache invalidation strategy.
+
+2. User Session Store
+    - user login to any application in cluster.
+    - app stores user session in ElastiCache.
+    - subsequent user access through a separate app instance retrieves the same user session.
+    - allows app instances to remain stateless.
+
+### Redis vs Memcached
+
+Redis is more popular than Memcached due to better features.
+
+- In-memory key-value store with super low latency and persistence across reboots.
+- Multi AZ automatic failover for DR
+- Support Read Replicas
+
+### Cache Patterns
+
+ElastiCache is used for read-heavy application workload (caching) or for compute-intensive workloads (memoization), and there are generally 2 patterns for implementing such architecture, and both can be implemented together.
+
+**Lazy Loading**
+
+1. application query cache first.
+2. if cache miss, query from DB, then write DB response to cache.
+
+This ensures that only relevant data is stored in cache, and failures in the cache will not be fatal.
+
+However, every cache miss will incur 3 round trips, causing delay in the app. Data will also go stale and needs invalidation strategy.
+
+**Write Through**
+
+1. on update, app write to DB
+2. app also writes to cache
+
+This ensures that cache data is never stale. This incurs a write penalty (longer writing time for app) instead of read penalty.
+
+However, data will be missing from cache until it is written / updated to DB (can be mitigated by implementing Lazy Loading in conjunction). Cache churn (data in cache may never be requested).
+
+## VPC - Virtual Private Cloud
+
+- **VPC** - are logically isolated network on AWS within a region. (Per Account Per Region).
+- **Subnets** - VPC contains subnets. Each subnet must be mapped to an AZ in the region. Subnets in the same VPC can communicate with each other. (Per VPC Per AZ).
+- **AZ** - we can have many subnets per AZ.
+- **Public & Private Subnet** - this is a common set up to separate components in a software architecture.
+    - Public subnets usually contain load balancers, static websites, files, public authentication layer.
+    - Private subnets usually contain web app servers and DB.
+
+- All new accounts come with default VPC.
+- **VPN** - can be set up to connect to a VPC.
+- **Flow Logs** - VPC comes with Flow Logs to monitor traffic in and out of VPC.
+- Some AWS resouces cannot be deployed into a VPC.
+- **Peering VPC** - we can set up VPC peering to make separate VPC looks like part of a single network (even across AWS account).
+
+## S3 - Simple Storage Service
+
+### Buckets
+
+- Defined at **Region** level
+- has **Globally** unique name. Not per Account, but globally across entire AWS.
+- act as "directories" to store objects (files).
+- Has naming convention restrictions:
+    - no uppercase
+    - no underscore
+    - 3-63 characters long
+    - not an IP
+    - must start with lowercase letter or number
+
+### Objects
+
+- identified by their keys.
+- keys represent the full path (/folder1/folder2/my_file.txt).
+- the concept of folders is just a UI trick in the console. All folders are part of the key name.
+- Max file size 5GB
+    - more than 5GB requires "multi-part upload" to S3
+- has Metadata (list of key-value pairs in text), can be system or user metadata.
+- can be Tagged (unicode key-value pairs, up to 10 tags)
+- has Version ID (if object versioning enabled)
+
+For Objects with no public access,
+
+1. the "Open" action from S3 console allows opening of file in browser, as it evaluates currently logged in AWS user permission.
+2. however, accessing the same file using that Object's URL will result in an error since we did not allow public access.
+
+### Versioning
+
+- enabled at Bucket level
+- same key overwrite of the same Object will increment version ID
+- allows easy roll back, protecting against unintended deletes / modifications.
+    - "Delete" works as a soft delete, which merely place a new delete marker version for the key.
+    - deleting the delete marker version restores the Object.
+- files not versioned prior to versioning enabled will have version "null"
+
+### Encryption
+
+1. **SSE-S3** stands for Server-Side Encryption by S3
+    - Client sends Object to S3
+    - Client request set header `"x-amz-server-side-encryption":"AES256"`
+    - S3 receives Object and check request header
+    - S3 creates an S3-managed encryption key
+    - S3 encrypts Object using the managed key before storing it in bucket
+2. **SSE-KMS** stands for Server-Side Encryption by Key Management System
+    - works like SSE-S3.
+    - encryption is done using key from KMS instead.
+    - with more visibility of audit trail and user control over key rotations.
+    - request must set header `"x-amz-server-side-encryption":"aws:kms"`.
+3. **SSE-C** stands for Server-Side Encryption by Customer key
+    - works like SSE-KMS.
+    - encryption is done using key supplier by customer, generated from outside of AWS.
+    - HTTPS **must** be used to make the request.
+    - encryption key is provided in request header.
+    - S3 will receive the key and Object, encrypts object, throws away the key, and store Object.
+    - S3 do not store the key.
+    - only the customer will have a decryption key to decrypt object.
+4. **Client Side Encryption**
+    - client uses library such as Amazon S3 Encryption Client.
+    - client must encrypt object before sending request to S3.
+    - client must decrypt object after retrieving from S3.
+    - customer fully manage the keys and encryption cycle.
+5. **Encryption In Flight**
+    - basically uses HTTPS endpoint exposed by S3, instead of HTTP.
+    - it is mandatory when using SSE-C pattern.
+    - also called SSL / TLS.
+
+Encryption can be configured on Bucket as a default, or on each Object uploads.
+
+### Security
+
+- **User Based** - through IAM policies
+- **Resource Based**
+    - through Bucket Policies
+    - through Object ACL
+    - through Bucket ACL (less common)
