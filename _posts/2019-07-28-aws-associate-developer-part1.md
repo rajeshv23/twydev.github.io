@@ -556,3 +556,77 @@ Encryption can be configured on Bucket as a default, or on each Object uploads.
     - through Bucket Policies
     - through Object ACL
     - through Bucket ACL (less common)
+
+**Bucket Policy JSON**
+
+- Resources: buckets and objects
+- Actions: Set of API to Allow or Deny
+- Effect: Allow / Deny
+- Principal: The account or user to apply the policy to
+
+This policy can be used to grant public access to the bucket, force objects to be encrypted at upload, or grant access to another AWS account.
+
+The required JSON information can be generated in a web UI called **AWS Policy Generator**.
+
+**Other Security Features**
+
+1. Networking
+    - S3 provides VPC endpoints, to allow other resources to connect to it within the VPC (without internet).
+2. Logging and Audit
+    - S3 access logs can be stored within S3 buckets (recommended to store in separate bucket from the data)
+    - API calls can be logged in AWS CloudTrail
+3. User Security
+    - force MFA when user wants to delete Objects in versioned Buckets.
+    - generate Signed S3 URLs that are only valid for limited time period.
+
+### Website
+
+- static website can be hosted on S3, accessible on www.
+- accessed using URL: `<bucket-name>.s3-website-<AWS-region>.amazonaws.com` or `<bucket-name>.s3-website.<AWS-region>.amazonaws.com`
+- getting a 403 (Forbidden) error likely means bucket policy did not allow public read access.
+
+To give public access, in the Bucket Permission config we first needs to disable restriction for public access (set by default).
+
+Then we need to create bucket policy that allows public access.
+
+### CORS - Cross Origin Resource Sharing
+
+- For web apps using S3 to fetch resources, CORS needs to be enabled since the web app is likely from a different origin.
+- In S3 Bucket Permissions, CORS Configuration will allow a list of permitted origin to request for objects in this bucket.
+
+(Reminder, Same-Origin Policy is enforced by the browser. Client will check with S3 bucket if the requesting web app is a permitted for CORS)
+
+### Consistency Model
+
+- Read after Write is consistent for NEW object PUTs
+    - condition on no prior GET request on the same object. (the GET response before PUT request may still be cached and yet to be invalidated).
+    - if there was a prior GET request, Read after Write is eventually consistent.
+- eventual consistency for DELETES and PUT of EXISTING objects.
+    - Read after a series of Writes on the same object may fetch an older version of the object.
+
+### Performance
+
+Traditional S3 usage recommends havng **Randomized Object Key Prefix** to force S3 to distribute your objects in separate partition (to improve transaction throughputs). Using dates as prefix is discouraged as it usually leads to sequential access in the same partition.
+
+(probably not in exam) Throughput performance has significantly improved since July 2018, and randomized prefix is no longer necessary.
+
+- For faster upload (file size > 100 MB), use multi-part upload. (for file size > 5 GB, this must be used)
+    - parts will be parallelized in multiple PUTs
+    - maximize bandwidth and efficiency
+    - decrease time to retry (retry by parts).
+- For improved read performance, accessed globally, use AWS CloudFront to cache S3 objects.
+- S3 Transfer Acceleration uses edge location to upload a file destined for an S3 bucket in a separate region, for faster upload. Only endpoint needs to be changed.
+- SSE-KMS may throttle S3 throughput as KMS is unable to keep up with the necessary encryption / decryption.
+    - KMS usage limit needs to be adjusted.
+
+### S3 Glacier - Long Term Archival product tier
+
+S3 and S3 Glacier provides a SELECT feature, to retrieve data straight from objects.
+
+- up to 80% cost saving and 400% performance improvements.
+- runs SELECT SQL queries on the data in S3 / Glacier. Allows simple filtering on columns only (no sub-queries or joins).
+- only needs to return a small subset of data (less rows and less columns).
+- minimize network consumption.
+- works on CSV, JSON, Parquet files.
+- files can be compressed in GZIP or BZIP2.
+- can only be used in code (no UI in S3 console).
