@@ -321,7 +321,8 @@ module.exports = logger();
      "allfiles": false,
      "ignoreerrors": true,
      "filepattern": "\\.js$",
-     "silent": false
+     "silent": false,
+     "newmi": true
    }
    ```
 3. Create npm script and test run the library.
