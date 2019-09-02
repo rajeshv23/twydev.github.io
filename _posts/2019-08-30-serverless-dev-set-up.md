@@ -235,19 +235,107 @@ Build:
 ### Set Up Unit Test Framework (Jest)
 
 1. Install Jest
-  ```
-  yarn add --dev jest
-  ```
+   ```
+   yarn add --dev jest
+   ```
 2. Initialize Jest, which creates a config file
-  ```
-  # for Linux
-  jest --init
+   ```
+   # for Linux
+   jest --init
 
-  # for Windows
-  node node_modules\eslint\bin\jest.js --init
-  ```
+   # for Windows
+   node node_modules\eslint\bin\jest.js --init
+   ```
 3. Turn on code coverage in Jest config file.
-  ```
-  coverageDirectory: 'coverage',
-  ```
+   ```
+   coverageDirectory: 'coverage',
+   ```
 4. Create a simple test and see if the test goes well `npm run test`
+
+### Set Up Logger
+
+1. I chose to use winston.
+   ```
+   yarn add winston
+   ```
+2. Set up a logger module. I have chosen to use a factory method to create the logger.
+  - the *metaMessage* allows us to inject any additional default logging fields
+  - modules are only loaded once in the application, hence we will always be using a single logger instance.
+
+```javascript
+// logger.js
+const winston = require('winston');
+
+const logger = () => {
+  const proto = {
+    metaMessage: {},
+
+    setMeta(message) {
+      this.metaMessage = message;
+    },
+
+    info(message) {
+      this.internalLogger.info(message, this.metaMessage);
+    },
+
+    error(message) {
+      this.internalLogger.error(message, this.metaMessage);
+    },
+
+    warn(message) {
+      this.internalLogger.warn(message, this.metaMessage);
+    },
+
+    debug(message) {
+      this.internalLogger.debug(message, this.metaMessage);
+    },
+
+    internalLogger: winston.createLogger({
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json(),
+        winston.format.prettyPrint()
+      ),
+      transports: [new winston.transports.Console()],
+    }),
+  };
+
+  return Object.assign(Object.create(proto));
+};
+
+module.exports = logger();
+```
+
+### Set Up Complexity Report
+
+1. Install complexity report library. This can help us track how complex our code is.
+   ```
+   yarn add --dev complexity-report
+   ```
+2. Set up a config file for complexity-report. Please refer to the npm page for more information https://www.npmjs.com/package/complexity-report
+   ```
+   //.complexrc
+   {
+     "output": "./.complexity/report.md",
+     "format": "markdown",
+     "allfiles": false,
+     "ignoreerrors": true,
+     "filepattern": "\\.js$",
+     "silent": false
+   }
+   ```
+3. Create npm script and test run the library.
+   ```
+   "scripts": {
+     "report": "cr ./src"
+   }
+   ```
+
+Some metrics to be aware of (refer to https://radon.readthedocs.io/en/latest/intro.html for more information):
+
+- **Cyclomatic Complexity**: number of decisions a block of code contains plus 1.
+- **Cyclomatic Complexity Density**: ratio of Cyclomatic Complexity to SLOC. 
+- **Source Lines of Code (SLOC/LOC)**: number of lines of text in source code.
+- **Halstead Complexity Measure**: Uses number of distinct operators and operands, and total number of operators and operands in the code to measure complexity. 
+- **Maintainability**: calculated using a factored formula consisting of Cyclomatic Complexity, SLOC, and Halstead Volume. (Microsoft Variant of the index is between 0 to 100)
+- **Dependency Count**: number of CommonJS/AMD dependencies for the module.
