@@ -19,5 +19,6 @@ I intend to read these books recommended by various online and offline sources. 
 | Head First Design Patterns | Eric Freeman, Elisabeth Robson, Bert Bates, Kathy Sierra | |
 | Patterns of Enterprise Application Architecture | Martin Fowler | |
 | Design Patterns | Ralph Johnson, Erich Gamma, John Vlissides, Richard Helm | |
+| Pro JavaScript Design Patterns: The Essentials of Object-Oriented JavaScript Programming | Dustin Diaz, Ross Harmes | |
 
 Trying to also source for books on SOLID principles, automated testing, DDD and TDD.
