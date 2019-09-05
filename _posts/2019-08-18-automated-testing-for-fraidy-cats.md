@@ -1,5 +1,5 @@
 ---
-title: "Dipping into Automated Testing"
+title: "Automated Testing for Fraidy Cats"
 toc: true
 toc_label: "Chapters"
 categories:
