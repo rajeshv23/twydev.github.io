@@ -27,7 +27,7 @@ If you remember nothing from the talk, remember these:
     - Name of the test should give a human-readable indication of the requirements the method is trying to fulfill.
     - use assertion to indicate what the method should return.
 
-    ```Java
+    ```java
     // requirement, I want to know if my pet is a cat
     
     interface IAnimal {
@@ -58,7 +58,7 @@ If you remember nothing from the talk, remember these:
       - at this stage, tests should fail
       - now implement the interface in the most minimal way to pass the test (you would likely return some hard-coded value that the assertion is expecting just to pass the test)
       - re-run the test, and it should pass (green!)
-      ```Java
+      ```java
       class Pet implements IAnimal {
         private String animalType;
         public Pet(String animalType) {
@@ -75,7 +75,7 @@ If you remember nothing from the talk, remember these:
       - with only one test, the method implemented only covers a single use-case (with a hard-coded result!)
       - now write another test, that tests the same method, but for a negative result.
       - run the test, it should fail (red!).
-      ```Java
+      ```java
       @Test
       public void result_false_when_my_pet_is_a_dog() {
         IAnimal myPet = new Pet("husky");
@@ -86,7 +86,7 @@ If you remember nothing from the talk, remember these:
     - **Refactor** stage
       - refactor the implementation of the interface, write code that pass all the tests
       - **Tip** check out the testing framework you are using, and use test-case features to iteratively run those tests against different sets of inputs. More test inputs will reveal that the code below is not sufficient and more switch-cases will be needed to make the code more robust.
-      ```Java
+      ```java
       class Pet implements IAnimal {
         private String animalType;
         public Pet(String animalType) {
@@ -111,7 +111,7 @@ If you remember nothing from the talk, remember these:
         1. **Single Responsibility Principle** ensures that your methods are small and easy to test.
         2. **Open/Closed Principle** wants the behavior of the code to be closed from modification, but the code is open to extending more rules/conditions that leads to the same behavior.
         3. **Liskov Substitution Principle**: through proper use of subtypes, the code can be expended (helps to achieve open/closed principle).
-    ```Java
+    ```java
     // new requirement, i only want to feed the pet if it is a cat
     // new requirement, i will have more pets in future
 
