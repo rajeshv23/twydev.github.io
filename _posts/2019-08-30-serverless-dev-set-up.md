@@ -11,7 +11,7 @@ tags:
   - ci/cd
 ---
 
-### Git Repo Set Up
+# Git Repo Set Up
 
 1. create repository in GitLab
 2. ensure SSH key has been generated and in place on local machine
@@ -33,7 +33,7 @@ tags:
    git push --set-upstream origin <feature-name-of-branch>
    ```
 
-### Start the Project (Serverless + NodeJS)
+# Start the Project (Serverless + NodeJS)
 
 1. install yarn
 2. create project
@@ -45,7 +45,7 @@ tags:
    yarn add serverless
    ```
 
-**Note** *running the following serverless commands in shell only worked because I had previously installed this package globally. Please use node to run the require serverless initialization or create npm scripts to do so*
+**Note** _running the following serverless commands in shell only worked because I had previously installed this package globally. Please use node to run the require serverless initialization or create npm scripts to do so_
 
 4. create serverless project boilerplate using templates
    ```
@@ -65,16 +65,16 @@ tags:
    serverless invoke local -f <functionName>
    ```
 
-### Set Up GitLab Runner with AWS EC2 (Docker) and set up CI/CD
+# Set Up GitLab Runner with AWS EC2 (Docker) and set up CI/CD
 
 Read Hacker Noon [blog post](https://hackernoon.com/configuring-gitlab-ci-on-aws-ec2-using-docker-7c359d513a46) along side the documentations.
 
-- Runner Registration https://docs.gitlab.com/runner/register/
-- Runner Installation https://docs.gitlab.com/runner/install/
-- Runner configuration TOML file https://docs.gitlab.com/runner/configuration/advanced-configuration.html
-- Docker basic concept and usage https://docs.docker.com/get-started/
-- Find the necessary and ideally official Docker Images https://hub.docker.com
-- Another high level guide to CI/CD on GitLab https://medium.com/@tarekbecker/a-production-grade-ci-cd-pipeline-for-serverless-applications-888668bcfe04
+- [Runner Registration](https://docs.gitlab.com/runner/register/)
+- [Runner Installation](https://docs.gitlab.com/runner/install/)
+- [Runner configuration TOML file](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
+- [Docker basic concept and usage](https://docs.docker.com/get-started/)
+- [Find the necessary and ideally official Docker Images](https://hub.docker.com)
+- [Another high level guide to CI/CD on GitLab](https://medium.com/@tarekbecker/a-production-grade-ci-cd-pipeline-for-serverless-applications-888668bcfe04)
 
 1. Create EC2 instance (free tier / spot instance). Remember to get the SSH key.
 2. Maximise the free tier eligible SSD storage (30 GB currently)
@@ -177,7 +177,7 @@ Build:
     - echo ""Successfully Ran Build on GitLab Runner"
 ```
 
-### Set up Dev Dependencies (Code Style + Lint)
+# Set up Dev Dependencies (Code Style + Lint)
 
 1. Install Prettier and ESLint. I opted out of editor config since prettier + linter does the job across all editors.
    ```
@@ -189,6 +189,7 @@ Build:
    yarn add -dev eslint-config-prettier eslint-plugin-prettier
    ```
 2. Initialize ESLint.
+
    ```
    # for Linux
    eslint --init
@@ -196,6 +197,7 @@ Build:
    # for Windows
    node node_modules\eslint\bin\eslint.js --init
    ```
+
 3. Add recommended config to .eslintrc
    ```
    "plugins": [
@@ -232,13 +234,14 @@ Build:
    ```
 8. Test to see if the linting works `npm run lint`.
 
-### Set Up Unit Test Framework (Jest)
+# Set Up Unit Test Framework (Jest)
 
 1. Install Jest
    ```
    yarn add --dev jest
    ```
 2. Initialize Jest, which creates a config file
+
    ```
    # for Linux
    jest --init
@@ -246,6 +249,7 @@ Build:
    # for Windows
    node node_modules\eslint\bin\jest.js --init
    ```
+
 3. Turn on code coverage in Jest config file.
    ```
    coverageDirectory: 'coverage',
@@ -259,12 +263,13 @@ Build:
    yarn add winston
    ```
 2. Set up a logger module. I have chosen to use a factory method to create the logger.
-  - the *metaMessage* allows us to inject any additional default logging fields
-  - modules are only loaded once in the application, hence we will always be using a single logger instance.
+
+- the _metaMessage_ allows us to inject any additional default logging fields
+- modules are only loaded once in the application, hence we will always be using a single logger instance.
 
 ```javascript
 // logger.js
-const winston = require('winston');
+const winston = require("winston");
 
 const logger = () => {
   const proto = {
@@ -296,8 +301,8 @@ const logger = () => {
         winston.format.json(),
         winston.format.prettyPrint()
       ),
-      transports: [new winston.transports.Console()],
-    }),
+      transports: [new winston.transports.Console()]
+    })
   };
 
   return Object.assign(Object.create(proto));
@@ -306,7 +311,7 @@ const logger = () => {
 module.exports = logger();
 ```
 
-### Set Up Complexity Report
+# Set Up Complexity Report
 
 1. Install complexity report library. This can help us track how complex our code is.
    ```
@@ -335,8 +340,49 @@ module.exports = logger();
 Some metrics to be aware of (refer to https://radon.readthedocs.io/en/latest/intro.html for more information):
 
 - **Cyclomatic Complexity**: number of decisions a block of code contains plus 1.
-- **Cyclomatic Complexity Density**: ratio of Cyclomatic Complexity to SLOC. 
+- **Cyclomatic Complexity Density**: ratio of Cyclomatic Complexity to SLOC.
 - **Source Lines of Code (SLOC/LOC)**: number of lines of text in source code.
-- **Halstead Complexity Measure**: Uses number of distinct operators and operands, and total number of operators and operands in the code to measure complexity. 
+- **Halstead Complexity Measure**: Uses number of distinct operators and operands, and total number of operators and operands in the code to measure complexity.
 - **Maintainability**: calculated using a factored formula consisting of Cyclomatic Complexity, SLOC, and Halstead Volume. (Microsoft Variant of the index is between 0 to 100)
 - **Dependency Count**: number of CommonJS/AMD dependencies for the module.
+
+# Setting up Environment Variables
+
+Main goals of setting up environment variables:
+
+- to work across different machines, but not commit sensitive information into the repository
+- different values for different environment (dev, staging, prod)
+- able to build the code smoothly in the local machine as well as during CI/CD
+
+I chose to use dotenv and adopt a pattern of loading the environment variables through a config module. Articles for reference:
+
+- [NodeJS Environment Variables](https://medium.com/the-node-js-collection/making-your-node-js-work-everywhere-with-environment-variables-2da8cdf6e786)
+
+1. Install dotenv.
+  ```
+  yarn add dotenv --dev
+  ```
+2. Create a `.env` file with the environment variable.
+  ```
+  # .env file
+  ACCESS_KEY=12345
+  SECRET_KEY=12345
+  ```
+3. Create a config module to load the variables for your server
+  ```javascript
+  // config.js
+  module.exports ={
+    accessKey: process.env.ACCESS_KEY,
+    secretKey: process.env.SECRET_KEY
+  }
+  ```
+4. Access the variables in any modules simply by importing from config.js
+5. To start up NodeJS or run Jest using `.env` file to provide the variables, we need to launch the server using the following option:
+  ```
+  // package.json
+  scripts: {
+    "start_with_env": "node -r dotenv/config server.js",
+    "test_with_env": "jest --setupFiles dotenv/config"
+  }
+  ```
+6. With Serverless Framework, the same set of variables from `.env` needs to be mapped to `serverless.yml` as `environment` properties of the function. If we are using GitLab premium for CI/CD, we can define different values for environment variables, and GitLab will expose the correct set of values to our runners depending on the executing environment (dev, stage, prod etc.). However, without premium, we may opt to identify our variables using names with environment as prefix (e.g. DEV_SECRET_KEY, PROD_SECRET_KEY). It will be up to our `serverless.yml` configurations to detect the current executing environment, and expose the correct variables to our function.
