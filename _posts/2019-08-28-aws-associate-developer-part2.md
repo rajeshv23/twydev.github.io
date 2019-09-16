@@ -153,3 +153,197 @@ curl http://169.254.169.254/latest/meta-data/iam/security-credentials/<iam-role-
   - Environment Variables (export AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 - **NEVER STORE AWS CREDENTIALS IN SOURCE CODE**
 - Exponential Back-off retry is included in most SDK API as a retry mechanism.
+
+# Development
+
+## EB - ElasticBeanStalk 
+
+### EB Overview
+
+EB abstracts away a lot of the non-essential concerns from the developer.
+- Managing Infrastructure
+- Configuring multiple databases, load balancers on each deployment
+- Scaling concerns
+- Configuration in multiple environments and versions
+
+EB is a managed service:
+- make use of underlying AWS resources (EC2, RDS, ELB, ASG etc.)
+- instance configuration/OS is handled by EB
+- deployment strategy configurable but performed by EB
+- developers only need to focus on the application code
+- comes in 3 architecture model:
+  1. Single instance deployment (good for dev)
+  2. LB + ASG (good for web app)
+  3. ASG only (good for workers)
+
+### EB Deployment Lifecycle
+
+EB has 3 components:
+- Application
+- Application version
+- Environment name
+
+General Deployment process:
+- We can deploy applications to environment
+- Each deployment will be assigned a version
+- We can promote a deployed app to the next environment
+- We can rollback to previous app version
+- We have full control over life cycle of our environments
+
+### EB Environment
+
+When creating an environment, we have the freedom to set the configuration for each of the following areas:
+- Software (platform version, AWS X-Ray, server)
+- Instances (EC2 config)
+- Capacity (toggle ASG)
+- Load Balancer
+- Rolling Updates and Deployment
+- Security (IAM roles, VM key pair)
+- Monitoring
+- Managed Updates
+- Notifications
+- Network (for VPC)
+- Database (RDS created here is tied to this env, and will be lost if env gets deleted)
+- Tags
+
+### EB - Single Instance Deployment Mode
+
+- Great for development
+- one EC2 instance
+- one Auto-Scaling Group
+- one DNS name mapped to one Elastic IP
+- one database if provisions
+- one Security Group for EC2 (and one for DB)
+- all the above within one Availability Zone
+
+### EB - High Availability with Load Balance Deployment Mode
+
+- Great for Production
+- one Auto-Scaling Group
+- spans multiple Availability Zones
+- one EC2 instance(s) per AZ
+- each EC2 instance has one Security Group
+- database also spans multiple AZ (Master-Read Replica set up)
+- one Load Balancer communicates with ASG
+- Load Balancer exposes one DNS name, which will be the DNS name for the EB app.
+
+## EB - Deployment Update Options
+
+### All At Once
+
+EB will stop all of the old versions of the application at once, and deploy the newer version.
+
+**Pros and Cons:**
+
+- Fastest deployment
+- App has downtime
+- Great for quick iterations in dev env
+- No additional cost
+
+### Rolling
+
+EB will stop a part of the application (depending on configured bucket size) and upgrade those instances into the newer version, before moving to the next bucket to update.
+
+**Pros and Cons:**
+
+- Long deployment (especially for large EB with many instances)
+- No downtime
+- App running at lower capacity during deployment
+- App will be running both versions simultaneously
+- No additional cost
+
+### Rolling with additional batches
+
+Same as Rolling option, but EB will first create one bucket size (depends of configuration) of additional new app version instances, before starting the Rolling update. After the update is complete, the additional bucket of instances will be terminated.
+
+**Pros and Cons:**
+
+- Longer deployment
+- App is always running at capacity
+- App is running both versions simultaneously
+- Small additional cost (due to the extra bucket)
+- Good for prod env
+
+### Immutable
+
+EB will deployment an entire set of new version instances on a temporary ASG (EB will make sure health check on the first instance passes before proceeding), then migrate all the newer version instances into the current ASG, then terminate the older instances and delete the temporary ASG.
+
+**Pros and Cons:**
+
+- Longest deployment
+- Zero downtime
+- High cost due to double capacity running
+- Quick rollback in case of failures (just terminate new ASG)
+- Great for prod
+
+### Blue / Green deployment
+
+This is not a feature of EB, but an approach which is possible to implement on EB.
+
+**Steps to Blue / Green deployment (often manual)**
+
+1. Have an existing prod environment (Blue)
+2. Create a new environment (Green)
+3. Deploy newer version of app in Green env
+4. Validate and test the app, rollback by simply terminating the Green env without affecting the Blue env
+5. Use Route 53 to set up weighted traffic redirect policies, to push a little bit of traffic to Green env, and test it to ensure it is working.
+6. Gradually transition traffic from Blue to Green env. Or use EB to swap the URLs to instantly cut over.
+7. Finally, all traffic is on Green env, and terminate the Blue env.
+
+## EB - Advanced Concepts
+
+- Code uploaded to EB must be zipped.
+- All params set in the UI of EB console can also be configured in code.
+- Config files must be located in **.ebextensions/** folder, in the root directory of the source code.
+- files must have **filename.config** extensions
+- files must be in YAML / JSON format
+- modify default settings using option_settings
+- able to add resources to EB (e.g. RDS, ElastiCache, DynamoDB)(these added resources will get deleted if env gets deleted)
+
+To simplify the management of EB, we can use CLI tool called EB CLI. Available commands are 
+`eb create, status, health, events, logs, open, deploy, config, terminate`
+
+EB CLI is useful for automated deployment pipeline
+
+Under the hood, ElasticBeanstalk uses CloudFormation. Creation of an EB env creates a CloudFormation stack. CloudFormation will perform all the heavy lifting of deploying resources.
+
+When an app is uploaded as zip file, it is uploaded to each EC2 machine in the EB app. Each EC2 machine will resolve dependencies for the source code. 
+
+Packaging the dependencies together with source code in the zip file will help optimize long deployments.
+
+## EB - Exam Tips
+
+1. Configure BeanStalk with HTTPS
+  - load SSL cert on to the Load Balancer
+  - can be done from EB console > Load Balancer config
+  - can be done from source code > .ebextensions/securelistener-alb.config
+  - SSL cert can be provisioned using AWS Certificate Manager or CLI
+  - Must configure Security Group to allow incoming port 443
+
+2. BeanStalk redirect HTTP to HTTPS
+  - can configure instance in the code
+  - can configure App Load Balancer with a rule (but make sure health checks are not redirected)
+
+3. BeanStalk Lifecycle Policy
+  - EB can store at most 1000 versions of an app
+  - Lifecycle Policy can be configured to purge older versions
+    - can based on time (oldest versions are removed)
+    - can based on space (when you have too many versions)
+  - Versions in use will not be deleted
+  - Ability to retain source bundle in S3 even if version gets deleted.
+
+4. Web Server vs Worker Environment
+  - worker env is for more intensive workload that takes longer time to complete
+  - offload tasks from web server to worker env is a common two tier architecture
+  - periodic tasks for workers can be defined in cron.yaml
+
+5. RDW with BeanStalk
+  - Provisioning RDS with EB ties the RDS instance to the env (convenient for dev)
+  - But for production, ideal way is to separately provision RDS, then provide DB connection string to the EB app
+  - Steps to migrate from RDS coupled in EB to standalone RDS:
+    1. take RDS DB snapshot (just in case)
+    2. enable deletion protection in RDS
+    3. create new EB env without RDS, point to existing old RDS
+    4. perform blue/green deployment to migrate to new EB env
+    5. terminate old env (old RDS will remain thanks to protection)
+    6. delete CloudFormation stack manually (stuck in DELETE_FAILED state due to protected RDS)
