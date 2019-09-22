@@ -8,7 +8,9 @@ tags:
   - aws
 ---
 
-# Programmatic
+# Development
+
+Part 2 of this course covers the key knowledge that developers should have when working with AWS. The knowledge will be sufficient for developers to develop software using AWS SDK and use services that allows them to focus on the software code without worrying about infrastructure.
 
 ## AWS CLI - Command Line Interface
 
@@ -154,8 +156,6 @@ curl http://169.254.169.254/latest/meta-data/iam/security-credentials/<iam-role-
 - **NEVER STORE AWS CREDENTIALS IN SOURCE CODE**
 - Exponential Back-off retry is included in most SDK API as a retry mechanism.
 
-# Development
-
 ## EB - ElasticBeanStalk 
 
 ### EB Overview
@@ -171,7 +171,7 @@ EB is a managed service:
 - instance configuration/OS is handled by EB
 - deployment strategy configurable but performed by EB
 - developers only need to focus on the application code
-- comes in 3 architecture model:
+- comes in 3 architecture model: 
   1. Single instance deployment (good for dev)
   2. LB + ASG (good for web app)
   3. ASG only (good for workers)

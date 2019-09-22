@@ -23,6 +23,8 @@ tags:
 
 # Fundamentals
 
+Part 1 of this course covers the fundamental services provided by AWS. The knowledge is sufficient for us to deploy a multi-tier architecture software using the AWS console.
+
 ## IAM - Identity & Access Management
 
 ### IAM Key Concepts
@@ -48,8 +50,6 @@ tags:
 - Use groups to assign permissions
 - Apply an IAM password policy
 - Delegate administrative permissions to an "admin" user group, and use those IAM account to manage AWS from now.
-
-# Fundamentals - EC2
 
 ## EC2 - Elastic Cloud Compute
 
