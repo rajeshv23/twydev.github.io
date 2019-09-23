@@ -337,7 +337,7 @@ Packaging the dependencies together with source code in the zip file will help o
   - offload tasks from web server to worker env is a common two tier architecture
   - periodic tasks for workers can be defined in cron.yaml
 
-5. RDW with BeanStalk
+5. RDS with BeanStalk
   - Provisioning RDS with EB ties the RDS instance to the env (convenient for dev)
   - But for production, ideal way is to separately provision RDS, then provide DB connection string to the EB app
   - Steps to migrate from RDS coupled in EB to standalone RDS:
@@ -347,3 +347,59 @@ Packaging the dependencies together with source code in the zip file will help o
     4. perform blue/green deployment to migrate to new EB env
     5. terminate old env (old RDS will remain thanks to protection)
     6. delete CloudFormation stack manually (stuck in DELETE_FAILED state due to protected RDS)
+
+## CICD 
+
+### CICD on AWS Overview
+
+Components provided by AWS:
+
+- CodeCommit = storing of code
+- CodePipeline = automating pipeline from code to EB
+- CodeBuild = building and testing code
+- CodeDeploy = deploying code to EC2 fleet
+
+5 steps of CICD:
+
+1. Code - AWS CodeCommit
+2. Build - AWS CodeBuild
+3. Test - AWS CodeBuild
+4. Deploy - AWS EB or AWS CodeDeploy
+5. Provision - AWS EB or EC2 Fleet / CloudFormation
+
+Every steps can be orchestrated with AWS CodePipeline
+
+### AWS CodeCommit
+
+- private Git repository
+- no size limit (scales seamlessly)
+- fully managed, highly available
+- code stored in AWS cloud account = increased security and compliance
+- security features (encrypted, access control)
+- integrated with Jenkins, CodeBuild, other CI tools
+
+**Security**
+
+- Authentication
+  - SSH keys from IAM user console
+  - HTTPS through CLI Authentication / generated HTTPS credentials
+  - MFA
+- Authorization
+  - IAM policies
+- Encryption
+  - at rest = repositories encrypted using KMS
+  - in transit = SSH / HTTPS
+- Cross AWS account access
+  - IAM role and AWS STS (with AssumeRole API)
+
+**Notifications**
+
+- Triggers notifications on SNS / Lambda:
+  - deletion of branches
+  - push to master branch
+  - notify external build system
+  - trigger lambda to perform codebase analysis
+- Triggers CloudWatch Event Rules:
+  - pull request updates (create / update / delete / comment)
+  - commit comment events
+  - CloudWatch Event Rules subsequently trigger SNS topic
