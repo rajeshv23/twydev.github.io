@@ -403,3 +403,152 @@ Every steps can be orchestrated with AWS CodePipeline
   - pull request updates (create / update / delete / comment)
   - commit comment events
   - CloudWatch Event Rules subsequently trigger SNS topic
+
+### AWS CodePipeline
+
+- Continuous Delivery Visual Workflow
+- Sources can be from GitHub, CodeCommit, S3 etc.
+- Build can be run by CodeBuild, Jenkins etc.
+- Load Testing can be run by 3rd party tools
+- Deploy can be through CodeDeploy, Beanstalk, CloudFormation, ECS etc.
+- It is recommended to trigger CodePipeline through CloudWatch event instead (if using CodeCommit) for efficient performance
+
+**Stages in Pipeline**
+
+- Each stage can have sequential / parallel actions
+- Each stage can have multiple action groups within
+- Configure manual approval (one of the action option) at any stage
+
+**Artifacts passing**
+
+- Each stage can pass artifacts as output to be processed by the next stage
+- Artifacts are passed through S3
+
+**Troubleshooting**
+
+- State changes in the pipeline generate AWS CloudWatch Event
+- Event can trigger SNS notification
+- Detailed information on pipeline failure can be obtained from Console
+- AWS CloudTrail can be used to audit AWS API calls made by pipeline
+
+Tips: If pipeline cannot perform certain actions, it is usually a problem with insufficient permission of IAM Service Role attached to pipeline
+
+### AWS CodeBuild
+
+- Fully managed build service (continuous scaling, no build queue!)
+- Alternative to other build tools like Jenkins
+- Pay for usage (build time)
+- Uses Docker under the hood (AWS managed imsages available), so we are able to build with our own custom base Docker images
+- fully integrated with AWS security
+  - KMS to encrypt build artifacts
+  - IAM to manage build permissions
+  - VPC to secure the network
+  - CloudTrail to audit API call logs
+
+**Usage**
+
+- build instructions can be provided in source code (*buildspec.yml* at root of code)
+- build output logs to S3 and CloudWatch Logs
+- able to use S3 to cache files to be shared by muliple builds (e.g. dependencies)
+- metrics available to monitor CloudBuild statistics
+- CloudWatch Alarms can be used to detect build failure and trigger notifications
+- CloudWatch Events / AWS Lambda as a Glue
+- trigger SNS notifications
+- able to reproduce CodeBuild locally to troubleshoot in case of errors
+- able to define CodeBuild in either CodePipeline or CodeBuild (which may cause conflict)
+
+**Supported Environments**
+
+- Java, Ruby, Python, Go, NodeJS, Android, .NET Core, PHP
+- or use Docker to extend for any environment
+
+**BuildSpec**
+
+- must be at the root of project source code
+- Define environment variables
+  - plain text
+  - secured secrets using SSM parameter store
+- Phases of build (to execute commands)
+  - install: install dependencies
+  - pre build: execute final commands before build
+  - build: actual build commands
+  - post build: finishing touches (e.g. zipping of files)
+- Define Artifacts, what to upload to S3 as output (encrypted using KMS)
+- Define Cache, for files to store in S3 to speed up future builds
+
+**Local Troubleshooting**
+
+- Requires Docker to run CodeBuild locally using CodeBuild Agent
+
+### AWS CodeDeploy
+
+- We want to deploy application to many EC2 instances
+- but not using Elastic Beanstalk
+- CodeDeploy is an alternative to Ansible, Terraform, Chef, Puppet etc.
+- It is a managed service
+
+**Usage**
+
+- Each EC2 machine must be running CodeDeploy Agent
+- Agent continuously poll for work from CodeDeploy
+- Developer commit new source code to repo, with *appspec.yml* file at the root of project
+- Developer trigger CodeDeploy
+- Agent polls and receive repo address, and pulls code
+- EC2 will run deployment instructions based on spec
+- Agent will report success / failure of deployment
+
+**Features**
+
+- EC2 instances can be grouped by deployment groups (dev / test / prod)
+- Can be chained into CodePipeline and use artifact from previous stage
+- Can work with any application and auto scaling integration (more flexible than Elastic Beanstalk, but therefore more complex)
+- Able to have Blue / Green deployment (only for EC2 instances, not on-premise)
+- Supports Lambda deployment
+
+Note: CodeDeploy does not provision resources
+
+**AppSpec**
+
+- File Section: how to source and copy files from repo
+- Hooks: sets of instructions to perform (in sequence)
+  1. ApplicationStop
+  2. DownloadBundle
+  3. BeforeInstall
+  4. AfterInstall
+  5. ApplicationStart
+  6. ValidateService (crucial)
+
+**Configs**
+
+- deploy one instance at a time. stops on failure
+- deploy half of all instances at a time
+- deploy all. quick but will require application downtime
+- deploy custom. e.g. number of healthy host > 75%
+- Failures:
+  - instances stays in *failed state*
+  - subsequent new deployment will deploy to failed state intances first
+  - rollback by deploying an older deployment
+  - or rollback by enabling automated rollbacks
+- Deployment Targets
+  - can be EC2 instances with Tags
+  - can be an ASG
+  - can be a mixed of ASG and Tagged instances
+  - can have customization in scripts
+- Deployment strategy is the same as Elastic Beanstalk (EB probably used CodeDeploy under the hood)
+  - In Place Deployment
+  - Blue Green Deployment
+
+### AWS CodeStar
+
+- integrated solution that provides a wrapper around:
+  - GitHub, CodeCommit, 
+  - CodeBuild, CodeDeploy
+  - CloudFormation, CodePipeline
+  - CloudWatch
+- quickly creates CI/CD-ready projects
+- issue tracking integrations e.g. GitHub issues / JIRA
+- integrate with Cloud9 to obtain a web IDE (not all regions)
+- single dashboard to view all components
+- only pay for underlying resources
+- limited customization of underlying components
+
