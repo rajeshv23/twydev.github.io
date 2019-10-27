@@ -369,6 +369,8 @@ Components provided by AWS:
 
 Every steps can be orchestrated with AWS CodePipeline
 
+{% include figure image_path="/assets/images/screenshots/aws-cicd-overview.jpg" alt="" caption="AWS CICD Overview" %}
+
 ### AWS CodeCommit
 
 - private Git repository
