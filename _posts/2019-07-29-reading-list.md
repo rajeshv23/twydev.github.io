@@ -24,6 +24,6 @@ I intend to read these books recommended by various online and offline sources. 
 | JavaScript | Pro JavaScript Design Patterns: The Essentials of Object-Oriented JavaScript Programming | Dustin Diaz, Ross Harmes | |
 | Programming | Essentials of Programming Languages | Daniel P. Friedman, Mitchell Wand | |
 | Programming | The Little Schemer | Daniel P. Friedman, Matthias Felleisen | |
-| Programming | Structure and Interpretation of Computer Science | Harold Abelson, Gerald Jay Sussman, Julie Sussman | |
+| Programming | Structure and Interpretation of Computer Program | Harold Abelson, Gerald Jay Sussman, Julie Sussman | |
 
 Trying to also source for books on SOLID principles, automated testing, DDD and TDD.
