@@ -42,11 +42,13 @@ The number one lesson is to not overwork. I pushed pretty hard, sleeping 4 hours
 
 > With every overtime comes an undertime to restore the balance.
 
-2. **End-to-end Tests.** Due to the drift in configurations between environments, we could not carry out proper end-to-end tests across 3 systems, which includes the entire customer journey in the frontend. What happened was a critical bug occured in production post launch but this bug somehow eluded all tests, and could only be detected by a downstream system. This can be avoided with sufficient end-to-end testing.
+2. **Data Migration Efficiency.** As pointed out by my senior colleague, it would have been much more efficient to copy out the entire database of the old system as temporary tables in the database of the new system, and use SQL scripts or functions to perform the data migration, instead of using scripts of various programing languages. This ensures no data loss, and we can re-run the migration any time with no latency.
 
-3. **Rundown Checklist.** What I found useful was to have a rundown checklist, detailing what exactly needs to be done at what time, with key information (IP addresses, UUIDs, commands etc.). So that we can all be kept on track during the actual launch and also see the progress.
+3. **End-to-end Tests.** Due to the drift in configurations between environments, we could not carry out proper end-to-end tests across 3 systems, which includes the entire customer journey in the frontend. What happened was a critical bug occured in production post launch but this bug somehow eluded all tests, and could only be detected by a downstream system. This can be avoided with sufficient end-to-end testing.
 
-4. **Monitoring Dashboard, not just for system health.** We had dashboards set up, but it was only to monitor usage and detect errors. They did not turn out to be as helpful when critical bugs occured that denied our customer's orders from flowing to a downstream system, with absolutely no errors thrown.
+4. **Rundown Checklist.** What I found useful was to have a rundown checklist, detailing what exactly needs to be done at what time, with key information (IP addresses, UUIDs, commands etc.). So that we can all be kept on track during the actual launch and also see the progress.
+
+5. **Monitoring Dashboard, not just for system health.** We had dashboards set up, but it was only to monitor usage and detect errors. They did not turn out to be as helpful when critical bugs occured that denied our customer's orders from flowing to a downstream system, with absolutely no errors thrown.
    - What we needed was key business metrics (such as number of orders, summary table of order IDs etc.) at each checkpoints of our software platform, so that we can monitor whether an order has flown through from end-to-end.
    - Also, we could have designed some quick sanity checks on all the important data to ensure our software is working well. These checks can be scheduled to run periodically.
    - We can have automated checks on frontend experience at regular schedule, and after every software updates, to ensure that our user experience have not degraded.

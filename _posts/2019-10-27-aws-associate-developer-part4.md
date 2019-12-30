@@ -46,11 +46,13 @@ Part 4 of this course covers Serverless components offered by AWS (Lambda and St
 ### Logging, Monitoring, Tracing
 
 CloudWatch
+
 - Lambda execution logs are stored in CloudWatch
 - Lambda metrics are displayed in CloudWatch
 - ensure Lambda execution role has sufficient permission to write to CloudWatch
 
 X-Ray
+
 - enable in Lambda configuration (Lambda automatically runs X-Ray daemon)
 - use AWS SDK in function code
 - similarly ensure IAM role has appropriate permissions
@@ -58,23 +60,34 @@ X-Ray
 ### Lambda Limits
 
 1. Memory Allocation
-  - between 128 MB to 3008 MB (64 MB increments)
+
+- between 128 MB to 3008 MB (64 MB increments)
+
 2. Maximum Execution Time
-  - previously 5 mins, now 15 mins
+
+- previously 5 mins, now 15 mins
+
 3. Disk Capacity in Function Container
-  - 512 MB
+
+- 512 MB
+
 4. Concurrency Limit
-  - 1000 executions
+
+- 1000 executions
+
 5. Function Deployment Size
-  - 50 MB (compressed .zip)
-  - 250 MB code and dependencies (uncompressed deployment)
-  - can use /tmp directory to load other files at startup
+
+- 50 MB (compressed .zip)
+- 250 MB code and dependencies (uncompressed deployment)
+- can use /tmp directory to load other files at startup
+
 6. Environment Variables Size
-  - 4 KB
+
+- 4 KB
 
 ### Versioning
 
-- **$LATEST** version is mutable
+- **\$LATEST** version is mutable
 - published versions are immutable
   - immutable for both code and configs
   - versions numbers are increasing
@@ -91,9 +104,9 @@ X-Ray
 ### External Dependencies
 
 - Dependency packages need to be installed alongside function code and zip together
-  - NodeJS, use npm and *node_modules* directory
-  - Python, use *pip --target* options
-  - Java, include relevant *.jar* files
+  - NodeJS, use npm and _node_modules_ directory
+  - Python, use _pip --target_ options
+  - Java, include relevant _.jar_ files
 - Upload zip straight to lambda if less than 50 MB, else upload to S3 first
 - Native libraries work, need to be compiled on Amazon Linux first
 
@@ -128,12 +141,14 @@ X-Ray
 ## Lambda@Edge
 
 Deploy Lambda functions alongside CloudFront CDN
+
 - more responsive
 - deployed globally
 - can be used to customize CDN content
 - pay for only what you use
 
 Can be used to change CloudFront requests / responses
+
 - after requests received from viewer
 - before requests forwarded to origin
 - after responses received from origin
@@ -141,12 +156,13 @@ Can be used to change CloudFront requests / responses
 - can even generate responses for viewer without ever forwarding to origin
 
 Use cases
+
 - website security and privacy
 - dynamic web app on the edge
 - search engine optimization
 - intelligently route across origins and data centers
 - bot mitigation on the edge
-- real-time image transformation 
+- real-time image transformation
 - A/B testing
 - user authentication / authorization
 - user prioritization
@@ -161,6 +177,7 @@ Traditional RDB have strong requirements on how data should be modelled. Support
 In comparison, NoSQL databases (not-only-SQL) are non-relational, do not support joins, and are distributed (scale horizontally). In essence, all the data needed for a query is present within the row.
 
 DynamoDB is
+
 - fully managed, highly available (replication across 3 AZs)
 - millions of requests per seconds, hundreds of TB of storage.
 - Fast and consistent (low retrieval latency)
@@ -183,10 +200,12 @@ DynamoDB is
 ## Throughputs
 
 Read Capacity Units (RCU) and Write Capacity Units (WCU):
+
 - if throughput exceeds limit, will use burst credit for auto-scaling if configured.
 - else, will encounter "ProvisionedThroughputException" which requires client to exponential back-off retry
 
 Key throughput rates (needed for calculations)
+
 - **1 WCU = 1 write per second for an item up to 1 KB**
 - Eventually Consistent Read **1 RCU = 2 read per second for items up to 4 KB**
 - Strong Consistent Read **1 RCU = 1 read per second for items up to 4 KB**
@@ -194,6 +213,7 @@ Key throughput rates (needed for calculations)
 - **RCU and WCU are evenly distributed across all partitions of the dynamoDB table** therefore hot partitions will suffer amplified performance penalty
 
 Solutions to throttling:
+
 - exponential back-off retry
 - distribute partition keys better to avoid hot partitions
 - for higher Read performance, use DynamoDB Accelerator (DAX)
@@ -205,7 +225,7 @@ Solutions to throttling:
 - ConditionalWrites - accept write only if conditions are met (checks in a single transaction)
 - DeleteItem - on a row, can be conditional
 - DeleteTable - faster than DeleteItem
-- BatchWriteItem - up to 25 PutItem / DeleteItem in one call (up to 16MB data). 
+- BatchWriteItem - up to 25 PutItem / DeleteItem in one call (up to 16MB data).
   - Improves latency by reducing API calls round trip
   - Server performs writes in parallel
   - partial failure is possible. Need to retry failed items
@@ -273,6 +293,7 @@ DynamoDB provides conditional updates / deletes to achieve **optimistic locking*
 ## DynamoDB TTL
 
 Automatically delete an item after expiry time (TTL, in epoch time)
+
 - background delete task with no RCU / WCU costs
 - may take 48 hours to fully delete items
 - items that expire are also deleted from GSI and LSI
@@ -281,6 +302,7 @@ Automatically delete an item after expiry time (TTL, in epoch time)
 ## Transactions
 
 New feature to perform have a single transaction for multiple create / update / delete on
+
 - multiple items
 - across multiple tables
 - Consumes 2x of WCU / RCU of standard write mode / read mode
@@ -312,7 +334,7 @@ New feature to perform have a single transaction for multiple create / update / 
 ## Deployment Stages
 
 - API changes needs to be deployed, and deployed to Stages
-- Each stages have its own config params, and can be rolled back 
+- Each stages have its own config params, and can be rolled back
   - Stage variables are like environment variables
   - can be used to map to integration like Lambda function ARN, HTTP endpoints etc
   - therefore API of different stages can call different endpoints
@@ -323,6 +345,7 @@ New feature to perform have a single transaction for multiple create / update / 
 ## Mapping Templates
 
 Used to modify integration requests / responses
+
 - rename parameters
 - modify body content
 - add headers
@@ -334,7 +357,7 @@ Used to modify integration requests / responses
 
 - Import / Export to Swagger
 - Import / Export to OpenAPI spec
-- generate SDK using Swagger file 
+- generate SDK using Swagger file
 
 ## Caching
 
@@ -367,6 +390,7 @@ Used to modify integration requests / responses
 ## Usage Plans & API Keys
 
 Usage plans can be used to define:
+
 - Throttling - overall capacity and burst capacity
 - Quotas - requests per day / week / month
 - Associated to API Stages
@@ -380,6 +404,7 @@ API Keys usage can also be tracked
 ### IAM Permissions
 
 For internal applications interacting with API Gateway within AWS cloud
+
 - IAM policy attached to User / Role of client app
 - client passes credentials in requests header using "Sig v4"
 - API Gateway checks access policy with IAM
@@ -387,6 +412,7 @@ For internal applications interacting with API Gateway within AWS cloud
 ### Lambda Authorizers / Custom Authorizers
 
 For external client usage, especially with OAuth / SAML / third party authentication
+
 - API Gateway called by client with authorization token
 - Gateway passes token to Lambda Authorizer to evaluate, and Lambda returns an IAM policy (will include authorization)
 - Gateway can cache result of this authentication
@@ -426,3 +452,17 @@ For external client usage, especially with OAuth / SAML / third party authentica
   - requires Cognito Federated Identity Pool to work
   - supports offline mode and cross device sync
 - Deprecated by AppSync
+
+# Serverless Application Model (SAM)
+
+## Overview
+
+- Framework for developing and deploying serverless applications
+- Uses simple YAML template to generate complex CloudFormation
+- Only 2 commands, package (which also zips and uploads to S3, and generate an output template) and deploy (which creates a stack based on output template)
+- can use CodeDeploy to deploy lambda functions
+- can run Lambda, API Gateway, and DynamoDB locally
+- _Transform_ header indicates a SAM template
+- Three helpers for resources, _Function_ (lambda), _Api_ (Gateway), _SimpleTable_ (DynamoDB)
+
+{% include figure image_path="/assets/images/screenshots/aws-sam-flow.png" alt="" caption="Serverless Application Model Flow" %}
