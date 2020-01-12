@@ -110,3 +110,183 @@ For Fargate Clusters, we have to use the side car pattern to configure X-Ray Dae
 - Requires a config file at source code root, **Dockerrun.aws.json**
 - This mode helps to create ECS Cluster, EC2 fleet configured with ECS agents, Load Balancer, Task Definitions and Execution.
 - Must separately pre-build Docker images in ECR
+
+# AWS Encryption Strategies
+
+## Encryption In Flight (SSL)
+
+- SSL Certificates required (HTTPS)
+- Ensures no Man In The Middle attack
+
+## Server Side Encryption at Rest
+
+- Server encrypts data received, and decrypts data before sending out
+- Service will manage the encryption / descryption, using a data key it has access to
+
+## Client Side Encryption
+
+- Data is encrypted before sending to Server
+- Server is not able to decrypt data it is storing
+- Data retrieved from Server will be decrypted on Client-Side
+
+# AWS Key Management Service (KMS)
+
+- Control access to data by having AWS manage the keys
+- Fully integrated with IAM for Authorization
+- Integrated with many AWS services, with CLI / SDK support
+
+## Overview of KMS
+
+- Used for sharing sensitive information
+- Data is encrypted by KMS using Customer Master Key (CMK), that will never be revealed to users
+- CMK can be rotated for extra security
+- Secrets can be encrypted by KMS, and be stored in code / environment variables
+- **KMS can only encrypt up to 4KB data per call**, if larger than 4KB use envelope encryption
+- to grant access to KMS:
+  - Key Policy allows the user
+  - IAM Policy allows the API calls
+- Able to manage keys & policies to:
+  - Create Keys
+  - Rotation Policies
+  - Disable / Enable Keys
+  - see key usage (via CloudTrail)
+- CMK options:
+  - default CMK - free
+  - user created keys in KMS / externally imported keys - \$1 per month
+- every API call to KMS to encrypt / decrypt has a cost.
+
+### Envelope Encryption
+
+Encryption
+
+- Client calls GenerateDataKey API to KMS
+- KMS creates new data key, and also encrypts data key using CMK and sends over to Client
+- Client use data key to encrypt data, and destroys key
+- Encrypted data key and encrypted data are bundled as a final output
+
+Decryption
+
+- Client calls Decrypt API to KMS
+- KMS receives encrypted data key, and decrypt using CMK
+- Client receives plaintext data key to decrypt data
+
+# AWS Systems Manager (SSM) Parameter Store
+
+- secure storage of configurations and secrets
+- serverless, scalable, durable, easy SDK, free
+- version tracking of configurations / secrets
+- configuration management using path and IAM
+  - organized in a tree-like structure
+- nofications with CloudWatch Events
+- integrations with CloudFormation
+
+# IAM Best Practices
+
+- never use root credentials, enable MFA on root account
+- grant least priviledge
+  - never grant "\*" access to a service
+  - monitor API calls denied explicitly by policies on CloudTrail
+- never store IAM key credentials on other machines
+- EC2 machines, Lambda functions, ECS tasks, should have their own role
+- CodeBuild should have its own service role
+- Cross Account Access should make use of STS AssumeRole API
+  - define IAM role in target account
+  - define which source account can access this role
+  - source account user calls AWS Security Token Service (STS) to retrieve credentials
+  - source account user impersonate role and access target account resources
+
+## IAM Policies Evaluation Sequence
+
+1. Authorization starts at DENY by default
+2. Evaluate all policies related
+3. If explicit DENY exists, evaluate to DENY
+4. If explicit ALLOW exists, evaluate to ALLOW
+
+### IAM Policies with S3 Bucket Policies Evaluation
+
+AWS will evaluate the UNION of both IAM and S3 policies and provide an authorization.
+
+## IAM Dynamic Policies
+
+IAM policies allow the use of AWS variables to authorize access to resources dynamically. Example to allow respective users to only access folders in a bucket that are named after their user name, so instead of having one policy per user, having one dynamic policy will grant the same least priviledge access.
+
+## IAM Policy Variants
+
+**AWS Managed Policy**
+
+- maintained by AWS
+- updated for new services / APIs
+- good for assigning standard power users / administrators
+
+**Customer Managed Policy**
+
+- best practice, re-usable
+- version controlled with rollback, central change management
+
+**Inline Policy**
+
+- strict one-to-one relationship between IAM principal and policy
+- deletion of IAM principal will also delete the policy
+
+# AWS CloudFront
+
+It is a Content Delivery Network (CDN) with 136 Points of Presence around the global, caching contents on the edge.
+
+- Popular with S3 integration, but works with EC2 and LoadBalancer
+- Can help protect against DDOS
+- Provide SSL encryption (HTTPS) for incoming connections, and communications to applications
+- Support RTMP protocol for videos and media
+
+# AWS Step Functions
+
+- JSON state machine to orchestrate serverless visual workflow
+- for lambda functions but also works with EC2, ECS, on-premise servers, API gateway
+- features sequential, parallel, conditions, timeout, error handling and etc.
+- maximum execution time of 1 year
+- can implement human approval workflows.
+- Use cases: order fulfillment, data processing, web applications, any workflows
+
+# AWS Simple Workflow Service (SWF)
+
+- similar to Step Functions, but AWS seems to be stopping support for this service
+- code runs on EC2, with 1 year max runtime
+- concept of "activity step" and "decision step" and built-in "human intervention" step
+- only use SWF when
+  - we have external signals to intervene in the processes
+  - we require child processes that return values to parent processes
+
+# AWS Simple Email Service (SES)
+
+Service allows you to send email using SMTP interface or AWS SDK.
+
+Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control email sending permissions.
+
+# Summary of Databases Available
+
+- Relational Databases (RDS), largely used for OLTP
+  - PostgreSQL, MySQL, Oracle ...
+  - Aurora + Aurora Serverless
+  - Provisioned database
+- DynamoDB, NoSQL DB
+  - managed, key-value and document store.
+  - serverless
+- ElastiCache, in-memory DB
+  - Redis / Memcached variants
+  - Cache Capabilities
+- Redshift, largely used for OLAP
+  - data warehouse, data lake
+  - analytics queries
+- Neptune, graph database
+- Data Migration Service, DMS
+  - to move existing DB to any of the AWS services
+
+# AWS Certificate Manager (ACM)
+
+- host public SSL certificates in AWS
+  - either upload your own certificates to ACM
+  - or let ACM provision and renew public SSL certificates (free)
+- ACM is integrated with
+  - LoadBalancers (including those provisioned by Elastic Beanstalk)
+  - CloudFront Distributions
+  - API Gateway
+- ACM makes it easy to manage and replace expiring SSL certificates without disrupting operations
