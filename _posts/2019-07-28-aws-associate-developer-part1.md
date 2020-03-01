@@ -531,7 +531,7 @@ For Objects with no public access,
     - request must set header `"x-amz-server-side-encryption":"aws:kms"`.
 3. **SSE-C** stands for Server-Side Encryption by Customer key
     - works like SSE-KMS.
-    - encryption is done using key supplier by customer, generated from outside of AWS.
+    - encryption is done using key supplied by customer, generated from outside of AWS.
     - HTTPS **must** be used to make the request.
     - encryption key is provided in request header.
     - S3 will receive the key and Object, encrypts object, throws away the key, and store Object.

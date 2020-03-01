@@ -290,3 +290,114 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
   - CloudFront Distributions
   - API Gateway
 - ACM makes it easy to manage and replace expiring SSL certificates without disrupting operations
+
+# AWS Exam CheatSheet
+
+## ECS
+
+- Task Placement Strategy
+  - Binpack = consume all CPU from an instance first
+  - Random = select random instance to run Task
+  - Spread = evenly distribute Tasks based on certain key-value criteria
+
+## CloudWatch
+
+- Metrics granularity
+  - Standard Resolution = 1 minute
+  - High Resolution = 1 second
+  - turn on **detailed monitoring** is only 1 minute
+- Custom Metrics
+  - use **PutMetricData** API
+  - **--storage-resolution** options determines resolution. Default is 1 minute (standard)
+- Alarm
+  - Period = interval of one data point
+  - Evaluation Period = number of data point to evaluate
+  - Datapoints to alarm = threshold in evaluation period
+
+## SAM
+
+- Resources
+  - AWS::Serverless::Function = lambda function
+  - AWS::Serverless::LayerVersion = lambda function layer version
+  - AWS::Serverless::Api = API Gateway
+  - AWS::Serverless::Application = nested Application
+- Transform
+  - this section is used to specify resources using SAM syntax. Will be converted to CF syntax before deployment.
+
+## CodeDeploy
+
+- Deployment Traffic Shift
+  - Canary = only two increments, specify first increment percentage and interval between second increment
+  - Linear = fixed percentage and interval between increments
+  - All-at-once
+
+## CloudFront
+
+- Viewer >requests> CloudFront >requests> Origin
+  - each way of communication maintains its own SSL encryption
+
+## DynamoDB
+
+- **projection-expression** = read returns some attributes in a record
+- **condition-expression** = write on conditions
+- **filter-expression** = filter which records to read
+- Scan
+  - to be avoided and use Query if possible
+  - if not, reduce page size to slow down the read throughput using `limit` parameter
+
+## Elastic Beanstalk
+
+- Deployment
+  - all at once
+  - rolling = hot swap existing services in batches
+  - rolling with additional batches = rolling, with one extra new batch
+  - immutable = deploy brand new services
+  - blue/green = deploy brand new environment, then redirect traffic using CNAME
+- Configs
+  - most configs are stored in `.ebextensions` directory
+
+## AWS CLI
+
+- pagination
+  - CLI still retrieves all items, but makes more API calls in background to retrieve pages
+
+## X-Ray
+
+- Segment Document
+  - config the data collected
+  - **annotations** = key-value pair. can filter traces by annotations in future. indexed for search.
+  - **metadata** = key-value pair. any type of value. not indexed for search.
+- Sampling
+  - used to select a representative subset of data
+- Environment Variables
+  - _X_AMZN_TRACE_ID = tracing header
+  - AWS_XRAY_CONTEXT_MISSING = behaviour in event of missing tracing header
+  - AWS_XRAY_DAEMON_ADDRESS = IP_ADDRESS:PORT 
+
+## Lambda
+
+- **Concurrent Execution** = (max number of invocation per second) x (duration of each execution)
+- Invocation Type
+  - RequestResponse = default. Synchronous.
+  - Event = asynchronous.
+  - DryRun = validate permissions to run.
+- Alias = pointer to a specific lambda function
+  - can use `routing-config` to route traffic between alias
+
+## ElastiCache
+
+- Memcached
+  - simplest model
+  - run one large node with multi-threading
+  - scale out and in, remove and add nodes
+  - cache objects such as a database
+- Redis
+  - richer set of features
+  - more durable across reboots
+  - single threaded. scales by having multiple instances.
+
+## API Gateway
+
+- Integration Types
+  - AWS, HTTP = custom transform types for lambda or apps
+  - AWS_PROXY, HTTP_PROXY = pass through types
