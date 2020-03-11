@@ -299,6 +299,14 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
   - Binpack = consume all CPU from an instance first
   - Random = select random instance to run Task
   - Spread = evenly distribute Tasks based on certain key-value criteria
+- Service-Linked Role: IAM role for ECS service itself to communicate with other AWS services.
+- Fargate Launch Type
+  - tasks placement default spreads across availability zones
+- EC2 Launch Type
+  - tasks placement customizable
+  - cluster query language allows grouping tasks by attributes
+- Used with Elastic Beanstalk
+  - if need to provisioning of the resources, load balancing, auto-scaling, monitoring, and placing the containers across the cluster.
 
 ## CloudWatch
 
@@ -309,10 +317,13 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 - Custom Metrics
   - use **PutMetricData** API
   - **--storage-resolution** options determines resolution. Default is 1 minute (standard)
+  - required to find out about EC2 memory and swap usage
 - Alarm
   - Period = interval of one data point
   - Evaluation Period = number of data point to evaluate
   - Datapoints to alarm = threshold in evaluation period
+- Cloudwatch Metrics for RDS = hypervisor of servers running DB sending the metrics
+- RDS Enhanced Monitoring = agent running on DB instance sends metrics (more precise)
 
 ## SAM
 
@@ -326,17 +337,35 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 
 ## CodeDeploy
 
+- Deploys to:
+  - EC2, on-premise
+  - lambda
+  - ECS
+- Deployment behavior:
+  - Blue/Green EC2: will use new instances. Therefore not available for on-premise
+  - Blue/Green Lambda: uses traffic shifting. This is the default.
+  - Blue/Green ECS: traffic shifted to new tasks set using load balancer. 
+  - uses CodeDeploy agent (HTTPS) if using compute instance
 - Deployment Traffic Shift
   - Canary = only two increments, specify first increment percentage and interval between second increment
   - Linear = fixed percentage and interval between increments
   - All-at-once
+- AppSpec hooks
+  - beforeAllowTraffic, afterAllowTraffic
 
 ## CloudFront
 
 - Viewer >requests> CloudFront >requests> Origin
   - each way of communication maintains its own SSL encryption
+- SSL Cert for CloudFront needs to first be managed by **AWS Certificate Manager (ACM)** or **IAM Certificate Store**
 
 ## DynamoDB
+
+- Throughput
+  - 1 write = 1 KBps
+  - 1 read = 2x 4 KBps (eventual consistent)
+  - 1 read = 1x 4 KBps (strong consistent)
+  - 2 read = 1x 4 KBps (transactional)
 
 - **projection-expression** = read returns some attributes in a record
 - **condition-expression** = write on conditions
@@ -344,6 +373,29 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 - Scan
   - to be avoided and use Query if possible
   - if not, reduce page size to slow down the read throughput using `limit` parameter
+- **Sparse Index**
+  - refers to index only used for a small subset of data
+  - only gets updated if incoming record contains index sort key value
+- **Local Secondary Index**
+  - uses same partition key as main table, only different sort key
+  - cannot be added after table creation
+  - good for alternative sorting use-cases on same partition key
+  - attributes fetched from base table
+  - uses provisioned throughput of base table
+- **Global Secondary Index**
+  - can be entirely different attribute as partition as sort key
+  - can be added after table creation
+  - good for entirely different use-case using the same data in table
+  - **Projected Attributes**
+    - stored on the index itself, GSI always use this
+  - uses its own throughput apart from the main table
+- **Global Table**
+  - reconciliation method is last-write-wins
+
+- **ReturnConsumedCapacity** when write request
+  - TOTAL = total consumed WCU across all indexes and tables
+  - INDEXES = with subtotal breakdowns
+  - NONE
 
 ## Elastic Beanstalk
 
@@ -351,8 +403,10 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
   - all at once
   - rolling = hot swap existing services in batches
   - rolling with additional batches = rolling, with one extra new batch
+    - only cause inconsistency, if first batch succeeds, but subsequent batches fails
   - immutable = deploy brand new services
   - blue/green = deploy brand new environment, then redirect traffic using CNAME
+    - only swap traffic when succeed
 - Configs
   - most configs are stored in `.ebextensions` directory
 
@@ -364,11 +418,24 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 ## X-Ray
 
 - Segment Document
+  - default contains host, request, response, work done and issues occurred.
+  - **subsegments** provide more details on work down by downstream services
+    - **inferred segments** are generated to fill gaps for services that don't send segments
+    - **X-Forwarded-For** header used to show source client IP
   - config the data collected
-  - **annotations** = key-value pair. can filter traces by annotations in future. indexed for search.
-  - **metadata** = key-value pair. any type of value. not indexed for search.
+    - **annotations** = key-value pair. can filter traces by annotations in future. indexed for search.
+    - **metadata** = key-value pair. any type of value. not indexed for search.
+  - errors
+    - **Error** = 400 client side
+    - **Fault** = 500 server side
+    - **Throttle** = 429 too many requests
+- Grouping
+  - traces can be grouped using filter expressions
 - Sampling
   - used to select a representative subset of data
+  - **reservoir size** = target sample per second before applying fixed rate.
+  - **fixed rate** = applied to sample outstanding requests beyond reservoir size.
+  - total sampling size per second = reservoir size + (incoming requests - reservoir size) * fixed rate
 - Environment Variables
   - _X_AMZN_TRACE_ID = tracing header
   - AWS_XRAY_CONTEXT_MISSING = behaviour in event of missing tracing header
@@ -377,6 +444,9 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 ## Lambda
 
 - **Concurrent Execution** = (max number of invocation per second) x (duration of each execution)
+- AWS default unreserved concurrency = 100 (minimum)
+- Integration with DynamoDB / Kinesis
+  - number of shards determines concurrency
 - Invocation Type
   - RequestResponse = default. Synchronous.
   - Event = asynchronous.
@@ -399,5 +469,33 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 ## API Gateway
 
 - Integration Types
-  - AWS, HTTP = custom transform types for lambda or apps
-  - AWS_PROXY, HTTP_PROXY = pass through types
+  - HTTP = calls your own HTTP endpoint. Transforms input to custom HTTP request.
+  - HTTP Proxy = pass through.
+  - AWS = for lambda integration. Transforms input to custom lambda input.
+  - AWS_PROXY = pass through.
+- **504 error Gateway Timeout**
+  - **INTEGRATION_FAILURE** server flaw in backend integrated app.
+  - **INTEGRATION_TIMEOUT** occasional occurrence.
+
+## S3
+
+- **SSE-KMS**
+  - regardless of KMS key id in request header, S3 will use KMS key id stated in policy.
+- **Cross Region Replication (CRR)**
+  - requires versioning
+
+## CloudFormation
+
+- AWS CloudFormation StackSets
+  - Cross-AWS Account CF Stacks CRUD
+- inline lambda coding
+  - can be done by adding code string to property of lambda resource > Code > ZipFile
+
+## Admin
+
+- **AWS Organizations**
+  - manage across AWS accounts
+  - **Service Control Policy**
+    - introduce cap on usage of AWS resources across accounts
+- **AWS Secrets Manager**
+  - like Systems Manager Parameter Store but with rotation feature
