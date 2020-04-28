@@ -44,7 +44,8 @@ My takeaways the article:
 
 # JavaScript - The Programming Language
 
-*Kyle Simpson, You Don't Know JS (book series)*
+_Kyle Simpson, You Don't Know JS (book series)_
+
 > It is simultaneously a simple, easy-to-use language that has broad appeal, and a complex and nuanced collection of language mechanics which without careful study will elude true understanding even for the most seasoned of JavaScript developers ... Because JavaScript can be used without understanding, the understanding of the language is often never attained.
 
 ## Built-in Types
@@ -61,7 +62,7 @@ These are just special variants of objects with certain built-in methods.
 
 ### == vs ===
 
-One allows coercion when comparing value, and the other one do not allow coercion, also know as *strict-equality*.
+One allows coercion when comparing value, and the other one do not allow coercion, also know as _strict-equality_.
 
 When compared with numbers, strings are coerced to `NaN` (which is a number that don't hold value)
 
@@ -77,23 +78,160 @@ TODO: read https://tsherif.wordpress.com/2013/08/04/constructors-are-bad-for-jav
 
 Complying to strict mode makes code more optimizable for the compiler.
 
-### TODO: why named function is preferred over anonymous function?
+### why Named Function is preferred over Anonymous Function
+
+Anonymous functions makes code more readable but has the following drawbacks:
+
+- No useful names will be displayed during stack trace or debugging
+- Cannot use recursion, or allow the function to unbind itself as an event handler
+- Cannot self document or carry intentions
+
+Since there are no drawbacks of named functions, why not just use named functions all the time.
+
+### What about Arrow functions
 
 ## Scopes
 
+### a Variable in a Function Scope
+
+_Most of the time_, there are only 2 scopes we are interested in: the Global Scope and the Function Scope.
+
+When a variable is declared and assigned `var test = 1`, the following sequence will happen when code is run:
+
+1. Compiler will parse code into tokens
+2. Compiler will check if variable was already declared in Scope. If not it will request for variable to be declared in Scope.
+3. Execution Engine runs compiled code, retrieve variable from Scope.
+4. Variable retrieved and assigned value by Engine.
+5. If variable cannot be resolved in current Scope, the Engine will query from outer Scopes, searching up all the way until Global Scope if the variable cannot be found.
+   a. by default, the variable will get created in Global Scope if deemed missing.
+   b. in strict-mode, a ReferenceError will be thrown.
+
+**Shadowing** refers to having the same variable identifier in the inner scope and outer scope. Since look up always start from the innermost scope, the shadow variable will be resolved instead of the outer scope variable. In most cases, this is our expectation from the Engine. Look up stops once a matching variable is found in the Scope.
+
+In browsers, all variables declared in Global Scope are automatically properties of the Global Object "window" and are therefore accessible from any nested scope through accessing the Global object.
+
+### How are Scopes determined
+
+_YDKJS, Scopes & Closures, Chapter 2_
+
+> No matter where a function is invoked from, or even how it is invoked, its lexical scope is **only** defined by **where** the function was declared.
+
+Lexical Scopes can be modified at runtime by `eval`, `with`, and some other built-in functions (strongly discouraged), which are restricted by strict-mode (Great!). Besides the danger of code injection through `eval`, performance of code will slow down. Scope will be dynamically generated when Engine executes the code, wasting all the optimization efforts of the Compiler from analyzing the static code before execution.
+
+### Namespace
+
+Instead of loading variables into your Global Scope, which may result in variable name collision, the classic pattern is to use an object as a "namespace", so as to limit the scope of imported variables, and to access them via object accessors. Modern approach is to use module dependency managers to achieve the same goal.
+
+### Block Scopes
+
+Consists of:
+
+- try-catch
+- for loops
+- { ... }
+
+**Most of the time we may have allowed our functions to have closure over unnecessary data that are not relevant**. Allowing those variables and data to be in block scope will limit exposure, and allow garbage collection once execution has passed that block.
+
+`let` and `const` are block scoped declarations. **Functions** are not block scoped, so declaring it in the block will be hoisted to the enclosing outer scope.
+
+### Let vs Var vs Const
+
+**let**
+
+- `let` is scoped to the immediately enclosing **block**, `var` is scoped to the immediately enclosing **function**.
+- `let` is not hoisted, and will only be defined when that line of code is evaluated.
+- When used at top-level, `let` will not create a property on Global object.
+- `let` do not allow redeclaration of the variable within the same scope.
+
+**const**
+
+- `const` is Block Scoped.
+- No hoisting.
+- Will not create Global object property.
+- No redeclaration. Must assign value on declaration.
+
 ### Hoisting
 
-Allows variable to be accessed within the scope regardless of lexical position of variable declaration.
+Allows variable (`var`, functions) declaration any where in the lexical scope. When code is parsed by Compiler, the variables will be hoisted to the top and declared before execution starts in the scope, so that all declared variables are available.
+
+Only declarations will be hoisted. Assignments will be left in place. Therefore this snippet will print undefined despite of hoisting.
+
+```javascript
+console.log(test); // undefined
+var test = 1;
+
+hello(); // TypeError
+my(); // ReferenceError
+var hello = function my() {
+  console.log("my world");
+};
+
+foo(); // prints bar
+function foo() {
+  console.log("bar");
+}
+```
+
+Functions are hoisted before variables. If there are duplicated definitions of the same function, the last declaration wins.
 
 ### IIFE - Immediately Invoked Function Expression
 
 Typically used to create a scope for variables, isolated from the outer scope.
 
-### Closure
+## Closure
 
-Functions with closure over inner variables that are injected are essentially objects with internal states that can be specified by the caller on creation.
+_YDKJS, Scopes & Closures, Chapter 5_
 
-Used to implement the module pattern.
+> Closure is when a function is able to remember and access its lexical scope even when that function is executing outside its lexical scope.
+
+We use "closure" as a verb, with meaning close to "reference". A function has "closure" over certain internal variables/scope. The internal variables are akin to internal state of an object. Start state can be injected on creation.
+
+```javascript
+function multiplyByX(x) {
+  function multiply(input) {
+    // multiply function has closure over scope of enclosing function.
+    return input * x;
+  }
+  return multiply;
+}
+
+var multiplyByFive = multplyByX(5);
+
+// function is executed outside of its declared lexical scope of multiply, but still retains access to the scope
+console.log(multiplyByFive(5)); // 25
+```
+
+Testing our understanding of how javascript works: loops + closure, example from YDKJS
+
+```javascript
+for (var i = 1; i <= 5; i++) {
+  setTimeout(function timer() {
+    console.log(i);
+  }, i * 1000);
+}
+// prints out the number "6" every second.
+```
+
+What is happening, in my own understanding:
+
+- for-loop body only has one scope, regardless of the number of iterations
+- variable i is binded to a new iteration value at every loop
+- at every loop, we will set timeout, with a function called timer, with a closure over the scope of the for-loop (therefore only one single scope, ever)
+- after the loop has ended, when each callback gets executed, the closure will reference variable i from for-loop scope, which already has value set to 6 (since the loop ended)
+- this behavior is consistent even if timeout value is set to zero.
+
+To make the loop work as intended, we need to freeze the value of the variable within our timeout function scope or timer function scope, and have a new scope instance on each iteration, instead of having a closure of the changing for-loop scope. The book YDKJS used an IIFE to keep each setTimeout within a separate scope, and pass the variable value i into the IIFE. But I think a block scope will make it easier for us to appreciate the concept.
+
+```javascript
+for (var i = 1; i <= 5; i++) {
+  {
+    const k = i; // constant k is block scoped, and assigned on declaration at each iteration.
+    setTimeout(function timer() {
+      console.log(`block scoped ${k}, for-loop scoped ${i}`);
+    }, k * 1000);
+  }
+}
+```
 
 ## Objects
 
@@ -119,10 +257,9 @@ Producing code with equivalent behavior in older JS environments, for code writt
 
 ### Inside the Engine
 
-
 ---
 
 To be continued
+
 - Tail Recursion in Javascript?
 - to read https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
-
