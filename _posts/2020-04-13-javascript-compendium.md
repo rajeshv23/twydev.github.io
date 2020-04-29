@@ -220,18 +220,30 @@ What is happening, in my own understanding:
 - after the loop has ended, when each callback gets executed, the closure will reference variable i from for-loop scope, which already has value set to 6 (since the loop ended)
 - this behavior is consistent even if timeout value is set to zero.
 
-To make the loop work as intended, we need to freeze the value of the variable within our timeout function scope or timer function scope, and have a new scope instance on each iteration, instead of having a closure of the changing for-loop scope. The book YDKJS used an IIFE to keep each setTimeout within a separate scope, and pass the variable value i into the IIFE. But I think a block scope will make it easier for us to appreciate the concept.
+To make the loop work as intended, we need to freeze the value of the variable within our timeout function scope or timer function scope, and have a new scope instance on each iteration, instead of having a closure of the changing for-loop scope. The book YDKJS used an IIFE to create a scope per iteration. But I think the subsequent examples using block scope is easier for us to appreciate the concept.
 
 ```javascript
 for (var i = 1; i <= 5; i++) {
-  {
-    const k = i; // constant k is block scoped, and assigned on declaration at each iteration.
-    setTimeout(function timer() {
-      console.log(`block scoped ${k}, for-loop scoped ${i}`);
-    }, k * 1000);
-  }
+  const k = i; // constant k is block scoped, and assigned on declaration at each iteration.
+  setTimeout(function timer() {
+    console.log(`block scoped ${k}, for-loop scoped ${i}`);
+  }, k * 1000);
+}
+
+for (let i = 1; i <= 5; i++) {
+  // or more simply using block scoped behavior of let.
+  setTimeout(function timer() {
+    console.log(i);
+  }, i * 1000);
 }
 ```
+
+### Implementing Module Pattern
+
+The module pattern can be implemented with closures to satisfy these conditions:
+
+- There must be an outer enclosing function, and it must be invoked at least once to create a new module instance.
+- Enclosing function must return an inner function with closure over private scope of enclosing function.
 
 ## Objects
 
@@ -252,6 +264,17 @@ Producing a piece of code that is able to run in older JS environments, to emula
 ### Transpile
 
 Producing code with equivalent behavior in older JS environments, for code written in newer version JS **syntax**.
+
+### ES6 Modules
+
+ES6 has syntax support for Modules.
+
+- Modules must be defined in separate files.
+- `export member` exports a member from a file
+- `import member from "file"` imports a specific member from "file.js"
+- `module myMod from "file"` imports the entire module from file
+- Modules API are static: Compiler will check that all references to modules and module members exists at compile time, if not it will throw an error.
+- Contents in module files are treated as if they are enclosed in a scoped closure.
 
 ## Execution
 
