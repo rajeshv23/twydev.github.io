@@ -44,6 +44,8 @@ My takeaways the article:
 
 # JavaScript - The Programming Language
 
+My notes are derived mostly from [YDKJS book series](https://github.com/getify/You-Dont-Know-JS/tree/1st-ed).
+
 _Kyle Simpson, You Don't Know JS (book series)_
 
 > It is simultaneously a simple, easy-to-use language that has broad appeal, and a complex and nuanced collection of language mechanics which without careful study will elude true understanding even for the most seasoned of JavaScript developers ... Because JavaScript can be used without understanding, the understanding of the language is often never attained.
@@ -56,9 +58,9 @@ string, number, boolean, null, undefined, object, symbol
 
 This is a bug that will never be fixed, since many websites around the world depends on this behavior. Fixing this will break a lot of websites.
 
-### typeof functions and arrays
+### typeof functions and arrays is object
 
-These are just special variants of objects with certain built-in methods.
+These are just special variants of objects with certain built-in properties.
 
 ### == vs ===
 
@@ -78,7 +80,7 @@ TODO: read https://tsherif.wordpress.com/2013/08/04/constructors-are-bad-for-jav
 
 Complying to strict mode makes code more optimizable for the compiler.
 
-### why Named Function is preferred over Anonymous Function
+### Why Named Function is preferred over Anonymous Function?
 
 Anonymous functions makes code more readable but has the following drawbacks:
 
@@ -88,7 +90,9 @@ Anonymous functions makes code more readable but has the following drawbacks:
 
 Since there are no drawbacks of named functions, why not just use named functions all the time.
 
-### What about Arrow functions
+### What about Arrow functions?
+
+Arrow functions are anonymous functions that introduces the lexical `this` behavior.
 
 ## Scopes
 
@@ -116,7 +120,13 @@ _YDKJS, Scopes & Closures, Chapter 2_
 
 > No matter where a function is invoked from, or even how it is invoked, its lexical scope is **only** defined by **where** the function was declared.
 
-Lexical Scopes can be modified at runtime by `eval`, `with`, and some other built-in functions (strongly discouraged), which are restricted by strict-mode (Great!). Besides the danger of code injection through `eval`, performance of code will slow down. Scope will be dynamically generated when Engine executes the code, wasting all the optimization efforts of the Compiler from analyzing the static code before execution.
+**Lexical Scopes** can be modified at runtime by `eval`, `with`, and some other built-in functions (strongly discouraged), which are restricted by strict-mode (Great!). Besides the danger of code injection through `eval`, performance of code will slow down. Scope will be dynamically generated when Engine executes the code, wasting all the optimization efforts of the Compiler from analyzing the static code before execution.
+
+In short, we can assume JavaScript do not have Dynamic Scope (scope determined by where function was called at runtime in the call stack, instead of function declaration and respecting the lexical scope chain)
+
+Another important concept:
+
+> It is true that internally, scope is kind of like an object with properties for each of the available identifiers. But the scope "object" is not accessible to JavaScript code. It's an inner part of the Engine's implementation.
 
 ### Namespace
 
@@ -149,6 +159,10 @@ Consists of:
 - No hoisting.
 - Will not create Global object property.
 - No redeclaration. Must assign value on declaration.
+
+**special note on var**
+
+Calling `var` at the top level creates a property of the Global object. It is not a copy of the variable. It is the exact same variable.
 
 ### Hoisting
 
@@ -212,7 +226,7 @@ for (var i = 1; i <= 5; i++) {
 // prints out the number "6" every second.
 ```
 
-What is happening, in my own understanding:
+What is happening? In my own understanding:
 
 - for-loop body only has one scope, regardless of the number of iterations
 - variable i is binded to a new iteration value at every loop
@@ -245,11 +259,153 @@ The module pattern can be implemented with closures to satisfy these conditions:
 - There must be an outer enclosing function, and it must be invoked at least once to create a new module instance.
 - Enclosing function must return an inner function with closure over private scope of enclosing function.
 
+## What is THIS?
+
+### THIS is a binding in the execution context, not the SELF, not the SCOPE
+
+`this` is a context object available to the function scope during execution.
+
+When a function is invoked, an execution context is created. The execution context contains various information:
+
+- where the function was called from (the call-stack) 
+- how the function was invoked
+- what parameters were passed
+- the `this` reference, which will be determined by call-site (how the function was called)
+
+(inspecting from the devTool will allow us to see the execution context, and also the scope chain)
+
+### Rules that determines THIS binding
+
+#### Default Binding
+
+With no modifiers, the default binding of `this` is to the Global object. Strict mode do not allow default binding, so it will be `undefined`.
+
+#### Implicit Binding
+
+If a context object references the function as part of the object property, e.g. `obj.func()`, then this context object `obj` will be binded to `this` and be available to the function `func`.
+
+Therefore, it is critical that a context object is used to invoke the function, if it is just a reference assignment of the function through an object, the implicit binding will be lost. This is especially common for callback functions.
+
+```javascript
+function sayHello() {
+  console.log(this.hello)
+}
+
+var obj = {
+  hello: "Ni Hao!",
+  sayHello: sayHello
+}
+
+var justAReference = obj.sayHello
+justAReference() // default binding!
+```
+
+> BEWARE! - Event handlers in popular JavaScript libraries are quite fond of forcing your callback to have a `this` which points to, for instance, the DOM element that triggered the event
+
+#### Explicit Binding
+
+Make use of JS Function Utilities, the `call` and `apply` methods of Function objects allow explicit binding by passing the desired context object as method parameter. If a primitive is passed as context object, they will be boxed to become the object from through object wrappers.
+
+These utilities allow dynamic binding of `this` through explicit reference. The `bind` method provided in ES5 and ES6 an object to a function, and returns a reference to a new function that is hard binded to the object. ES6 adds a `name` property to the resultant function, that indicate the name of the source function before binding.
+
+Many libraries provide functions with optional context parameters, giving us the convenience to explicitly bind an object to `this` as we make our function calls.
+
+#### NEW Binding
+
+In JavaScript, there is no Java equivalent of a constructor function. _All functions are just... functions_. A `new` keyword merely modify the invocation and return object of that function in the following sequence:
+
+1. a new object is created
+2. the newly created object gets prototype-linked
+3. the newly created object gets binded to `this` of that function call
+4. function gets executed
+5. unless the function returns its own alternate object, the newly created object will be returned by default
+
+I think of this sequence as a decorator around the function.
+
+_Remember, there is no constructor in JavaScript._
+
+### Binding Priority
+
+- Explicit Binding takes precedence over all other bindings (if used in conjunction).
+- However, `new` Binding is able to override hard binded `this` in a function, making the function apply on the new object and return the new object instead. This allows possibility of partial application (subset of currying).
+- Implicit Binding takes precedence over Default Binding.
+- Rules fall through to Default Binding.
+
+`new > explicit > implicit > default`
+
+Note: you cannot bind to an explicitly binded function again to override the context.
+
+### ignoring THIS
+
+Calls to explicit binding may be used for other purposes, such as spreading arguments or currying. However, the binding context is a mandatory parameter. If we pass in `null` or `undefined` for binding, we will fall back to Default Binding on Global object, which may cause unintended modifications on the Global object by other callers of the function.
+
+An empty object `Object.create(null)` can be passed instead as a safe `this` binding. This object is more efficient than an object created by `{ }` expression, since there is no delegation from `Object.prototype`.
+
+YDKJS suggested using a helper soft-bind function to emulate a desired soft binding behavior, which I find confusing to other users of the function. You either need to have implemented the helper function, or have a strong understanding of `this` binding, to use the function effectively
+
+### lexical THIS in arrow functions
+
+An arrow function do not bind to `this` according to the above binding rules, but instead inherit `this` from the lexical scope of the enclosing function. In simple terms, the lexical scope determines what `this` will be inherited by the arrow functions, instead of the call-site of the function (but of course, the binding rules still apply to the enclosing function).
+
+Simpson encourage using either a pure lexical scoping style of coding, or a pure context binding style of coding, instead of mixing both concept, which may make our code hard to maintain (I think this is especially true in a team environment).
+
 ## Objects
 
-### What is THIS?
+_Not everything in JavaScript is an Object._
 
-What is `this` in a function depends on how the function was called.
+Primitives are not objects. They will be coerced or boxed into objects when you use object operations on them.
+
+Object sub-types can be called complex primitives. These are functions and arrays.
+
+All object access are property access. The objects do not truly "own" a method in the traditional OO language sense, just because the function is referenced by one of the object property. Even if the function access other object properties through `this` reference, this is determined by context binding during invocation.
+
+### Shallow Copy
+
+Since objects can contain properties that are infinitely nested objects or contain circular references, ES6 provides `Object.assign(newObject, sourceObjects... )` that creates a shallow copy only.
+
+If an object is JSON safe, then JSON stringify followed by JSON parse on the string will create a new distinct object with no shared references.
+
+### Data Descriptors
+
+A property of an object that describes data. Such a property can be configured using `Object.defineProperty(obj, property, config)`. The configurations available:
+
+- **Value** - value/data of the property
+- **Writable** - determines if value of property can be changed.
+- **Configurable** - determines if property descriptor can be updated. (one-way action once set to false). Also determines if a property can be `delete`.
+- **Enumerable** - determines if property will show up during enumeration over all properties of object using `for..in `.
+
+_Array should be enumerated using for-loop that act on indices only, instead of using `for..in` to prevent accessing other enumerable properties of Array object. ES5 offers useful helpers to iterate over Array values instead, but with no guarantee on ordering of Array elements_
+
+### Enumerable and Iteration
+
+ES6 provides `for..of` loop, which requests for the object's iterator `Symbol.iterator` property to iterate through the property values. This iterator is built-in for Array sub-types therefore we can use `for..of` for arrays immediately, but will need to be provisioned manually for other object types.
+
+Compared to `forEach` which takes a callback to apply to each element of the array, `for..of` allows early termination but requires `Symbol.iterator` property.
+
+### Object-level configurations
+
+- `Object.preventExtensions(obj)` prevents new property from being added to the object.
+- `Object.seal(obj)` makes object non-extensible, and make all existing properties non-configurable.
+- `Object.freeze(obj)` seals the object, and make all existing properties non-writable.
+
+### Accessor Descriptors
+
+If an object property is defined with getter or setter functions, it is considered an accessor descriptor. JS will call the getter or setter to access the data, and the value and writable configuration of the property will be ignored. Getters and Setters can be defined at a per property level, overriding default function behavior.
+
+So if the property remains as a data descriptor, the default `[[Get]]` and `[[Put]]` function will be used to access the value. These are the functions that gets overridden when the property upgrades to become an accessor descriptor.
+
+### Missing Property
+
+Accessing a missing property will return `undefined` unlike referencing a missing variable which throws ReferenceError.
+
+If a property exists, but was set to value `undefined`, there is another way to test of existence of a property instead of testing the value of a property, by using the following:
+
+- `obj.hasOwnProperty(property)` checks if this particular object has property.
+- `property in obj` checks if this particular object, or the prototype chain, has the property.
+
+There is no built-in way to list all properties of an object including properties up the prototype chain. `Object.keys(obj)` will list all properties of the current object that are enumerable. `Object.getOwnPropertyNames(obj)` will list all properties of current object regardless of enumerability.
+
+### SUPER and Classes
 
 ### Prototype
 
