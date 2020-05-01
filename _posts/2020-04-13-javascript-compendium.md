@@ -70,30 +70,6 @@ When compared with numbers, strings are coerced to `NaN` (which is a number that
 
 Even though the author of YDKJS encourage the use of equality as long as you follow certain heuristics to make sure it is safe, I beg to differ. In a team setting when collaborating on a project, it is better to be explicit than sorry. If you are implementing a functionality using equality, the next engineer that uses your function may not know about the implicit assumptions.
 
-## Coding
-
-### Constructors vs Factory
-
-TODO: read https://tsherif.wordpress.com/2013/08/04/constructors-are-bad-for-javascript/
-
-### strict mode
-
-Complying to strict mode makes code more optimizable for the compiler.
-
-### Why Named Function is preferred over Anonymous Function?
-
-Anonymous functions makes code more readable but has the following drawbacks:
-
-- No useful names will be displayed during stack trace or debugging
-- Cannot use recursion, or allow the function to unbind itself as an event handler
-- Cannot self document or carry intentions
-
-Since there are no drawbacks of named functions, why not just use named functions all the time.
-
-### What about Arrow functions?
-
-Arrow functions are anonymous functions that introduces the lexical `this` behavior.
-
 ## Scopes
 
 ### a Variable in a Function Scope
@@ -410,6 +386,30 @@ There is no built-in way to list all properties of an object including propertie
 ### Prototype
 
 Behavior delegation instead of inheritance.
+
+## Coding
+
+### Constructors vs Factory
+
+TODO: read https://tsherif.wordpress.com/2013/08/04/constructors-are-bad-for-javascript/
+
+### strict mode
+
+Complying to strict mode makes code more optimizable for the compiler.
+
+### Why Named Function is preferred over Anonymous Function?
+
+Anonymous functions makes code more readable but has the following drawbacks:
+
+- No useful names will be displayed during stack trace or debugging
+- Cannot use recursion, or allow the function to unbind itself as an event handler
+- Cannot self document or carry intentions
+
+Since there are no drawbacks of named functions, why not just use named functions all the time.
+
+### What about Arrow functions?
+
+Arrow functions are anonymous functions that introduces the lexical `this` behavior.
 
 ## Projects
 
