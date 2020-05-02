@@ -50,26 +50,6 @@ _Kyle Simpson, You Don't Know JS (book series)_
 
 > It is simultaneously a simple, easy-to-use language that has broad appeal, and a complex and nuanced collection of language mechanics which without careful study will elude true understanding even for the most seasoned of JavaScript developers ... Because JavaScript can be used without understanding, the understanding of the language is often never attained.
 
-## Built-in Types
-
-string, number, boolean, null, undefined, object, symbol
-
-### typeof null is object
-
-This is a bug that will never be fixed, since many websites around the world depends on this behavior. Fixing this will break a lot of websites.
-
-### typeof functions and arrays is object
-
-These are just special variants of objects with certain built-in properties.
-
-### == vs ===
-
-One allows coercion when comparing value, and the other one do not allow coercion, also know as _strict-equality_.
-
-When compared with numbers, strings are coerced to `NaN` (which is a number that don't hold value)
-
-Even though the author of YDKJS encourage the use of equality as long as you follow certain heuristics to make sure it is safe, I beg to differ. In a team setting when collaborating on a project, it is better to be explicit than sorry. If you are implementing a functionality using equality, the next engineer that uses your function may not know about the implicit assumptions.
-
 ## Scopes
 
 ### a Variable in a Function Scope
@@ -243,7 +223,7 @@ The module pattern can be implemented with closures to satisfy these conditions:
 
 When a function is invoked, an execution context is created. The execution context contains various information:
 
-- where the function was called from (the call-stack) 
+- where the function was called from (the call-stack)
 - how the function was invoked
 - what parameters were passed
 - the `this` reference, which will be determined by call-site (how the function was called)
@@ -264,16 +244,16 @@ Therefore, it is critical that a context object is used to invoke the function, 
 
 ```javascript
 function sayHello() {
-  console.log(this.hello)
+  console.log(this.hello);
 }
 
 var obj = {
   hello: "Ni Hao!",
-  sayHello: sayHello
-}
+  sayHello: sayHello,
+};
 
-var justAReference = obj.sayHello
-justAReference() // default binding!
+var justAReference = obj.sayHello;
+justAReference(); // default binding!
 ```
 
 > BEWARE! - Event handlers in popular JavaScript libraries are quite fond of forcing your callback to have a `this` which points to, for instance, the DOM element that triggered the event
@@ -348,7 +328,7 @@ A property of an object that describes data. Such a property can be configured u
 - **Value** - value/data of the property
 - **Writable** - determines if value of property can be changed.
 - **Configurable** - determines if property descriptor can be updated. (one-way action once set to false). Also determines if a property can be `delete`.
-- **Enumerable** - determines if property will show up during enumeration over all properties of object using `for..in `.
+- **Enumerable** - determines if property will show up during enumeration over all properties of object using `for..in`.
 
 _Array should be enumerated using for-loop that act on indices only, instead of using `for..in` to prevent accessing other enumerable properties of Array object. ES5 offers useful helpers to iterate over Array values instead, but with no guarantee on ordering of Array elements_
 
@@ -395,19 +375,19 @@ This is a common and traditional approach, called **Explicit Mixin**.
 
 ```javascript
 // invented function mixin
-function mixin( sourceObj, targetObj ) {
-	for (var key in sourceObj) {
-		targetObj[key] = sourceObj[key];
-	}
-	return targetObj;
+function mixin(sourceObj, targetObj) {
+  for (var key in sourceObj) {
+    targetObj[key] = sourceObj[key];
+  }
+  return targetObj;
 }
 
-var Child = mixin( Parent, {
-	myFunc: function() {
-		Parent.myFunc.call( this ); // explicit reference to Parent object, due to shadowing of method name
-		console.log( "Extended functionality" );
-	}
-} );
+var Child = mixin(Parent, {
+  myFunc: function () {
+    Parent.myFunc.call(this); // explicit reference to Parent object, due to shadowing of method name
+    console.log("Extended functionality");
+  },
+});
 ```
 
 **Parasitic Inheritance** is a variant of the above explicit mixin, by creating a parent object reference within the child object and maintaining privileged references to whatever properties the child would like to inherit.
@@ -451,9 +431,9 @@ Prototypal delegation should be the defining mental model to understanding JavaS
 
 An unfortunate naming that cause confusion is the property `prototype.constructor` on a function.
 
-Functions are created by default with a prototype link to an arbitrary object. That arbitrary object contains a property called `constructor` that reference back to the function. 
+Functions are created by default with a prototype link to an arbitrary object. That arbitrary object contains a property called `constructor` that reference back to the function.
 
-In other words, it is easier to think of `prototype` and `constructor` in this case as **doubly linked references** (like a doubly linked list) _at the point of function creation._ 
+In other words, it is easier to think of `prototype` and `constructor` in this case as **doubly linked references** (like a doubly linked list) _at the point of function creation._
 
 The word `constructor` really does not carry any additional meaning, therefore it **never indicates what is the constructor of an object. That is pure misconception.**
 
@@ -462,13 +442,13 @@ So when a new object is created by a function through a `new` constructor call, 
 #### Setting the Prototype
 
 ```javascript
-Child.prototype = Parent.prototype // bad. shared prototype may cause corrupted modifications
+Child.prototype = Parent.prototype; // bad. shared prototype may cause corrupted modifications
 
-Child.prototype = new Parent() // bad. constructor calls to Parent() may cause undesired side effects
+Child.prototype = new Parent(); // bad. constructor calls to Parent() may cause undesired side effects
 
-Child.prototype = Object.create(Parent.prototype) // pre-ES6. Wasteful discarding of original arbitrary Child.prototype object
+Child.prototype = Object.create(Parent.prototype); // pre-ES6. Wasteful discarding of original arbitrary Child.prototype object
 
-Object.setPrototypeOf( Child.prototype, Parent.prototype ) // ES6. Reuses Child.prototype object.
+Object.setPrototypeOf(Child.prototype, Parent.prototype); // ES6. Reuses Child.prototype object.
 ```
 
 The conceptual model in my mind is to wrap prototype links with a Prototype Object. This object itself allows future "grandchildren" objects to delegate behaviors, yet keeping these behaviors isolated from parent prototype objects:
@@ -479,18 +459,18 @@ Child = {
   prototype: {
     // child's Prototype Object
     extraChildBehaviors,
-    prototype: parent.prototype // meaning parent's Prototype Object
-  }
-}
+    prototype: parent.prototype, // meaning parent's Prototype Object
+  },
+};
 
 Parent = {
   privateParentProperties,
   prototype: {
     // parent's Prototype Object
     extraParentBehaviors,
-    prototype: grandparent.prototype
-  }
-}
+    prototype: grandparent.prototype,
+  },
+};
 ```
 
 `Object.getPrototypeOf()` and `Object.setPrototypeOf()` should be used to interact with prototype objects, although legacy approach like `.prototype` and `.__proto__` will work as well.
@@ -550,15 +530,104 @@ If we are using `class` in our development work, then I think the best practice 
 
 ```javascript
 var Example = {
-	anon() { /*..*/ },
-	named: function named() { /*..*/ }
+  anon() {
+    /*..*/
+  },
+  named: function named() {
+    /*..*/
+  },
 };
 ```
 
 In this example, the use of simpler syntactic shorthand to create a function to be used in constructor call is easier to risk, but do note that the concise method `anon()` will create an anonymous function, which may limit the ability to self-reference in the function code.
 
+### Variable Existence Check
 
+```javascript
+if (variable) {
+  // ... do something to variable
+}
+```
 
+If the variable do not exists (not declared) this will definitely throw an error. A common way to test this is to use `typeof var !== "undefined"` instead.
+
+This is a legacy feature, where even though the variable was not declared and cannot be referenced without throwing error, we can still safely check for existence using `typeof`. Reason being, some legacy libraries imported in older JS environment pollute the global namespace with variables, and we need a method to check for existence of those imported variables safely.
+
+### Built-in Types
+
+string, number, boolean, null, undefined, object, symbol
+
+#### typeof null is object
+
+This is a bug that will never be fixed, since many websites around the world depends on this behavior. Fixing this will break a lot of websites.
+
+#### typeof functions and arrays is object
+
+These are just special variants of objects with certain built-in properties.
+
+#### == vs ===
+
+One allows coercion when comparing value, and the other one do not allow coercion, also know as _strict-equality_.
+
+When compared with numbers, strings are coerced to `NaN` (which is a number that don't hold value)
+
+Even though the author of YDKJS encourage the use of equality as long as you follow certain heuristics to make sure it is safe, I beg to differ. In a team setting when collaborating on a project, it is better to be explicit than sorry. If you are implementing a functionality using equality, the next engineer that uses your function may not know about the implicit assumptions.
+
+#### Safe Numbers
+
+`0.1 + 0.2 === 0.3` is false, as with most programming language's implementation of floating point number. A workaround for this is to determine that the two numbers are close enough to be equal, using the built-in tolerance range `Number.EPSILON`.
+
+Besides decimal numbers, integers that are either too big are too small will also have safety problem. The predefined safe range can be accessed using `Number.MAX_SAFE_INTEGER` and `Number.MIN_SAFE_INTEGER`.
+
+Bitwise operation can only be performed on 32-bit integers. Using an operation like `largeNumber | 0` will return a 32-bit integer since other bits will be ignored.
+
+#### Special Values
+
+`undefined` and `null` are both a type and a value.
+
+`void` can be used to void out any return value from an expression, ensure that it always returns `undefined`
+
+`NaN` a.k.a not-a-number is a special number indicating that the value is invalid. It is usually the result of a numerical operation performed on other non-number types. A `NaN` can never equal any value, not even itself, and it is the only value with such behavior in the language.
+
+```javascript
+var notNumber = Nan;
+notNumber !== notNumber; // true!
+```
+
+To safely test for `NaN`, use `Number.isNaN()`. (the built-in global isNaN does not check for the value, it merely check if something is a `number` or not).
+
+`Infinity` and `-Infinity` can be obtained when dividing a number by zero, or by accessing the value `Number.POSITIVE_INFINITY` and `Number.NEGATIVE_INFINITY`. By specification, if any operation causes the number to go beyond `Number.MAX_VALUE`, it will not automatically return infinity, but will actually goes through a rounding process to determine if the number is closer to the MAX_VALUE or to infinity, so it may return MAX_VALUE instead.
+
+`0` is positive zero, and `-0` is the result of obtaining zero from division or multiplication involving negative numbers. Comparison operation between positive and negative zero will determine that they are equal, and even some string operations, depending on browser support. The following snippet can be used to test for negative zero.
+
+```javascript
+var negativeZero = -0(negativeZero === 0) && 1 / negativeZero === -Infinity;
+```
+
+Negative zero is a feature used to support preserving of the sign (direction) for certain operations that leads to zero value without losing that piece of information.
+
+**With ES6**
+
+```javascript
+Object.is(value, NaN);
+Object.is(value, -0);
+```
+
+This utility was introduced to help test for special values easily.
+
+#### Pass by Value/Reference
+
+If you have been using JavaScript for a while, it should be clear how the language behaves without any explicit explanation, since it is quite intuitive.
+
+Whether a variable is passed by value or by reference purely depends on the type of value. And regardless of type, the variable will always be passed as a copy. Primitives are always passed by value. Complex primitives are always passed by reference.
+
+And unlike C, you cannot reference another reference (pointer to a pointer), therefore you cannot reassign an original reference by passing a complex primitive to a function, since the function always receives a copy of the reference, instead of the original reference itself.
+
+#### Clearing an Array
+
+`array.length = 0` is apparently the fastest way to achieve the clearing of an array in-place without reassigning reference.
+
+_Not sure why this works. To find out._
 
 ## Projects
 
