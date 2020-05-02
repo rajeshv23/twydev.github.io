@@ -205,7 +205,7 @@ for (var i = 1; i <= 5; i++) {
 What is happening? In my own understanding:
 
 - for-loop body only has one scope, regardless of the number of iterations
-- variable i is binded to a new iteration value at every loop
+- variable i is bound to a new iteration value at every loop
 - at every loop, we will set timeout, with a function called timer, with a closure over the scope of the for-loop (therefore only one single scope, ever)
 - after the loop has ended, when each callback gets executed, the closure will reference variable i from for-loop scope, which already has value set to 6 (since the loop ended)
 - this behavior is consistent even if timeout value is set to zero.
@@ -258,7 +258,7 @@ With no modifiers, the default binding of `this` is to the Global object. Strict
 
 #### Implicit Binding
 
-If a context object references the function as part of the object property, e.g. `obj.func()`, then this context object `obj` will be binded to `this` and be available to the function `func`.
+If a context object references the function as part of the object property, e.g. `obj.func()`, then this context object `obj` will be bound to `this` and be available to the function `func`.
 
 Therefore, it is critical that a context object is used to invoke the function, if it is just a reference assignment of the function through an object, the implicit binding will be lost. This is especially common for callback functions.
 
@@ -282,7 +282,7 @@ justAReference() // default binding!
 
 Make use of JS Function Utilities, the `call` and `apply` methods of Function objects allow explicit binding by passing the desired context object as method parameter. If a primitive is passed as context object, they will be boxed to become the object from through object wrappers.
 
-These utilities allow dynamic binding of `this` through explicit reference. The `bind` method provided in ES5 and ES6 an object to a function, and returns a reference to a new function that is hard binded to the object. ES6 adds a `name` property to the resultant function, that indicate the name of the source function before binding.
+These utilities allow dynamic binding of `this` through explicit reference. The `bind` method provided in ES5 and ES6 an object to a function, and returns a reference to a new function that is hard bound to the object. ES6 adds a `name` property to the resultant function, that indicate the name of the source function before binding.
 
 Many libraries provide functions with optional context parameters, giving us the convenience to explicitly bind an object to `this` as we make our function calls.
 
@@ -291,25 +291,25 @@ Many libraries provide functions with optional context parameters, giving us the
 In JavaScript, there is no Java equivalent of a constructor function. _All functions are just... functions_. A `new` keyword merely modify the invocation and return object of that function in the following sequence:
 
 1. a new object is created
-2. the newly created object gets prototype-linked
-3. the newly created object gets binded to `this` of that function call
+2. the newly created object gets prototype-linked to that function's prototype object
+3. the newly created object gets bound to `this` of that function call
 4. function gets executed
 5. unless the function returns its own alternate object, the newly created object will be returned by default
 
-I think of this sequence as a decorator around the function.
+I think of this sequence as a decorator around the function. And unless the new object is required by this constructor call, if not the `new` keyword can be omitted and the function should still behave as expected like a constructor call, it all depends on how you have coded the function. Omitting the `new` keyword if it is redundant will avoid additional object creation and garbage collection.
 
 _Remember, there is no constructor in JavaScript._
 
 ### Binding Priority
 
 - Explicit Binding takes precedence over all other bindings (if used in conjunction).
-- However, `new` Binding is able to override hard binded `this` in a function, making the function apply on the new object and return the new object instead. This allows possibility of partial application (subset of currying).
+- However, `new` Binding is able to override hard bound `this` in a function, making the function apply on the new object and return the new object instead. This allows possibility of partial application (subset of currying).
 - Implicit Binding takes precedence over Default Binding.
 - Rules fall through to Default Binding.
 
 `new > explicit > implicit > default`
 
-Note: you cannot bind to an explicitly binded function again to override the context.
+Note: you cannot bind to an explicitly bound function again to override the context.
 
 ### ignoring THIS
 
@@ -381,11 +381,129 @@ If a property exists, but was set to value `undefined`, there is another way to 
 
 There is no built-in way to list all properties of an object including properties up the prototype chain. `Object.keys(obj)` will list all properties of the current object that are enumerable. `Object.getOwnPropertyNames(obj)` will list all properties of current object regardless of enumerability.
 
-### SUPER and Classes
+## Classes
+
+_Classes in the traditional OO sense do not exists in JavaScript._
+
+### Inheritance via Mixin
+
+Since classes do not exists in the language, all "class" definitions are merely objects.
+
+Inheriting a parent "class" to a child "class" can be emulated by performing a shallow copy of all the parent object properties if they don't exist in the target child object, and methods can be extended/overridden using explicit pseudo-polymorphic reference. But even this does not provide true OOP inheritance that creates a new copy of the behavior, as the parent and child now shares reference to a common function.
+
+This is a common and traditional approach, called **Explicit Mixin**.
+
+```javascript
+// invented function mixin
+function mixin( sourceObj, targetObj ) {
+	for (var key in sourceObj) {
+		targetObj[key] = sourceObj[key];
+	}
+	return targetObj;
+}
+
+var Child = mixin( Parent, {
+	myFunc: function() {
+		Parent.myFunc.call( this ); // explicit reference to Parent object, due to shadowing of method name
+		console.log( "Extended functionality" );
+	}
+} );
+```
+
+**Parasitic Inheritance** is a variant of the above explicit mixin, by creating a parent object reference within the child object and maintaining privileged references to whatever properties the child would like to inherit.
+
+```javascript
+function Child = {
+  var child = new Parent() // parent object reference
+  var parentMyFunc = child.myFunc // privileged reference
+  function myFunc() {
+    parentMyFunc.call(this);
+    console.log( "Extended functionality" );
+  }
+  return child
+}
+```
+
+**Implicit Mixin** is another approach to mixin, which make use of context binding to borrow behavior from a parent "class" and applying it to a child context object, hence inheriting the behavior.
 
 ### Prototype
 
-Behavior delegation instead of inheritance.
+JavaScript objects typically has an internal property denoted as `[[Prototype]]` which is a reference/link to another object. When trying to access a property on an object, but the property does not exists in the current object, the prototype chain will be consulted to look up the chained object for the property. Once the property matches, it will be returned. The look up stops once it reaches the root of the chain, with is the JavaScript `Object.prototype`.
+
+`var newObj = Object.create(srcObj)` creates a new object by setting source object as the prototype reference.
+
+#### Setting Properties in Objects
+
+Setting properties in object using assignment (`obj.property = value`), especially if the _property do not exist in the current object_, is not straightforward.
+
+1. if property exists in prototype chain as a data descriptor, and if it is writable, then a **new shadow property** will be created on current object.
+2. if property exists in prototype chain as a data descriptor, but is not writable, then nothing will happen. In strict mode, it will **throw an error**.
+3. if property exists in prototype chain as an accessor descriptor, then that accessor will be called to set the property value. The value will be set in the object **higher up the prototype chain**, instead of having a shadow property.
+4. if property is set using `Object.defineProperty()` instead, a new (shadow) property will be created on the current object.
+
+#### Prototypal Delegation
+
+Prototypal delegation should be the defining mental model to understanding JavaScript objects.
+
+> Objects do not inherit behaviors. Objects delegate behaviors that are missing from their own properties to a prototype chain. The prototype chain is essentially layers of behavior, and you resolve what an object can perform by flattening the layers of behavior into a projection. In short, an object never truly "owns" a majority of behavior it can perform.
+
+#### Confusing Constructor
+
+An unfortunate naming that cause confusion is the property `prototype.constructor` on a function.
+
+Functions are created by default with a prototype link to an arbitrary object. That arbitrary object contains a property called `constructor` that reference back to the function. 
+
+In other words, it is easier to think of `prototype` and `constructor` in this case as **doubly linked references** (like a doubly linked list) _at the point of function creation._ 
+
+The word `constructor` really does not carry any additional meaning, therefore it **never indicates what is the constructor of an object. That is pure misconception.**
+
+So when a new object is created by a function through a `new` constructor call, trying to access that `newObj.constructor` property will search up the prototype chain to resolve a value, that creates an illusion of what is the constructor. (In complex scenario with shadow properties, you may even resolve to an unexpected value).
+
+#### Setting the Prototype
+
+```javascript
+Child.prototype = Parent.prototype // bad. shared prototype may cause corrupted modifications
+
+Child.prototype = new Parent() // bad. constructor calls to Parent() may cause undesired side effects
+
+Child.prototype = Object.create(Parent.prototype) // pre-ES6. Wasteful discarding of original arbitrary Child.prototype object
+
+Object.setPrototypeOf( Child.prototype, Parent.prototype ) // ES6. Reuses Child.prototype object.
+```
+
+The conceptual model in my mind is to wrap prototype links with a Prototype Object. This object itself allows future "grandchildren" objects to delegate behaviors, yet keeping these behaviors isolated from parent prototype objects:
+
+```javascript
+Child = {
+  privateChildProperties,
+  prototype: {
+    // child's Prototype Object
+    extraChildBehaviors,
+    prototype: parent.prototype // meaning parent's Prototype Object
+  }
+}
+
+Parent = {
+  privateParentProperties,
+  prototype: {
+    // parent's Prototype Object
+    extraParentBehaviors,
+    prototype: grandparent.prototype
+  }
+}
+```
+
+`Object.getPrototypeOf()` and `Object.setPrototypeOf()` should be used to interact with prototype objects, although legacy approach like `.prototype` and `.__proto__` will work as well.
+
+#### Finding prototype chain ancestor
+
+`child instanceof Parent`
+
+This call checks if `child`'s prototype chain ever contained the prototype object of the `Parent` function. If Parent is a hard-bound function (it will not have a prototype property), the original function before binding will be consulted.
+
+`parentPrototype.isPrototypeOf(child)`
+
+This call is better, as it avoids having a function involved in this testing, and only requires two objects for comparison.
 
 ## Coding
 
@@ -407,9 +525,40 @@ Anonymous functions makes code more readable but has the following drawbacks:
 
 Since there are no drawbacks of named functions, why not just use named functions all the time.
 
-### What about Arrow functions?
-
 Arrow functions are anonymous functions that introduces the lexical `this` behavior.
+
+### Delegation Design
+
+Achieving object-oriented programming with delegation instead of class inheritance, here are some points to keep in mind:
+
+1. **Delegate behavior to another object via prototype linkage. But keep states internal to current object**. (I find this the most profound concept to wrap by head around).
+2. Use explicit method naming on delegator objects, instead of shadowing a method with the same name from the delegates. This makes code simple to maintain and reason. (Polymorphism can be achieved by having the same method name between sibling delegators that are not on the same prototype chain).
+3. Delegation should be hidden as internal implementation of an API, if it provides more clarity to users.
+4. Bi-directional delegation is not allowed.
+5. Using composition of peer objects providing distinct behavior, instead of always designing the objects in terms of parent-child hierarchy.
+6. Use `obj.isPrototypeOf()` and `obj.getPrototypeOf` to test for delegation, and forget all about classes and `instanceof`.
+
+### CLASS approach
+
+If we are using `class` in our development work, then I think the best practice is to never use any Delegation Design explicitly. Even though `class` from ES6 may be using prototypal delegation under the hood, we should respect the class API and stick to creating static and traditional OOP classes. I see two advantages:
+
+- we are using the new class inheritance syntax as intended by ES6 specs.
+- we do not cause unintended corruption to our program by accessing prototype delegation.
+- if a problem cannot be solved using class features, then defer to a higher level workaround, such as changing design pattern, to approach the problem, instead of hacking it by using other JavaScript language features.
+
+### ES6 Function Definition Shorthand
+
+```javascript
+var Example = {
+	anon() { /*..*/ },
+	named: function named() { /*..*/ }
+};
+```
+
+In this example, the use of simpler syntactic shorthand to create a function to be used in constructor call is easier to risk, but do note that the concise method `anon()` will create an anonymous function, which may limit the ability to self-reference in the function code.
+
+
+
 
 ## Projects
 
