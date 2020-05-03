@@ -491,11 +491,11 @@ This call is better, as it avoids having a function involved in this testing, an
 
 TODO: read https://tsherif.wordpress.com/2013/08/04/constructors-are-bad-for-javascript/
 
-### strict mode
+### Strict Mode
 
-Complying to strict mode makes code more optimizable for the compiler.
+Complying to strict mode makes code more optimizable for the compiler, therefore there is no reason not to use it.
 
-### Why Named Function is preferred over Anonymous Function?
+### Why Named Function is preferred over Anonymous Function
 
 Anonymous functions makes code more readable but has the following drawbacks:
 
@@ -553,6 +553,15 @@ If the variable do not exists (not declared) this will definitely throw an error
 
 This is a legacy feature, where even though the variable was not declared and cannot be referenced without throwing error, we can still safely check for existence using `typeof`. Reason being, some legacy libraries imported in older JS environment pollute the global namespace with variables, and we need a method to check for existence of those imported variables safely.
 
+This does not apply to variables stuck in Temporal Dead Zone (TDZ).
+
+```javascript
+{
+  typeof variable; // ReferenceError
+  let variable;
+}
+```
+
 ### Built-in Types
 
 string, number, boolean, null, undefined, object, symbol
@@ -566,14 +575,6 @@ This is a bug that will never be fixed, since many websites around the world dep
 These are just special variants of objects with certain built-in properties. We can consider them subtypes.
 
 However, typeof functions will state "function", but for array it will state "object".
-
-#### == vs ===
-
-One allows coercion when comparing value, and the other one do not allow coercion, also know as _strict-equality_.
-
-When compared with numbers, strings are coerced to `NaN` (which is a number that don't hold value)
-
-Even though the author of YDKJS encourage the use of equality as long as you follow certain heuristics to make sure it is safe, I beg to differ. In a team setting when collaborating on a project, it is better to be explicit than sorry. If you are implementing a functionality using equality, the next engineer that uses your function may not know about the implicit assumptions.
 
 #### Safe Numbers
 
@@ -641,6 +642,75 @@ var dateObj = new Date();
 var err = Error("message"); // works without new keyword
 ```
 
+#### Coercion
+
+Number coercion for non-number types may contain pitfalls. Better double check the coercion results before implementing it in your code.
+
+`parseInt()` and `parseFloat()` only works on strings, so providing any other types will result in coercion to string, and the result may not be what we expect.
+
+`+` operator has specification to perform concatenation if operand are strings, so this is commonly used to coerce number to string.
+
+`-` operator however, only has specification for numbers, so strings will be coerced to number instead when used as operand. This applies to other arithmetic operations.
+
+Objects are always coerced to their primitive value first, and if the value does not meet the operator specifications, it will then fallback to other type coercions, like using `toString()`. If no rules can be matched, then it will throw a TypeError.
+
+#### == vs ===
+
+One allows coercion when comparing value, and the other one do not allow coercion, also know as _strict-equality_.
+
+When compared with numbers, strings are coerced to `NaN` (which is a number that don't hold value)
+
+Even though the author of YDKJS encourage the use of equality as long as you follow certain heuristics to make sure it is safe, I beg to differ. In a team setting when collaborating on a project, it is better to be explicit than sorry. If you are implementing a functionality using equality, the next engineer that uses your function may not know about the implicit assumptions.
+
+If coercion equality `==` is used, here are some quick tips according to specifications:
+
+- Comparing number to string always coerce string to number, and it is commutative.
+- Comparing anything to boolean, will coerce the boolean to a number.
+- Comparing `null` to `undefined` always yield true. Commutative.
+- Comparing Object to primitive will coerce the object first to primitive. Commutative.
+- it seems like in no situation of comparison would result in values coerced to boolean, so we should resist the urge to think that way even if it is more intuitive.
+
+For inequality, which cannot avoid coercion since there are no such option, the specification is:
+
+- first coerce both operand to primitives
+- if both are not strings, they will then to coerced to numbers
+- the comparison will be performed using numbers
+- if both are strings, then they will be compared lexicographically
+
+For `<=` or `>=` inequality, the specification state that an ordinary `<` or `>` will first be performed then the result will be negated before returning.
+
+#### Selector Operators && and ||
+
+These are in fact selectors because they always return one of the operands.
+
+- `||` returns the first operand itself, if it coerce to boolean true, else it returns the second operand.
+- `&&` returns the second operand if the first coerce to boolean true, else it returns the first operand.
+- they are actually equivalent to `first ? first : second` and `first ? second : first`
+
+Their usage extends beyond boolean testing. `||` can be used as a fallback operator to provide a default value (coalescing). `&&` can be used as a guard operator to only execute an operation if the a condition is first met.
+
+#### Falsy & Truthy
+
+Values that are falsy when coerced to boolean value:
+
+- `undefined`
+- `null`
+- `false`
+- `+0, -0, NaN`
+- `"" // empty string`
+
+Notice that these are all primitives, therefore for most complex primitives, since they are not on the list, they are truthy by default, such as `new Boolean( false )` is actually truthy.
+
+#### Tilda
+
+Tilda `~` is a bitwise operation that flips all the bits and plus one.
+
+Most commonly used to conveniently convert failure return values (-1) to falsy, because `~-1` returns zero, but all other number values will not return zero.
+
+Another use is to cast the number to 32-bit `~~variable` by using the operator twice. This is more concise than performing `variable | 0` due to operator precedence.
+
+But usage of tilda is pretty rare, so unless the entire development team are familiar with it, or there is a strong case to use it, I would recommend avoiding it.
+
 #### Symbols
 
 Symbols create a unique scalar primitive on every invocation regardless of key provided:
@@ -674,6 +744,64 @@ And unlike C, you cannot reference another reference (pointer to a pointer), the
 
 _Not sure why this works. To find out._
 
+### Assignment Shortcuts
+
+```javascript
+var a, b, c;
+a = b = c = 3;
+```
+
+### GOTO
+
+There is a similar feature in JavaScript but it is not widely used. We can create labelled statements and use these labels in loops.
+
+```javascript
+label: for (somthing) {
+  secondLabel: for (anotherCondition) {
+    // ... some logic
+    if (toContinueFromOuterLoop) {
+      continue label;
+    }
+    if (toBreakFromInnerLoop) {
+      break secondLabel;
+    }
+  }
+}
+```
+
+### Automatic Semicolon Insertion
+
+Is an error correction feature of JavaScript parser. Which means that semicolon is actually not optional, and that was never the intention of the language.
+
+### try-catch-finally
+
+- `finally` will always be executed after `try` but before the enclosing function finish execution
+- `finally` is able to override any returns or throws from the try/catch blocks, if explicitly returning/throwing from the finally block.
+- if `finally` performs a side effect, both try/catch block return values, and side effects will take place.
+
+### else-if
+
+This actually a syntactic shorthand, and not an official language feature. It is equivalent to:
+
+```javascript
+else {
+  if {  }
+}
+```
+
+### Switch Hacks
+
+A simple trick to overcome the default equality comparison of switch-cases.
+
+```javascript
+switch (true) {
+  case variable === something:
+    break;
+  case variable === somethingElse:
+    break;
+}
+```
+
 ## Projects
 
 ### Polyfill
@@ -705,3 +833,4 @@ To be continued
 
 - Tail Recursion in Javascript?
 - to read https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
+- interaction between engine and react script, particularly from how the script is injected in the HTML file, and why the execution never terminates in an SPA?
