@@ -561,9 +561,11 @@ string, number, boolean, null, undefined, object, symbol
 
 This is a bug that will never be fixed, since many websites around the world depends on this behavior. Fixing this will break a lot of websites.
 
-#### typeof functions and arrays is object
+#### typeof functions and arrays
 
-These are just special variants of objects with certain built-in properties.
+These are just special variants of objects with certain built-in properties. We can consider them subtypes.
+
+However, typeof functions will state "function", but for array it will state "object".
 
 #### == vs ===
 
@@ -615,7 +617,50 @@ Object.is(value, -0);
 
 This utility was introduced to help test for special values easily.
 
-#### Pass by Value/Reference
+#### Boxing
+
+Manually boxing will create object forms of primitives, using native wrappers. These object internally uses a `[[Class]]` attribute to remember what type the value belongs to. Unboxing can be performed manually using `.valueOf()` function, or implicitly when coercion takes place.
+
+Take note of the following pitfall.
+
+```javascript
+var f = new Boolean(false);
+if (!f) {
+  // will never run since object is truthy
+}
+
+var a = Array(3); // empty array, works without new keyword
+a.length; // 3
+
+var optimized = /^a*b+/g; // compiled
+var unOptimized = new RegExp("^a*b+", "g"); // only useful to generate dynamic regex
+
+var dateString = Date();
+var dateObj = new Date();
+
+var err = Error("message"); // works without new keyword
+```
+
+#### Symbols
+
+Symbols create a unique scalar primitive on every invocation regardless of key provided:
+
+```javascript
+Symbol("key") === Symbol("key"); // false
+```
+
+If a symbol is used as property key in objects, it helps to prevent collision. `Object.hasOwnPropertySymbols(obj)` provides a quick way to list all symbol properties in an object. ES6 uses symbols for some prototype properties in Object and Array types.
+
+#### Built-In Types Prototypes
+
+An interesting behavior for the following built-in prototypes which are all objects:
+
+- `Function.prototype` is also an empty function
+- `Array.prototype` is also an empty array
+- `RegExp.prototype` is also a regex that matches nothing
+- `String.prototype` is also an empty string
+
+### Pass by Value/Reference
 
 If you have been using JavaScript for a while, it should be clear how the language behaves without any explicit explanation, since it is quite intuitive.
 
@@ -623,7 +668,7 @@ Whether a variable is passed by value or by reference purely depends on the type
 
 And unlike C, you cannot reference another reference (pointer to a pointer), therefore you cannot reassign an original reference by passing a complex primitive to a function, since the function always receives a copy of the reference, instead of the original reference itself.
 
-#### Clearing an Array
+### Clearing an Array
 
 `array.length = 0` is apparently the fastest way to achieve the clearing of an array in-place without reassigning reference.
 
