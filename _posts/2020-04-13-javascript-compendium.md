@@ -825,6 +825,36 @@ ES6 has syntax support for Modules.
 
 ## Execution
 
+### Hosting Environment and Event Loop
+
+The traditional hosting environment of the JavaScript engine is the web browser. NodeJS is a server-side alternative, and there are other modern environments that may even be embedded systems.
+
+The JavaScript engine and the hosting environment interacts with the event loop. The engine executes functions that are on the loop, one-by-one on a single thread, (which is why many people refer to JavaScript as single threaded). At each tick, an event will be picked up from the loop and executed by the engine. 
+
+The hosting environment may insert event into the loop upon completion of asynchronous operation.
+
+E.g. `setTimeout` interacts with a timer provided by the hosting environment, and when time is up, the hosting environment will insert an event into the loop. The engine picks up this event and execute the callback function that was provided when `setTimeout` was initially called.
+
+### Event Loop Concurrency
+
+Two work streams may be interleaving their events in the event loop, resulting in unexpected outcomes depending on their concurrency model.
+
+#### Non-Interacting
+
+The two work streams do not affect each other in anyway, therefore the true sequence of event execution by the engine does not matter.
+
+**Cooperative** model happens when each work streams limit the execution time of their events, allowing many other work streams to gain sufficient execution time on the event loop for the entire program to progress as a whole. This can happen by breaking the tasks down into smaller chunks and inserting those chunks back into the loop.
+
+#### Interacting
+
+The two work streams may be modifying the same variables within the same scope/context, or the outcome of the entire program execution depends on these shared variables. The outcome may be vastly different if the sequence of event execution changes, making the program non-deterministic.
+
+We can overcome this issue by simple coordination between two work streams to make sure certain critical events do not overlap.
+
+### Job Queue
+
+Job queue is a concept that works on top of the event loop. We can conceptualize it as a mini loop of tasks to be executed within a single tick of an event. The job queue will be cleared before the next tick begins for the next event in the loop.
+
 ### Inside the Engine
 
 ---
