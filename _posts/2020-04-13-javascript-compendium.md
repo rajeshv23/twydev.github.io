@@ -779,6 +779,8 @@ Is an error correction feature of JavaScript parser. Which means that semicolon 
 - `finally` is able to override any returns or throws from the try/catch blocks, if explicitly returning/throwing from the finally block.
 - if `finally` performs a side effect, both try/catch block return values, and side effects will take place.
 
+**HOWEVER** these blocks are synchronous, so if any asynchronous callbacks are registered within any of the blocks, there is no guarantee for the execution order of those callbacks. In other words, `try...catch` an async promise will never work if you are trying to use it to catch async errors.
+
 ### else-if
 
 This actually a syntactic shorthand, and not an official language feature. It is equivalent to:
@@ -801,6 +803,150 @@ switch (true) {
     break;
 }
 ```
+
+## Async
+
+### IOC of Callbacks
+
+The callback pattern for asynchronous code inherently give control to another function to invoke your own callback. Often, this other function will be provided by third-party library, leading to several uncertainties:
+
+- Will the callback be invoked at all?
+- Will the callback be invoked more than once?
+- Will the callback be invoked too early (turns out to be synchronous) or too late (after other critical events)?
+- Will the calling function not pass along the necessary environment?
+- Will the calling function suppress the error from the callback?
+
+Instead of surrendering the control of your own program execution to a third-party function, `Promise` invert the control back to your program.
+
+### Promises
+
+Promises = encapsulation of future values into a standardized and trustable API.
+
+#### Temporal and Immutable
+
+Promises encapsulate temporal dependence and allow us to write code with predictable outcome.
+
+Promises are immutable, therefore they allow all parties to observe the same value, and prevents any party (e.g. IOC from calling third-party functions) from modifying the promise, which may corrupt the processing of others.
+
+```javascript
+var p = Promise(...)
+p.then( observerA )
+p.then( observerB ) // observes the same event
+```
+
+#### Thenable Duck Typing
+
+Currently the only way to determine a promise is through thenable duck typing. But since having a `then` property is not exclusive, and may conflict with certain legacy libraries from pre-ES6, this is a pitfall and may potentially cause problems. A way out is to wrap those legacy functions or objects with a promise.
+
+#### Trustable
+
+Promise solves all the IOC callback issues by providing certain guarantees:
+
+- Promises cannot be observed synchronously. `then(callback)` is always asynchronous.
+- Promise observers do not delay or disrupt other observers from triggering their callbacks.
+- Ordering within a promise-callback chain is guaranteed, but not across chains therefore we should never depend on such cross-chain patterns to enforce ordering.
+- `Promise.race` can be used creatively to set timeout on promise to prevent waiting indefinitely.
+- Even if the promise definition makes multiple calls to `resolve` only the first call will be registered. This guarantees that callbacks will be invoked only once.
+- Only the first parameter to `resolve` and `reject` will be passed to the registered callback. Additionally, callbacks can inherit environment from the closure over their scope, which can be used as a mechanism to pass variables even for promise-style programming.
+- Most importantly, any non-promise but "thenable" functions can be wrapped with a promise, to give us guaranteed and consistent behavior.
+
+The promise of promises (pun intended) is to return a promise from each `then(callback)`, which can be chained and our code will only need to work with the promise interface to enforce async behavior.
+
+#### Resolve and Reject
+
+`reject` simply rejects the promise, but `resolve` can either fulfill the promise or reject it. 
+
+If `resolve` will fulfill if passed an immediate, non-Promise, non-thenable value. But if it is passed a genuine Promise or thenable value, that value is unwrapped recursively, until a final value is obtained, which may turn out to be promise rejection.
+
+`Reject` will not recursively unwrap a promise or thenable value, so if our code needs to explicitly call `then` on the rejected value, if it turns out to be a promise.
+
+`Promise.reject` and `Promise.resolve` are shorthands to bypass the creation of `new Promise()` objects.
+
+#### Error Handling
+
+```javascript
+Promise()
+  .then( callback )
+  .then( resolutionHandler, rejectionHandler )
+  .then( callback )
+  .catch( rejectionHandler )
+```
+
+Error handling happens on a per-promise basis. If _rejectionHandler_ returns a value, it will be wrapped in a promise and be propagated down the chain. By default, any unhandled error within a promise will cause a rejection, and if there are no rejection handler, the error will fall through the chain, and eventually bubbles up the program.
+
+The final `catch` is actually just a shorthand for `.then(null, rejectionHandler)`. Therefore, if a synchronous happen before a promise is even created (e.g. misuse of API), this rejection handler will not be able to catch it.
+
+Keep in mind that sometimes, it may be impossible to clean up reserved resources through rejection handlers, and promise mechanism lacks a `finally` capability to ensure clean up.
+
+#### Built-in Patterns 
+
+- `Promise.all([...])` returns an array of resolved values, or first rejection to occur.
+- `Promise.race([...])` returns only the first resolved value, or first rejection to occur. **NOTE** passing an empty array will cause you to wait indefinitely.
+- `Promise.none([...])` inverted behavior of `Promise.all`.
+- `Promise.any([...])` is like `Promise.all` but ignores rejection.
+- `Promise.first([...])` is like `Promise.race` but ignores rejection.
+- `Promise.last([...])` is like `Promise.first` but returns the last resolved value.
+
+### Generators
+
+Generators are functions that can pause and resume their execution by yielding control to another function through an iterator as interface.
+
+```javascript
+function *myGenerator(originalInput) {
+  var newInput = yield "hello"
+  var secondInput = yield "world"
+  return newInput + secondInput + originalInput;
+}
+
+var it = myGenerator(1); // only returns iterator. Generator code do not run.
+var resultObj = it.next(); // starts generator code, pauses at first yield statement
+resultObj.value; // "hello"
+resultObj = it.next(2); // var newInput will store the value 2
+resultObj.value; // "world"
+resultObj = it.next(3); // var secondInput will store the value 3
+resultObj.value; // returns 6 and the generator terminates.
+```
+
+- Generators can be created using `*` syntax.
+- Each iterator controls an instance of the generator.
+- An initial `next` call is required to start the generator code running.
+- Generator will eventually run to completion, and result obtained by iterator will contain `done: true` flag.
+- `yield` and `next` forms two way message communication like a two way latch gate. A message sent by `next` will be provided to the current `yield` and the value from the subsequent `yield` will be passed back instead.
+- `for (var val of it)` will first retrieve an iterator from the object, before calling next on the iterator. An iterator is itself an _iterator_ and an _iterable_. (fetching the value of `[Symbol.iterator]` on an iterator returns the iterator itself).
+- `it.return(val)` will terminate the generator (`done` will be set to true), and this call to the iterator will create a result object with value `val`.
+- `it.throw(err)` will throw an error from the current `yield` in the generator.
+
+#### Generator-Promise Pattern (Async-Await)
+
+> The natural way to get the most out of Promises and Generators is to `yield` a Promise, and wire that Promise to control the generator's iterator.
+
+We can work with promises in a synchronous coding style by creating our workflow inside a generator. 
+
+- Whenever an asynchronous promise is created, we yield that promise. 
+- Outside of the generator, a runner utility can be working with the iterator of this generator instance, and observe the yielded promise.
+- The runner utility will register a callback to the promise, and pass the promise resolved value to the generator through `it.next`.
+- Generator receives the value from `yield` and continue processing.
+
+```javascript
+function *asyncGenerator() {
+  var data = yield asyncRequest(url);
+  var secondData = yield asyncRequest(url2);
+}
+
+function runnerUtility() {
+  var it = asyncGenerator();
+  var firstPromise = it.next();
+  firstPromise
+    .then(data => {
+      return it.next(data)
+    })
+    .then(secondData => {
+      return it.next(secondData)
+    });
+}
+```
+
+But instead of having these cumbersome boilerplate, we can simply use async-await, which provides syntactic shorthand for this exact same pattern.
 
 ## Projects
 
@@ -857,10 +1003,20 @@ Job queue is a concept that works on top of the event loop. We can conceptualize
 
 ### Inside the Engine
 
+### Performance Optimization
+
+- Web Worker/Shared Worker is a feature of the browser host environment to allow JavaScript program to run on separate threads (access it through browser API). Data can be transferred by simple copying or by using Transferable Objects. Main advantage is to prevent intensive computation or interaction with external resources from slowing down the main thread. It also allow your program running on multiple tabs to share a set of common workers.
+- SIMD optimization (Single Instruction, Multiple Data) requires API to allow JavaScript program to tap on modern CPU's SIMD processing capabilities, that speeds up vector calculations.
+- **asm.js** is a subset of JavaScript language. We use it by compiling our code to meet asm.js specs first, then allow environments that support asm.js to run it. Optimization largely derived from static typing and coercion, as well as reserved heap for modules to avoid expensive memory operations during runtime.
+
 ---
 
-To be continued
+# Additional Readings
 
 - Tail Recursion in Javascript?
-- to read https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
+- https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
 - interaction between engine and react script, particularly from how the script is injected in the HTML file, and why the execution never terminates in an SPA?
+- https://blog.izs.me/2013/08/designing-apis-for-asynchrony
+- https://stackoverflow.com/questions/40880416/what-is-the-difference-between-event-loop-queue-and-job-queue
+- http://asmjs.org/
+
