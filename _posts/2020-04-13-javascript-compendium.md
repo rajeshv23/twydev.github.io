@@ -253,7 +253,7 @@ With no modifiers, the default binding of `this` is to the Global object. Strict
 
 If a context object references the function as part of the object property, e.g. `obj.func()`, then this context object `obj` will be bound to `this` and be available to the function `func`.
 
-Therefore, it is critical that a context object is used to invoke the function, if it is just a reference assignment of the function through an object, the implicit binding will be lost. This is especially common for callback functions.
+Therefore, it is critical that a context object is used to invoke the function, if it is just a reference assignment of the function through an object, the implicit binding will be lost. This is especially common for callback functions. (e.g. React components passing callback functions to Child components).
 
 ```javascript
 function sayHello() {
