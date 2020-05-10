@@ -24,6 +24,8 @@ The best place to get started would be [wikipedia](https://en.wikipedia.org/wiki
 - **2015**: Release of ES6, renamed ECMAScript 2015.
 - **Beyond**: From 2016 onwards, a new version of ECMAScript standard was published with minor updates to existing standard. JS is now considered a mature language.
 
+---
+
 # How Browsers Work
 
 Since the invention of JavaScript was solely driven by the desire to enrich web browsing experience through client side processing, we must have at least a basic understanding of how modern browsers work. Here is a link to an [article written by Tali Garsiel](http://taligarsiel.com/Projects/howbrowserswork1.htm) that explores the internals of web browsers. The article is old, but gold.
@@ -40,7 +42,14 @@ My takeaways the article:
 - Re-layout or re-painting can be applied to only a small subset of nodes.
 - Changes to any renderers that requires re-layout or re-paint will fire off the corresponding events, triggering the layout or paint execution by the main thread.
 
-## What is the Browser API exposed to JS?
+## Web API Exposed to JavaScript
+
+We add functionalities to our web application by writing JavaScript that interacts with Web API. Interactions typically start with registering event handler to listen out for events. When the event gets emitted, the handler will execute our specified logic, and may update the rendering through another set of web APIs such as the DOM.
+
+- Web API https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Introduction
+- Event References https://developer.mozilla.org/en-US/docs/Web/Events
+
+---
 
 # JavaScript - The Programming Language
 
@@ -147,6 +156,10 @@ Functions are hoisted before variables. If there are duplicated definitions of t
 ### IIFE - Immediately Invoked Function Expression
 
 Typically used to create a scope for variables, isolated from the outer scope.
+
+### Function Parameter Scope Bubble
+
+Parameters of a function are in their own parameter scope, with no access to function body scope.
 
 ## Closure
 
@@ -303,7 +316,7 @@ YDKJS suggested using a helper soft-bind function to emulate a desired soft bind
 
 An arrow function do not bind to `this` according to the above binding rules, but instead inherit `this` from the lexical scope of the enclosing function. In simple terms, the lexical scope determines what `this` will be inherited by the arrow functions, instead of the call-site of the function (but of course, the binding rules still apply to the enclosing function).
 
-Simpson encourage using either a pure lexical scoping style of coding, or a pure context binding style of coding, instead of mixing both concept, which may make our code hard to maintain (I think this is especially true in a team environment).
+YDKJS encourage using either a pure lexical scoping style of coding, or a pure context binding style of coding, instead of mixing both concept, which may make our code hard to maintain (I think this is especially true in a team environment).
 
 ## Objects
 
@@ -487,10 +500,6 @@ This call is better, as it avoids having a function involved in this testing, an
 
 ## Coding
 
-### Constructors vs Factory
-
-TODO: read https://tsherif.wordpress.com/2013/08/04/constructors-are-bad-for-javascript/
-
 ### Strict Mode
 
 Complying to strict mode makes code more optimizable for the compiler, therefore there is no reason not to use it.
@@ -525,6 +534,33 @@ If we are using `class` in our development work, then I think the best practice 
 - we are using the new class inheritance syntax as intended by ES6 specs.
 - we do not cause unintended corruption to our program by accessing prototype delegation.
 - if a problem cannot be solved using class features, then defer to a higher level workaround, such as changing design pattern, to approach the problem, instead of hacking it by using other JavaScript language features.
+
+#### ES6 Class
+
+- `class` keyword creates a function by defining the function prototype in a block.
+- `constructor` defines the signature of a function with the same name as the `class`.
+- Class methods are non-enumberable by default.
+- Calling the `class` function must be made with `new` keyword.
+- Class definitions will not be hoisted, therefore they must be defined before usage.
+- Class definitions do not create a Global Object property.
+- **Class can be perceived as a macro to automatically populate prototype.**
+
+#### EXTENDS and SUPER
+
+- `class Child extend Parent` essentially establish a prototype delegation link from a "child" class prototype to "parent" class prototype.
+- Calling `super` in the child constructor method is synonymous to calling the `Parent()` constructor method.
+- Calling `super` in any child class method is synonymous to calling `Parent.prototype`.
+- `super` is therefore not limited to "classes", and can be used for object literals.
+- `extends` similary allows us to extend native types.
+- **Most Importantly, SUPER is statically bound at declaration, and not dynamically bound, like THIS**.
+- The default subclass constructor, if not defined, will actually call the parent constructor via `super(args)`.
+- In ES6, `this` cannot be accessed by subclass constructor, until `super()` is called, as the context of an instance is initialized by the parent constructor.
+
+#### STATIC
+
+Besides linking between subclass prototype and parent class prototype, the child function object is also prototype linked to the parent function object (two separate and parallel prototype chains).
+
+`static` methods declared by the parent class will not be added to function prototype, but is still available to child class through the above mentioned function object prototype chain.
 
 ### ES6 Function Definition Shorthand
 
@@ -730,6 +766,14 @@ An interesting behavior for the following built-in prototypes which are all obje
 - `RegExp.prototype` is also a regex that matches nothing
 - `String.prototype` is also an empty string
 
+#### ES6 Maps and Sets
+
+Instead of using objects as maps, ES6 provides a new `Map` constructor for creating map. I think this allows us to convey our intention through our code better. It also allow non-string keys. In addition, the Map API provides certain convenience method that allows us to retrieve an iterator for the stored values
+
+**WeakMap** is a variant of Map that only stores objects as keys. If the objects get garbage collected, the entry will also be removed from the map. Only the keys are held weakly, not the values.
+
+Sets also has a **WeakSet** variant that holds its values weakly. Note that values must be objects.
+
 ### Pass by Value/Reference
 
 If you have been using JavaScript for a while, it should be clear how the language behaves without any explicit explanation, since it is quite intuitive.
@@ -738,11 +782,15 @@ Whether a variable is passed by value or by reference purely depends on the type
 
 And unlike C, you cannot reference another reference (pointer to a pointer), therefore you cannot reassign an original reference by passing a complex primitive to a function, since the function always receives a copy of the reference, instead of the original reference itself.
 
-### Clearing an Array
+### Array Shortcuts
 
 `array.length = 0` is apparently the fastest way to achieve the clearing of an array in-place without reassigning reference.
 
 _Not sure why this works. To find out._
+
+`Array.of(...)` creates a new array with given elements, even if it is only a single number, instead of allocating an empty array of size specified by that single number (behavior of classic array constructor).
+
+`Array.from(...)` converts an array like object into an array, with an optional callback function we can specify as mapper.
 
 ### Assignment Shortcuts
 
@@ -804,6 +852,31 @@ switch (true) {
 }
 ```
 
+### Spread and Gather
+
+```javascript
+var arr = [x, ...y, z]; // var y will spread all its element
+
+var a, b, c;
+[a, b, ...c] = arr; // var c will gather all remaining elements.
+
+function manyArgs(...args) {
+  args.shift(); // args is an array, all parameters are gathered
+  console.log(args);
+}
+```
+
+### Destructuring and Default values
+
+Destructuring allows us to set default values for variable assignments. This may create confusion when we try to perform destructuring, specifying default values for destructuring assignment, all within the definition of a function parameter, with default parameter value thrown into the mix.
+
+### Metaprogramming
+
+Metaprogramming is used to let the program focus on itself or its runtime environment, so as to extend the normal mechanisms of the language to provide additional capabilities.
+
+- `Proxy` can be used to wrap an object and modify behavior or trigger additional handlers before invoking the actual object properties.
+- `Reflect` API can be used to intercept and manipulate objects at runtime.
+
 ## Async
 
 ### IOC of Callbacks
@@ -854,7 +927,7 @@ The promise of promises (pun intended) is to return a promise from each `then(ca
 
 #### Resolve and Reject
 
-`reject` simply rejects the promise, but `resolve` can either fulfill the promise or reject it. 
+`reject` simply rejects the promise, but `resolve` can either fulfill the promise or reject it.
 
 If `resolve` will fulfill if passed an immediate, non-Promise, non-thenable value. But if it is passed a genuine Promise or thenable value, that value is unwrapped recursively, until a final value is obtained, which may turn out to be promise rejection.
 
@@ -866,10 +939,10 @@ If `resolve` will fulfill if passed an immediate, non-Promise, non-thenable valu
 
 ```javascript
 Promise()
-  .then( callback )
-  .then( resolutionHandler, rejectionHandler )
-  .then( callback )
-  .catch( rejectionHandler )
+  .then(callback)
+  .then(resolutionHandler, rejectionHandler)
+  .then(callback)
+  .catch(rejectionHandler);
 ```
 
 Error handling happens on a per-promise basis. If _rejectionHandler_ returns a value, it will be wrapped in a promise and be propagated down the chain. By default, any unhandled error within a promise will cause a rejection, and if there are no rejection handler, the error will fall through the chain, and eventually bubbles up the program.
@@ -878,7 +951,7 @@ The final `catch` is actually just a shorthand for `.then(null, rejectionHandler
 
 Keep in mind that sometimes, it may be impossible to clean up reserved resources through rejection handlers, and promise mechanism lacks a `finally` capability to ensure clean up.
 
-#### Built-in Patterns 
+#### Built-in Patterns
 
 - `Promise.all([...])` returns an array of resolved values, or first rejection to occur.
 - `Promise.race([...])` returns only the first resolved value, or first rejection to occur. **NOTE** passing an empty array will cause you to wait indefinitely.
@@ -892,9 +965,9 @@ Keep in mind that sometimes, it may be impossible to clean up reserved resources
 Generators are functions that can pause and resume their execution by yielding control to another function through an iterator as interface.
 
 ```javascript
-function *myGenerator(originalInput) {
-  var newInput = yield "hello"
-  var secondInput = yield "world"
+function* myGenerator(originalInput) {
+  var newInput = yield "hello";
+  var secondInput = yield "world";
   return newInput + secondInput + originalInput;
 }
 
@@ -915,20 +988,29 @@ resultObj.value; // returns 6 and the generator terminates.
 - `for (var val of it)` will first retrieve an iterator from the object, before calling next on the iterator. An iterator is itself an _iterator_ and an _iterable_. (fetching the value of `[Symbol.iterator]` on an iterator returns the iterator itself).
 - `it.return(val)` will terminate the generator (`done` will be set to true), and this call to the iterator will create a result object with value `val`.
 - `it.throw(err)` will throw an error from the current `yield` in the generator.
+- Iteration can be delegated to another iterator through the `*` syntax. Delegation will "step in" to the other iterator, and any message passing/error throwing between `yield` and `next` will also be delegated.
+
+```javascript
+function* myGenerator(originalInput) {
+  yield "hello world";
+  yield* anotherGenerator(); // iterator of an instance of anotherGenerator
+  yield* [1, 2, 3]; // will use iterator of this array
+}
+```
 
 #### Generator-Promise Pattern (Async-Await)
 
 > The natural way to get the most out of Promises and Generators is to `yield` a Promise, and wire that Promise to control the generator's iterator.
 
-We can work with promises in a synchronous coding style by creating our workflow inside a generator. 
+We can work with promises in a synchronous coding style by creating our workflow inside a generator.
 
-- Whenever an asynchronous promise is created, we yield that promise. 
+- Whenever an asynchronous promise is created, we yield that promise.
 - Outside of the generator, a runner utility can be working with the iterator of this generator instance, and observe the yielded promise.
 - The runner utility will register a callback to the promise, and pass the promise resolved value to the generator through `it.next`.
 - Generator receives the value from `yield` and continue processing.
 
 ```javascript
-function *asyncGenerator() {
+function* asyncGenerator() {
   var data = yield asyncRequest(url);
   var secondData = yield asyncRequest(url2);
 }
@@ -937,11 +1019,11 @@ function runnerUtility() {
   var it = asyncGenerator();
   var firstPromise = it.next();
   firstPromise
-    .then(data => {
-      return it.next(data)
+    .then((data) => {
+      return it.next(data);
     })
-    .then(secondData => {
-      return it.next(secondData)
+    .then((secondData) => {
+      return it.next(secondData);
     });
 }
 ```
@@ -960,14 +1042,40 @@ Producing code with equivalent behavior in older JS environments, for code writt
 
 ### ES6 Modules
 
+#### Traditional Modules
+
+Traditionally modules are simple outer functions with inner variables and functions that we can access through object property. This is used by Asynchronous Module Definition (AMD) and Universal Module Definition (UMD).
+
+`RequireJS` is a project that helps to load modules that implements AMD API, and primarily runs on browser.
+
+`CommonJS` is a project that helps to load modules for server-side JavaScript programs. Loading happens synchronously. (uses `require` and `exports` object).
+
+`NodeJs` has its own module system that is similar to CommonJS. (uses `require` and `module.export`).
+
+`SystemJS` is another module loader project that supports all the above systems, including ES6, and is configurable (essentially wraps all the systems with a common interface).
+
+#### New Approach
+
 ES6 has syntax support for Modules.
 
 - Modules must be defined in separate files.
 - `export member` exports a member from a file
-- `import member from "file"` imports a specific member from "file.js"
+- `import member from "file"` imports a specific member from "file.js" (this may sometimes look like destructuring, but it is actually special syntax for modules).
 - `module myMod from "file"` imports the entire module from file
 - Modules API are static: Compiler will check that all references to modules and module members exists at compile time, if not it will throw an error.
 - Contents in module files are treated as if they are enclosed in a scoped closure.
+- Methods and properties exposed by modules are actual bindings to inner module definition (which means the value can be changed dynamically, and reflected when all references to the module property resolves).
+- Modules are singleton, and will not be re-imported again.
+- Circular Module Dependency is supported, since all module imports will be resolved and loaded first before any function calls are executed.
+
+#### Direct Interaction with Module Loader
+
+The module loader is provided by the hosting environment of JavaScript Engine. Sometimes it may be necessary to directly interact with the module loader, to load external resources/modules or dynamically load non-JavaScript code. This will incur a performance penalty, so we should only consider this if it is truly necessary.
+
+### Popular Tools
+
+- **Babel** is a transpiler to transpile future versions of ECMA scripts to older versions that are more widely supported.
+- **Webpack** is a bundler. It will construct a dependency map of modules and even assets used by your program and package them into bundles, and it is highly configurable.
 
 ## Execution
 
@@ -975,7 +1083,7 @@ ES6 has syntax support for Modules.
 
 The traditional hosting environment of the JavaScript engine is the web browser. NodeJS is a server-side alternative, and there are other modern environments that may even be embedded systems.
 
-The JavaScript engine and the hosting environment interacts with the event loop. The engine executes functions that are on the loop, one-by-one on a single thread, (which is why many people refer to JavaScript as single threaded). At each tick, an event will be picked up from the loop and executed by the engine. 
+The JavaScript engine and the hosting environment interacts with the event loop. The engine executes functions that are on the loop, one-by-one on a single thread, (which is why many people refer to JavaScript as single threaded). At each tick, an event will be picked up from the loop and executed by the engine.
 
 The hosting environment may insert event into the loop upon completion of asynchronous operation.
 
@@ -983,25 +1091,45 @@ E.g. `setTimeout` interacts with a timer provided by the hosting environment, an
 
 ### Event Loop Concurrency
 
-Two work streams may be interleaving their events in the event loop, resulting in unexpected outcomes depending on their concurrency model.
+Two task queues may be interleaving their tasks in the event loop, resulting in unexpected outcomes depending on their concurrency model.
 
 #### Non-Interacting
 
-The two work streams do not affect each other in anyway, therefore the true sequence of event execution by the engine does not matter.
+The two task queues do not affect each other in anyway, therefore the true sequence of event execution by the engine does not matter.
 
-**Cooperative** model happens when each work streams limit the execution time of their events, allowing many other work streams to gain sufficient execution time on the event loop for the entire program to progress as a whole. This can happen by breaking the tasks down into smaller chunks and inserting those chunks back into the loop.
+**Cooperative** model happens when each task queues limit the execution time of their events, allowing many other task queues to gain sufficient execution time on the event loop for the entire program to progress as a whole. This can happen by breaking the big tasks down into smaller tasks and inserting those tasks back into the loop.
 
 #### Interacting
 
-The two work streams may be modifying the same variables within the same scope/context, or the outcome of the entire program execution depends on these shared variables. The outcome may be vastly different if the sequence of event execution changes, making the program non-deterministic.
+The two task queues may be modifying the same variables within the same scope/context, or the outcome of the entire program execution depends on these shared variables. The outcome may be vastly different if the sequence of event execution changes, making the program non-deterministic.
 
-We can overcome this issue by simple coordination between two work streams to make sure certain critical events do not overlap.
+We can overcome this issue by simple coordination between two task queues to make sure certain critical events do not overlap.
 
-### Job Queue
+### Tasks and Microtasks
 
-Job queue is a concept that works on top of the event loop. We can conceptualize it as a mini loop of tasks to be executed within a single tick of an event. The job queue will be cleared before the next tick begins for the next event in the loop.
+{% include figure image_path="/assets/images/screenshots/event-loop-task-queue.png" alt="" caption="Event Loop, Task Queues, and Microtask Queues" %}
 
-### Inside the Engine
+_Image sourced from [RisingStack blog](https://blog.risingstack.com/writing-a-javascript-framework-execution-timing-beyond-settimeout/)_
+
+Each **task** will run to completion on each event loop **tick**, and the next task will only begin at the next tick.
+
+At the end of each task, the **microtask** queue will be processed until the queue empties. (`Promise.then` is the simplest way to schedule a microtask).
+
+Rendering is handled by the main thread in the browser and therefore the render task needs to be scheduled as well. Rendering may take place between event loop ticks.
+
+The sequence of execution goes like this: _task > microtasks > render_
+
+**Important! Having this knowledge does not mean that we should use the scheduling of tasks and microtasks to enforce any kinds of event ordering!**
+
+### Runtime Model
+
+{% include figure image_path="/assets/images/screenshots/jaavascript-runtime-model.png" alt="" caption="Runtime Model" %}
+
+_Image sourced from [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop)_
+
+### Garbage Collection
+
+There is no need to release memory explicitly. This will be handled by JavaScript Garbage Collector. A mark-and-sweep algorithm is used to overcome the limitation of circular reference (this algorithm is able to identify a set of circular references that are isolated and can no longer be referenced, therefore is GC-eligible).
 
 ### Performance Optimization
 
@@ -1009,14 +1137,259 @@ Job queue is a concept that works on top of the event loop. We can conceptualize
 - SIMD optimization (Single Instruction, Multiple Data) requires API to allow JavaScript program to tap on modern CPU's SIMD processing capabilities, that speeds up vector calculations.
 - **asm.js** is a subset of JavaScript language. We use it by compiling our code to meet asm.js specs first, then allow environments that support asm.js to run it. Optimization largely derived from static typing and coercion, as well as reserved heap for modules to avoid expensive memory operations during runtime.
 
+### Performance Benchmarking
+
+- There is little benefit to writing your own benchmarking framework/utility. Use a tool like [benchmark.js](https://benchmarkjs.com/).
+- [jsPerf](https://jsperf.com/) is a site that uses benchmark.js to create an open platform for testing.
+- Certain performance difference hardly matter. (Average human cannot perceive anything faster than 100ms).
+- Engine optimization may provide unrealistic performance result due to detection of static values, which cannot replicate actual environment.
+- No need to be overly worried about microperformance optimization in your code, as the constant browser engine improvements will likely make a lot of these micro adjustments obsolete.
+- Focus manual effort on optmizing the critical path.
+
+### Tail Call Optimization
+
+ES6 specification requires engine to implement Tail Call Optimzation. If a recusive function call occurs at the end of a function definition, there is no need to allocate a new stack frame, as the existing frame can be reused to run the next recursed function execution. This optimization speeds up execution and reduces memory usage.
+
+---
+
+# TypeScript
+
+My notes are derived mostly from [TypeScript Deep Dive](https://basarat.gitbook.io/typescript/) and [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/).
+
+## Project Organization
+
+- `tsconfig.json` is used to define the project, files to include and compiler options.
+- Code splitting can be achieved with Webpack by preserving dynamic imports of TypeScript instead of transpiling (can be configured in `module` setting).
+- Global types can be controlled under compiler options as well.
+- `lib` option controls what default type support we will be having from TypeScript compiler (e.g. `esnext`, `dom`). Another option, `target`, controls the JavaScript version we will transpile to.
+  - Supported types are declared in `lib.d.ts` that ships with the compiler.
+- Avoid using `outFile` option since it introduces higher chance of error and slower compilation.
+- Type Declaration Space consists of `class`, `interface`, `type` declarations. Among the 3, only `class` declaration creates a variable.
+- Importing module with relative path look up follows this sequence to look for a `.ts`, `.d.ts` or `.js` file:
+  - Look for file in `node_modules` of current directory, and recursively look in parent directory uptil root of file system, for
+  - a file name matches the import name or
+  - a folder name matches the import name, and contains a file `importname/index.ts` or
+  - a folder name matches the import name, contains `importname/package.json`, and a file is specified in `types` or `main` of the `package.json` file.
+- `declare module` will make your module available in your program's global namespace. (equivalent to populating types in `global.d.ts` if your module only export types).
+- If we are importing a file just for types, and this file does not directly use the import, then it may transpile into an empty file. Use the following approach to ensure import
+
+```javascript
+import mod = require('mod');
+import mod2 = require('mod2');
+const guaranteeImport: any = mod && mod2;
+```
+
+_`namespace` in TypeScript allows grouping of functions within a file, but using file based modules will achieve the same objective with cleaner code._
+
+## JS Migration
+
+- Understand that all JavaScript is legit TypeScript.
+- Add `tsconfig.json`.
+- Change `.js` files to `.ts`. Suppress errors with `any` type.
+- Add new code with strong typing.
+- Gradually refactor old code.
+
+## Ambient Declaration
+
+The **Definitely Typed** community provides many type definitions for popular JavaScript libraries. They can all be imported via npm, and they begins with `@type/` prefix.
+
+But even if the definitions for a third-party library cannot be found, we can create our own ambient declaration, so that using this pure JavaScript library will not cause TypeScript compiler to throw error.
+
+```javascript
+// thirdpartylib.d.ts
+declare function process(x: number): Promise<number>; // must use declare keywords
+export default process;
+```
+
+For declaring variables type definition, we can consider using `interface` so that it can be extended easily in future.
+
+## Coding (TypeScript)
+
+### Class Access Modifiers
+
+- `private` only accessable within the class definition.
+- `protected` only accessable within the class definition, and child class definition. (even the constructor)
+- `public` is the default. Accessible from anywhere, even the class instances.
+- `abstract` class cannot be initiated, can only be `extended`. `abstract` members must be implemented by child classes.
+- `static` members can only be accessed by fully qualified class name access. (I believe under the hood this has the same delegation property as ES6 static modifier).
+
+### Type Alias
+
+Essentially using `type alias = validTypeAnnotation`. (Therefore, it is important to note that `type` is only an alias keyword, the true definition of types happens in all the annotations)
+
+### Interface
+
+Interface is the main building block of TypeScript type system.
+
+```javascript
+interface myOwnInterface {
+  prop: number,
+  optionalProp?: number,
+  readonly readonlyProp: number,
+}
+
+interface myOwnInterface { // open-ended
+  (): string, // makes implementation of this interface callable as a function
+  (input: number): number, // overloads the above function with a different signature
+  namedFunc(): number,
+  new(): string, // allows function to be called with NEW keyword
+  explicitThis(this: myOwnInterface): void, // this function implementation uses THIS. Explicit declaration prevents implicit ANY for THIS.
+}
+
+interface myIndexable extends myOwnInterface {
+  [index: string]: myOwnInterface, // this makes interface indexable, and also declare nested structure
+}
+```
+
+- TypeScript interfaces are open-ended, so subsequent interface definition with the same interface name will be merged as one.
+- It is pure syntactic sugar with no impact on JavaScript runtime.
+- Classes can `implement` interface. (But does not mean you have to, all depends on use cases).
+- Interface can `extend` classes as well, only inheriting the declaration of members without implmentation. If the class contains private members, then only a direct child class of this parent can implement such an interface extended from the parent.
+- `readonly` can be used on any property in a class, interface or in any types. Using `Readonly<type>` marks all properties of input type as readonly automatically and returns a new type. Readonly is not failsafe, as the values can still be mutated through aliasing.
+
+```javascript
+var x = { readonlyProp: 1 } as myOwnInterface // dirty shortcut assertion
+
+function mutateReadonly(aliasParam = { readonlyProp: number }) {
+  aliasParam.readonlyProp = 2;
+}
+
+mutateReadonly(x); // mutates readonly property!
+```
+
+### Functions
+
+- Supports parameter and output annotations.
+- Supports optional parameter `?`.
+- Support default parameter value.
+- Supports **Function Overloading**
+
+### Tuple
+
+TypeScript has extended the capabilities of JavaScript array by introducing a way to declare tuples.
+
+### Enum
+
+- Enum extends beyond numbers, allowing us to create string enums, or even heterogeneous enums.
+- Enum declarations are open-ended.
+- If the numeric value of the first enum member is declared, value of subsequent members will increment from this first value. (Value declaration is optional).
+- Declaring constant values for enums improves performance.
+- Obtaining all enum values can be done using `keyof typeof [enum]`
+- Value can be reversed mapped to key using `enum[value]`
+
+### Type Assertion vs Type Casting
+
+Type assertion can be achieved by using `var x = {} as myType`, so that no error will be thrown even if some properties of that type is initially missing. This is purely compile time checking, whereas type casting implies runtime conversion.
+
+To assert to any given type simply requires a double assertion to first assert to `any` then to desired type. Assertion is generally harmful if used wrongly since it undermines type checking.
+
+### Freshness (Strict Object Literal Check)
+
+Only applies to **object literal** because it has a higher chance to suffer from typo errors or from misusing of APIs. Essentially if a function parameter has been annotated, then calling the function with object literal as parameter must strictly match the parameter declaration.
+
+### Literal Types
+
+Using JavaScript primitives _values_ as type, meaning that the value of those instances must be exactly the same as the primitive value stated in the type definition. This seems to only be useful when creating union types to restrict values of certain instances.
+
+```JavaScript
+type diceRoll = 1 | 2 | 3 | 4 | 5 | 6;
+type direction = 'North' | 'South' | 'East' | 'West';
+```
+
+### Union and Intersection Types
+
+- Union types are created using `type | type`.
+  - Only properties common to all types can be accessed on a variable with union type.
+- Intersection types can be created using `type & type`.
+  - Can be used to implement mixin pattern.
+
+### Discriminate Type Union
+
+This comes down to using switch cases to check the value of certain literal member of this union type, that will be unique of each of the constituting types. A tip from the book _Typscript Deep Dive_ is to assign the input that falls through all the cases (therefore it is an unidentified type) to `never` to automatically throw an error.
+
+Union types can be used to support backward compatibility, such as implementing interface versioning, and we can use the discriminate approach mentioned above to perform specific processing.
+
+### Generics
+
+Generics are supported using syntax like `function myFunc<T>(inputList: T[])`. This helps to constrain our inputs and outputs, provide type support while preventing us from reimplementing the same functionalities for different types.
+
+```javascript
+// constraining between two params that are related
+function getProperty<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key];
+}
+
+// declaring parameter to be class constructor
+function create<T>(c: { new (): T }): T {
+  return new c();
+}
+```
+
+### Type Compatibility
+
+Type compatibility (assign instance of type A to reference for type B) depends on a number of factors:
+
+- Child class are compatible with Parent class (polymorphism)
+- Structurally similar types are compatible (same properties in object)
+- Function types are compatible if they have:
+  - sufficient information in return type (type A returns more information than type B) (extra output are ignored).
+  - accepts fewer parameters (type A accepts less parameters than type B) (extra parameters are ignored).
+  - optional and rest parameters are compatible.
+  - parameter types are compatible.
+- Enums are compatible with numbers.
+- Classes are compatible by only comparing members and methods (ignores static and constructor).
+  - Also, any `private` or `protected` members must originate from the same parent class, in order for two classes to be compatible.
+
+### Never
+
+`never` type is assignable to function that never returns or function that always throws. A `never` type can only be assigned to a `never` type, and not anything else.
+
+### Error Handling (TypeScript)
+
+Error subtype provided by JavaScript that we can use are: `RangeError,ReferenceError, SyntaxError, TypeError, URIError`.
+
+The book _Typescript Deep Dive_ do not encourage throwing errors, but instead passing the errors around (perhaps through callback functions), so that errors can be annotated as optional function return type. This is an interesting approach since I really like to have potential errors tracked by our type system, but I also do not want to lose the ability to interrupt the execution by throwing.
+
+### Non-Null Assertion
+
+We can assert that a variable is non-null, non-undefined by using a suffix `!` on the variable. Using `!` suffix in declaration just signals to the compiler that the property being declared will contain a valid value before it is accessed (and it is the coder's responsibility to do so). (Again these are dangerous augmentations that should be avoided for cleaner code).
+
+### Predefined Conditional Types
+
+- `Exclude<T, U>` — Exclude from T those types that are assignable to U.
+- `Extract<T, U>` — Extract from T those types that are assignable to U.
+- `NonNullable<T>` — Exclude null and undefined from T.
+- `ReturnType<T>` — Obtain the return type of a function type.
+- `InstanceType<T>` — Obtain the instance type of a constructor function type.
+
+## Note on Style
+
+This is a list of recommendation from _Typescript Deep Dive_
+
+- `camelCase` for function, variables, inner members, and filenames.
+- `PascalCase` for namespace, classes, types, and interfaces (no legacy `I` prefix).
+- `PascalCase` for enum and enum members.
+- No explicit use of `undefined` and `null`. Use `!= null` or `== null` to guard against both `null` and `undefined`.
+- `tsfmt` ships with compiler, and is useful for automatically formatting code.
+- Prefer single quotes. Use backticks if we need to escape single/double quotes.
+- Prefer 2 spaces, no tabs.
+- Use semicolon to end statements.
+- Prefer primitive types instead of native objects of primitives.
+- Use `type` if we want to perform union or intersection. Use `interface` when we want to extend or implement.
+
+## TSCompiler
+
+TODO: read https://basarat.gitbook.io/typescript/overview/program
+
 ---
 
 # Additional Readings
 
-- Tail Recursion in Javascript?
 - https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
-- interaction between engine and react script, particularly from how the script is injected in the HTML file, and why the execution never terminates in an SPA?
+- https://tsherif.wordpress.com/2013/08/04/constructors-are-bad-for-javascript/
 - https://blog.izs.me/2013/08/designing-apis-for-asynchrony
-- https://stackoverflow.com/questions/40880416/what-is-the-difference-between-event-loop-queue-and-job-queue
+- https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
 - http://asmjs.org/
-
+- TypeScript Handbook Reference - https://www.typescriptlang.org/docs/handbook/advanced-types.html
+- https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#tests
+-
