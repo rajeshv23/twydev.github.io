@@ -11,6 +11,8 @@ tags:
 
 Disclaimer: This is a piece of working document.
 
+---
+
 # Overview
 
 My notes are derived mostly from [reactjs.org](https://reactjs.org/) and [edX course, HarvardX: CS50M](https://courses.edx.org/courses/course-v1:HarvardX+CS50M+Mobile/).
@@ -21,6 +23,8 @@ My notes are derived mostly from [reactjs.org](https://reactjs.org/) and [edX co
   - reconstruct Virtual DOM.
   - find difference between Virtual DOM and actual DOM.
   - only apply necessary changes to actual DOM.
+
+---
 
 # JSX
 
@@ -39,6 +43,8 @@ JSX objects are transpiled into React elements. Elements are the building blocks
 - Even though a new Element instance is passed to ReactDOM, only the necesary changes will be reflected to DOM, making it more efficient to update.
 - Developers can simply focus on what an entire element look like at every point in time, instead of worrying about how an update can be applied.
 
+---
+
 # React Components
 
 React Components are reusable JavaScript functions that form the building blocks of React application logic.
@@ -48,7 +54,7 @@ React Components are reusable JavaScript functions that form the building blocks
 
 If a component tag is used to to define a React Element, any JSX attributes and children to this tag will be passed as a single Props object to the component function.
 
-_Creating a Component as a JavaScript class provides access to additional functionalities such as state and lifecycle_
+_Creating a Component as a JavaScript class provides access to additional functionalities such as state and lifecycle. If we don't we will be creating Stateless Functional Components (SFC)_
 
 ## State and Lifecycle
 
@@ -108,6 +114,14 @@ Props are immutable, with respect to their React components.
 `this.props` accesses `props` property, which is specially reserved (like `state`) and will be initialized by `React.Component` class, which all components will inherit from.
 
 `props.children` will be populated if the current component has been called with child element included within the component tag in JSX.
+
+### PropTypes
+
+- Only runs in **development mode**.
+- Validate type of component props at runtime.
+- Serves as documentation of component API.
+
+To use, we need to import PropTypes, and attach types declaration to a React component. Since it provides additional checking, we should use it. However, if we are using TypeScript with React, this may be unnecessary.
 
 ## Data Flow
 
@@ -191,6 +205,8 @@ _Visualisation of components used in this [example](https://reactjs.org/docs/lif
 - There can be no two way binding or sharing of state between components, since **data flow downwards**.
 - Using IOC, we can allow child components to trigger state changes in the parent component, and these changes will propagate to all other child components via props.
 
+---
+
 # Design Pattern
 
 React documentation guide recommends using Composition instead of Inheritance to achieve any software designs we want.
@@ -209,3 +225,47 @@ Summary of an example thinking process provided by React documentation guide:
 4. Identify the minimal state representation necessary to make UI interactive. (e.g. if we need both data and statistics of those data to provide interactivity, we should only represent the data in our state, and derive statistics only when we require them).
 5. Identify where states should live (consider lifting state to common ancestor if necessary).
 6. Add inverse data flow (egistering callbacks that introduce IOC for child components to trigger update on parent component states).
+
+---
+
+# React Native
+
+## Introduction
+
+- Based on React Core. JavaScript gets bundled for mobile. Write once run anywhere.
+- Unlike browsers that runs rendering and JavaScript on one main thread, on mobile, separate threads will be used for UI, Layout, and JavaScript. In other words, JS thread maybe blocked but UI is still working.
+- Communication between threads goes through a bridge and is asynchronous.
+- Has different base components, elements, style, and navigation from React web.
+- No access to browser API. (some functions have been poly filled)
+- Not globally scoped, React Native needs to be imported.
+
+## Style
+
+- Uses JavaScript objects for styling instead of CSS file.
+  - Object keys are CSS properties.
+  - `StyleSheet` can be used to reuse styles and optimize sending style information over the bridge.
+- Flexbox layout (default to column layout).
+- Lengths are unitless.
+- `style` props can take an array of styles.
+
+## Event Handling
+
+- Only a few "touchable" elements in React Native can accept event handler
+- Callback function interface is not consistent. Need to consult documentation before use.
+
+## Development Tools
+
+**Expo** is a suite of tools to accelerate React Native development. Comes with:
+
+- Snack - run React Native in browser.
+- Client - run project on mobile devices while developing.
+- SDK - exposes cross-platform libraries and APIs.
+
+---
+
+# Additional Reading
+
+- React Advanced Guide (page1) https://reactjs.org/docs/accessibility.html
+- Why props update also cause re-rendering, besides setState? Or is it because re-rendering of parent (passing new props down) also re-render child components?
+- Full Component lifecycle?
+- How to do testing properly, since React is built with test in mind.

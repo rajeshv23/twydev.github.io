@@ -1393,3 +1393,4 @@ TODO: read https://basarat.gitbook.io/typescript/overview/program
 - TypeScript Handbook Reference - https://www.typescriptlang.org/docs/handbook/advanced-types.html
 - https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#tests
 - https://egghead.io/courses/introduction-to-reactive-programming
+- https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
