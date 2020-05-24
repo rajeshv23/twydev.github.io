@@ -255,11 +255,98 @@ Summary of an example thinking process provided by React documentation guide:
 
 ## Development Tools
 
-**Expo** is a suite of tools to accelerate React Native development. Comes with:
+### Expo
+
+Expo is a suite of tools to accelerate React Native development. Comes with:
 
 - Snack - run React Native in browser.
 - Client - run project on mobile devices while developing.
 - SDK - exposes cross-platform libraries and APIs.
+
+### Debugging
+
+- React error/warnings
+  - `console.error` triggers a full page error display
+  - `console.warning` triggers a yellow banner (will not appear in production mode)
+- Chrome Developer Tool (devtools)
+  - JavaScript running inside Chrome tab is monitored by the debugger
+  - Since React Native runs on a separate thread as Chrome tab JavaScript, communicating asynchronously through a bridge, they can be running on separate devices.
+  - Chrome debugger is able to log circular JSON, which other debugger may not support.
+- React Native Inspector
+  - similar to browser devtools inspector, able to click on layout elements on screen and look at element details.
+  - but cannot live edit elements.
+- `react-devtools` library
+  - inspect component hierarchy, component props and state
+  - install as project package dependency
+  - run with CLI command (works with React Native Inspector)
+  - allows live edit of style, props, etc.
+
+## Lists
+
+### ScrollView
+
+Most basic scrolling view. (Unlike React Web, we will not be able to scroll unless we use a component with such interactivity).
+
+- Components in an array need a unique key prop.
+- Renders all children before appearing.
+
+### FlatList
+
+Performant scrolling view that "lazily" renders components.
+
+- Only currently visible rows will be rendered in the first cycle.
+- Virtualized. Rows are recycled, and rows that exits visibility may be unmounted. (Note: component state will be lost if unmounted).
+- Takes an array of data, and a `renderItem` function as props. (refer to docs for renderItem function signature).
+
+### SectionList
+
+Extends `FlatList` with sections.
+
+- Each section has its own data array and can override its own `renderItem` function
+- `renderSectionHeader` function used to render header.
+
+## User Input
+
+React recommends using controlled components to render input, making react component states the source of truth.
+
+- `onChange` prop is used to trigger react component when input is detected, to update states and re-render.
+- `value` prop is used to pass the output state content to be rendered on input element.
+- Input validation can be triggered by handler, before setting component state.
+  - `setState` takes a second callback function as input, which will be called after setting state. This can be used for validation.
+  - `componentDidUpdate` can also be used to call validation as well. (must compare current state with previous state to know when to NOT validate, to prevent causing infinite set state loop from the validation).
+- Need to manually handle form submission (React Native limitation) and obtain all require values from component state.
+- `KeyboardAvoidingView` is good for simple and short forms. It prevents virtual keyboard from obstructing the view.
+  - Specify behavior when virtual keyboard appears by adjusting padding, height, or position of view.
+  - However, the view moves independently from any child text inputs, so may not be good for complex form.
+
+## Navigation
+
+- Web navigation is oriented around URLs
+- Mobile navigation API is completely different, on both iOS and Android.
+- React Navigation library provides an platform agnostic alternative
+
+### Navigator, Routes and Screens
+
+- Navigator is a React component that implements a navigation pattern.
+- Route is a child of a navigator.
+  - Each route must have a name and a screen component to be rendered when route is active.
+  - The screen component can also be another navigator, creating a nested structure.
+- The navigation prop is automatically passed to each screen component, allowing screen component to navigate to other route.
+- `screenProps` can be used for rapid prototyping to pass prop to ALL screen component through navigator, but every route will re-render when screenProps change, so it is not efficient.
+
+### Switch Navigator
+
+- Inactive screens are unmounted.
+- The only action allowed is to switch from one route to another.
+
+### Stack Navigator
+
+- State of inactive screens are maintained and remains mounted.
+- Platform specific layout, animations and gestures.
+- Screens can be pushed/popped from the stack, or replaced.
+
+
+
 
 ---
 
@@ -269,3 +356,5 @@ Summary of an example thinking process provided by React documentation guide:
 - Why props update also cause re-rendering, besides setState? Or is it because re-rendering of parent (passing new props down) also re-render child components?
 - Full Component lifecycle?
 - How to do testing properly, since React is built with test in mind.
+- Props are not considered as updated and will not render if the reference are not updated? (e.g. sort array in place will not render. Create a new sorted array will render)
+- Higher Order Component.
