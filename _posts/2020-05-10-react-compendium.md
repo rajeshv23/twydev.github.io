@@ -253,34 +253,6 @@ Summary of an example thinking process provided by React documentation guide:
 - Only a few "touchable" elements in React Native can accept event handler
 - Callback function interface is not consistent. Need to consult documentation before use.
 
-## Development Tools
-
-### Expo
-
-Expo is a suite of tools to accelerate React Native development. Comes with:
-
-- Snack - run React Native in browser.
-- Client - run project on mobile devices while developing.
-- SDK - exposes cross-platform libraries and APIs.
-
-### Debugging
-
-- React error/warnings
-  - `console.error` triggers a full page error display
-  - `console.warning` triggers a yellow banner (will not appear in production mode)
-- Chrome Developer Tool (devtools)
-  - JavaScript running inside Chrome tab is monitored by the debugger
-  - Since React Native runs on a separate thread as Chrome tab JavaScript, communicating asynchronously through a bridge, they can be running on separate devices.
-  - Chrome debugger is able to log circular JSON, which other debugger may not support.
-- React Native Inspector
-  - similar to browser devtools inspector, able to click on layout elements on screen and look at element details.
-  - but cannot live edit elements.
-- `react-devtools` library
-  - inspect component hierarchy, component props and state
-  - install as project package dependency
-  - run with CLI command (works with React Native Inspector)
-  - allows live edit of style, props, etc.
-
 ## Lists
 
 ### ScrollView
@@ -333,6 +305,9 @@ React recommends using controlled components to render input, making react compo
   - The screen component can also be another navigator, creating a nested structure.
 - The navigation prop is automatically passed to each screen component, allowing screen component to navigate to other route.
 - `screenProps` can be used for rapid prototyping to pass prop to ALL screen component through navigator, but every route will re-render when screenProps change, so it is not efficient.
+- When navigating from route to route, we can pass in a `param` to pass state to a different route.
+  - We can't use props since that was pass through the parent navigator.
+  - similar concept URL param in web.
 
 ### Switch Navigator
 
@@ -345,16 +320,183 @@ React recommends using controlled components to render input, making react compo
 - Platform specific layout, animations and gestures.
 - Screens can be pushed/popped from the stack, or replaced.
 
+### Tab Navigator
 
+- State of inactive screens are maintained and remains mounted.
+- Provides a tab bar to switch between tabs.
+- Platform specific layout, animations and gestures.
+- By default `goBack()` returns to first tab.
 
+### Composing Navigator
+
+- A navigator can be a screen component of a route under another navigator.
+  - Do not render a navigator within screen component.
+  - Instead, set the screen component as a navigator from the parent component.
+- An app should only have one top level navigator, but we can navigate to any route in the app.
+- `goBack` works for the whole app (supports Android back button).
+
+## Development Tools
+
+### Expo
+
+Expo is a suite of tools to accelerate React Native development. Comes with:
+
+- Snack - run React Native in browser.
+- Client - run project on mobile devices while developing.
+- SDK - exposes cross-platform libraries and APIs.
+
+### Debugging
+
+- React error/warnings
+  - `console.error` triggers a full page error display
+  - `console.warning` triggers a yellow banner (will not appear in production mode)
+- Chrome Developer Tool (devtools)
+  - JavaScript running inside Chrome tab is monitored by the debugger
+  - Since React Native runs UI and JS on separate thread, communicating asynchronously through a bridge, they can be running on separate devices. When using chrome debugger, our JS app is running on chrome as a service worker.
+  - Chrome debugger is able to log circular JSON, which other debugger may not support.
+- React Native Inspector
+  - similar to browser devtools inspector, able to click on layout elements on screen and look at element details.
+  - but cannot live edit elements.
+- `react-devtools` library
+  - inspect component hierarchy, component props and state
+  - install as project package dependency
+  - run with CLI command (works with React Native Inspector)
+  - allows live edit of style, props, etc.
+
+### Performance
+
+- React Native Perf Monitor.
+  - shows refresh rate of UI and JS threads.
+- Chrome Performance Profiler.
+  - only in development mode.
+  - flame chart showing time taken to render each component.
+
+## Common Performance Inefficiencies
+
+- Rendering too often
+  - Props changes not related to UI was passed to component.
+  - If using Redux, component should only subscribe to interested state changes.
+  - Use keys in array/list to prevent re-rendering the same element.
+  - `shouldComponentUpdate()` lifecycle method can be used to provide you the control over whether a component should re-render.
+  - `React.PureComponent` has a default `shouldComponentUpdate()` method that performs a shallow diff of props, to determine if it should re-render.
+- Unnecessary props changes
+  - Passing a new props object to a component may cause re-rendering of the entire sub-tree.
+  - Any object literals or functions created in `render()` method will also cause new object to be created at each render (immutable)
+  - Use constant, methods, or properties of class instance to avoid unnecessary immutable object.
+- Unnecessary logic in mount/update (quite subtle)
+  - Properties created in a class will be re-created at every mount.
+  - However, class methods will only be created once ever (prototype chain).
+  - The disadvantage of using class methods: we cannot use arrow functions, and hence we cannot rely on lexical scope of `this` context, and will instead need to perform explicit binding.
+- Animation
+  - Animation on UI thread that requires JS thread data to be sent over the bridge rapidly burdens performance.
+  - Blocking on either threads greatly reduce UX.
+  - Implementing animation in native (Swift, Java) may not be easy to manage project.
+  - Use `Animated` API to declare computation in JS, to be run on UI thread instead. (but we can't use native driver for layout props).
+
+# Redux
+
+## Flux Architecture
+
+Redux is inspired by the Flux architecture. A Flux architecture has the following characteristics:
+
+- Unidirectional data flow.
+- Views react to changes in a **store**.
+- Only a **dispatcher** can update data in a store.
+- Dispatcher can only be triggered by **actions**.
+- Actions are triggered from **views**.
+
+Motivation of using such an architecture is to manage complexity of numerous models and views with multidirectional dependencies in a large React application. Some advantages that Redux offers:
+
+- direct management of deeply nested component state.
+- reduce duplication of information in state.
+- reduce risk of not updating props or not passing props properly.
+- clarity of overall app state.
+
+Redux data management uses a single store. **Actions** trigger **Reducers** which update the **Store**.
+
+### Reducers
+
+- Pure functions. No side effects. Output determined by inputs.
+- Takes previous state and an action to return new state.
+- A new state object should be returned for immutability.
+
+### Store
+
+- Expose getter functions to obtain current state.
+- Can only be updated using dispatch function (which works with reducers).
+- Allows adding of listeners to run callbacks when state changes.
+
+### Actions
+
+- Data object containing information for state update.
+- Usually contains a `type` key to indicate the type of state update.
+- Created by Action Creator Functions.
+- Actions must be dispatched.
+
+## react-redux
+
+- Official React bindings for Redux
+- Recommended to use Higher Order Component manage state updates and re-rendering using this library.
+  - `connect()` wraps a React component (e.g. a screen component)
+  - Register callback `mapStateToProps` whenever state updates. Props will be passed to wrapped component.
+  - Register callback `mapDispatchToProps` to bind action creator function to store dispatch, and expose it to wrapped component as props.
+  - Library needs to register a store using `Provider`, usually at the top level component. The registered store will be available to all nested components that are using the `connect()` API.
+
+## Redux Middleware
+
+- Allows us to extend redux without modifying redux implementation.
+- Any function with the following prototype can be a middleware:
+  - `({getState, dispatch}) => next => action => void`
+  - The middleware is a function that takes a store as an input and returns a second function.
+  - The second function takes a `next` middleware as input, and returns the third function.
+  - The third function takes an `action` as input, and execute without returning. (It has access to all inputs so far due to closure over function scope).
+  - `next` param allows us to chain the middleware.
+- Intercepts and modify incoming action to the reducer.
+  - Can be used to trigger and respond to async calls before updating state.
+
+## redux-persist
+
+- abstracts the persistance of store (uses `AsyncStorage` under the hood).
+- allow us to persist store when app closes and re-opens.
+- display loading screen while waiting for store to rehydrate.
+
+## Container vs Presentation Components
+
+To manage complexity as our application grows, we can consider:
+
+- Having components that are aware of redux state (containers).
+- Components that only renders what was passed as props (presentation).
+
+## Testing
+
+### Jest for Redux Actions
+
+Besides using the standard Jest test functions, we can make use of snapshots.
+
+- Test script can save snapshot of function output from first run, and compare it with subsequent run.
+- Will throw error if snapshot does not match.
+- We can choose to update snapshot with new outputs.
+
+### Jest for Async Redux Actions
+
+- We may use mock functions or mock external libraries.
+- Dependency injection pattern in our code design will help us pass mock functions.
+
+### Jest for React Component
+
+- We can also use snapshots to compare render output.
+- `react-test-renderer` allows rendering of a component outside the context of an app.
+- `jest-expo` has config required for React Native testing.
 
 ---
 
 # Additional Reading
 
-- React Advanced Guide (page1) https://reactjs.org/docs/accessibility.html
+- React Advanced Guide (page1)[https://reactjs.org/docs/accessibility.html]
 - Why props update also cause re-rendering, besides setState? Or is it because re-rendering of parent (passing new props down) also re-render child components?
 - Full Component lifecycle?
 - How to do testing properly, since React is built with test in mind.
 - Props are not considered as updated and will not render if the reference are not updated? (e.g. sort array in place will not render. Create a new sorted array will render)
 - Higher Order Component.
+- Commonly used icon pack `react-native-vector-icons`
+- smart and dumb components by (Dan Abramov)[https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0]
