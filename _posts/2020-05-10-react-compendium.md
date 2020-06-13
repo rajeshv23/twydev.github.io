@@ -492,11 +492,11 @@ Besides using the standard Jest test functions, we can make use of snapshots.
 
 # Additional Reading
 
-- React Advanced Guide (page1)[https://reactjs.org/docs/accessibility.html]
+- React Advanced Guide [page1](https://reactjs.org/docs/accessibility.html)
 - Why props update also cause re-rendering, besides setState? Or is it because re-rendering of parent (passing new props down) also re-render child components?
 - Full Component lifecycle?
 - How to do testing properly, since React is built with test in mind.
 - Props are not considered as updated and will not render if the reference are not updated? (e.g. sort array in place will not render. Create a new sorted array will render)
 - Higher Order Component.
 - Commonly used icon pack `react-native-vector-icons`
-- smart and dumb components by (Dan Abramov)[https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0]
+- smart and dumb components by [Dan Abramov](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)
