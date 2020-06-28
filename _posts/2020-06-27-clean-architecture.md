@@ -154,3 +154,94 @@ Applying the above SOLID principles makes good modules, and now we need good pri
 ### What is a Component
 
 Some concrete examples are `.jar` files in Java, `gem` files in Ruby, `DLLs` in .NET, and my guess are NPM packages in JavaScript. Regardless of language, good components are always independently deploy-able and develop-able.
+
+### Component Cohesion Principles
+
+These principles deal with the appropriate classes to include in a component.
+
+#### Reuse/Release Equivalence Principle
+
+> The granule of reuse is the granule of release
+
+Components should have proper release versioning and documentation to allow users of the component to easily reuse them in their own applications. This can be facilitated by module management tools and package repositories.
+
+But to have proper release, all classes and modules inside a component must be cohesive enough to be releasable together. In other words, the user of this component do not need to worry about the internals of the component being not up to date, and only need to perceive the component as one single, granular unit.
+
+By extension, when organizing components/features within our own application, if we eventually intend to release those as individual packages, we should also take REP into consideration.
+
+#### Common Closure Principle
+
+> A component should be a group of classes and modules that change for the same reasons, at the same time.
+
+This is SRP from SOLID principles, but applied to the component level. Maintainability is usually more important than reusability. If we require a change in the application, we want to ideally limit it to a component, rather than having to distribute the change across many components.
+
+#### Common Reuse Principle
+
+> Don't force users of a component to depend on things they don't need
+
+This is similar to ISP in SOLID principles but applied to the component level. The consumer of a component ideally uses all classes and modules in the component (component internals are tightly cohesive), if not this dependency will carry baggages of unused classes and modules, and any changes to those unused internals will also propagate changes to the consumer for no good reasons.
+
+#### Tension Triangle
+
+{% include figure image_path="/assets/images/screenshots/cohesion-principles-tension.png" alt="" caption="Cohesion principles tension diagram. From Clean Architecture book." %}
+
+When we evaluate a component, we will find that it lands somewhere within the triangular space. Edges of the triangle describes the cost of abandoning the principle on the opposite vertex. A good architect will evaluate the tradeoffs and seek to craft the component at a suitable position in the triangle, but make it appropriate and relevant to the current state of the project.
+
+Early development of a project will likely focus more on CCP to improve develop-ability and collaboration in the team. However as project matures, focus will be shifted to the left of the triangle as there will be more external consumer of the components, and the team will need to be concern over release management.
+
+### Component Coupling Principles
+
+The above three principles deals with the internals of a component, the next three principles deal with the interaction between components.
+
+#### Acyclic Dependencies Principle
+
+> Allow no cycles in the component dependency graph
+
+Components in an application can be mapped on to a dependency graph. Having cycles in a graph means that there will be a subset of all components that are so tightly coupled that they cannot be easily build and release without stepping all over each other's work. This subset of components behave as one large component block in the system.
+
+Having a Directed Acyclic Graph (DAG) on the other hand means that each component only need to be concerned with maintaining their own releases, and the consumers of those components can decide which release version to consume. This allows easier and faster building of the application, and determines the order of component build.
+
+Cycles can be broken by applying Dependency Inversion Principle, using interfaces to separate the dependency of two component, and extract out common elements of the two components into a new concrete component that implement the interfaces. This new concrete component becomes a sink that absorbs the flow of dependency direction, breaking the cycle.
+
+It is not realistic to create the component dependency graph from top down since day one. We should gradually evolve our components as the project progresses and mature.
+
+#### Stable Dependencies Principle
+
+> Depend in the direction of stability
+
+Stability measures the amount of work required to make a change. A component is highly stable if a lot of other components depend on it, but itself has no dependency on others. A component is highly unstable if it only depends on other component, but no others every depend on it. It is obvious that updating a stable component will cause a lot of repercussion than an unstable component.
+
+**Special Note** - Stability is just a measure, and it does not indicate whether more stability is good or bad. The system needs both stable and unstable components, the key is to arrange the dependency graph of the system, such that components are less likely to change are stable, and components that are volatile are unstable.
+
+Formula for calculating positional stability of a component:
+
+- Fan-in: number of classes outside of this component that depends on classes inside this component (i.e. number of import statements importing classes/modules from this component)
+- Fan-out: number of classes inside this component that depends on classes from other components (i.e. number of import statements this component is using)
+- Instability: *I = Fan-out / (Fan-out + Fan-in)*
+
+If a component has no Fan-in, which means nothing depends on this component, it will have *I* = 1, meaning it is maximally unstable. If a component has no Fan-out, which means it does not depend on anything, it will have *I* = 0, meaning it is maximally stable.
+
+If a component, named A, is expected to be stable but is depending on another highly volatile component, B, we have a design problem and we will run into the unpleasant situations of having to update A unnecessarily when B changes. The solution to this is again the use of Dependency Inversion, to make both components depend on an interface. Therefore A which depends on the interface remains stable. B is unstable, but it only depends on the interface and is free to change. The interface itself do not depend on anything, so it is maximally stable.
+
+#### Stable Abstraction Principle
+
+> A component should be as abstract as it is stable
+
+Abstractions allows a stable component to still be flexible to changes in future without causing pain to its dependents.
+
+Formula for measuring Abstractness:
+
+- Nc: number of classes in a component
+- Na: number of abstract classes/interfaces in a component
+- Abstractness: *A = Na / Nc*
+
+*A* = 0 means there are no abstract classes or interfaces, *A* = 1 means that there are only abstract classes.
+
+Looking at both Instability *I* and Abstractness *A*, we can identify the characteristics of a component and its impact to our system.
+
+- A highly stable component with no abstractions (*I* = 0, *A* = 0) typically causes a world of hurt as it is extremely difficult to change. An example would be database schema that sits between the database and an OO application. Database schema is highly volatile in the early stage of the project and we simply don't have a good way to provide abstraction. If the component is non-volatile however, such as a library like `momentJS`, it is less of a problem as we are not expecting much changes.
+- A highly abstract and unstable component (*I* = 1, *A* = 1) is typically useless, as no other components are using it. Usually these are legacy zombie code.
+
+So it seems like the line that connects (*I* = 0, *A* = 1) and (*I* = 1, *A* = 0) is where we should strive be place our component. (The book calls this line the Main Sequence). To put it into words, an increasingly stable component should be increasingly abstract.
+
+These metrics, *I* and *A*, and the distance between the current component's metric from the Main Sequence line can be collected over several releases to perform statistical analysis and process control, to monitor and measure design changes in our software.
