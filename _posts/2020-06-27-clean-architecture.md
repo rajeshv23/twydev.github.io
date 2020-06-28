@@ -43,7 +43,7 @@ The book also stated that there were no new paradigms discovered after year 1968
 
 > Structured programming imposes discipline on direct transfer of control
 
-A good example to see this paradigm in action is through game, Human Resource Machine.
+A good example to see this paradigm in action is through the game, Human Resource Machine.
 
 {% include figure image_path="/assets/images/screenshots/human-resource-machine.png" alt="" caption="Human Resource Machine. Official Screenshot from Steam" %}
 
@@ -130,3 +130,27 @@ Classes can inherit from parent classes, and seamlessly replace objects of paren
 > clients of an interface should not be forced to implement more methods than necessary
 
 Violating the principle just means that the interface itself can be further broken down into decoupled interfaces. This principle protects us from unnecessary changes to components simply because its dependency violated this principle, and has an additional baggage that needs to be changed, which is entirely unrelated to the component's main function or behavior.
+
+### Dependency Injection Principle
+
+> source code should depend on abstractions, and avoid volatile concretions
+
+Some golden rules:
+
+- Don't refer to volatile concrete classes
+- Don't derive from volatile concrete classes
+- Don't override concrete functions
+
+The *Abstract Factory* pattern showcases this principle, as the client of abstract factory only works with the interface of a factory, and interfaces of the entire family of objects created by the factory. At a higher level above the client, the concrete factory is injected into the client, therefore the client's source code will only ever work with abstractions, no concretions.
+
+**Special Note** - I was confused between *Abstract Factory* pattern and *Factory Method* patterns and did a quick search. Abstract Factory is a pattern used to produce a family of related objects from a factory, in contrast the Factory Method is only responsible for returning one object. Both patterns essentially defer the actual object creation to another layer, away from the client.
+
+DIP violation cannot be entirely removed as we ultimately need to handle concrete classes. Most systems contain the handling of concrete components in a `main` function, which would instantiate all necessary concrete implementations depending on configuration, place these objects in a global variable, accessible to the entire application, and other parts of the source codes will only be dealing with these global variables through abstract interfaces.
+
+## Component Principles
+
+Applying the above SOLID principles makes good modules, and now we need good principles to compose those modules together to form components.
+
+### What is a Component
+
+Some concrete examples are `.jar` files in Java, `gem` files in Ruby, `DLLs` in .NET, and my guess are NPM packages in JavaScript. Regardless of language, good components are always independently deploy-able and develop-able.
