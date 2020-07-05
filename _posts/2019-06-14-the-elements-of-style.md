@@ -3,17 +3,20 @@ title: "The Elements of Style"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Book Review
+  - Communications
 tags:
   - writing
+  - books
 ---
+
+The rules on writing to help everyone feel more confident in addressing a wider audience. It contains great examples to help us understand the application of each rule and how adopting the rules leads to better writing.
+
+___
+
+# The Elements of Style
 
 **The Elements of Style** - W. Strunk Jr. & E. B. White
 {: .notice--primary}
-
-This book contains a set of rules on writing to help writers feel more confident in writing for a wider audience. I like how the book provides examples to help readers better understand the application of each rule and how adopting the rules leads to better writing style.
-
-___
 
 ## Elementary Rules of Usage
 

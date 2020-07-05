@@ -3,25 +3,27 @@ title: "The Effective Engineer"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Book Review
+  - Project Management
 tags:
-  - engineering
-  - management
+  - productivity
+  - collaboration
+  - books
 ---
+
+Effective time management helps to deliver projects on time. The key to effectiveness is to focus on high impact activities, and some of the highest impact activities include building a strong foundation and culture for your engineering team, which surprisingly do not relate to the actual work of delivering the projects. 
+
+Scenarios and examples provided in the book are very relevant and relatable to all professional engineers. I encourage everyone to grab a copy and start reading.
+
+___
+
+# The Effective Engineer
 
 **The Effective Engineer** *How to Leverage your Efforts in Software Engineering to Make a Disproportionate and Meaningful Impact* - Edmund Lau, 2015
 {: .notice--primary}
 
-The book advocates effective time management to help you deliver your projects on time. Scenarios and examples provided in the book are very relevant and relatable to all professional engineers. The key to effectiveness is to focus on high impact activities. You may be surprised that some of the highest impact activities are not related to the actual work of delivering the projects. Building a strong foundation and culture for your engineering team is likely the best investment of your time.
-
-I encourage everyone to grab a copy and start reading.
-
-___
-
-## Introduction
 Effectiveness is determined by both time taken and value produced. An effective engineer produces high value in a short time.
 
-### Foreword
+## Foreword
 *Bret Taylor, CEO of Quip*
 
 > Silicon Valley would be a much better place for both managers and engineers if people embraced "working smart" rather than "working hard".

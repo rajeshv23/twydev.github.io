@@ -3,19 +3,26 @@ title: "Domain-Driven Design Fundamentals"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Online Course
+  - Software Design
+  - Software Architecture
 tags:
   - domain driven design
+  - best practice
+  - online course
 ---
+
+Comprehensive course covering Domain Modelling, Entities and Value Objects, Aggregate Pattern, Domain Services, Bounded Context, Repository Pattern, and Domain Events.
+
+___
+
+# Domain-Driven Design Fundamentals
 
 **Domain-Driven Design Fundamentals** - Steve Smith and Julie Lerman, accessed on PluralSight 2019
 {: .notice--primary}
 
-I think so far this is the only course I have given a 5-star rating on PluralSight. Extremely clear explanations with walk through of source code applying concepts of DDD. This is an introductory course that I would highly recommend. The dog pictures used in the demo is a plus! 
-
-___
-
 ## Introduction
+
+I think so far this is the only course I have given a 5-star rating on PluralSight. Extremely clear explanations with walk through of source code applying concepts of DDD. This is an introductory course that I would highly recommend. The dog pictures used in the demo is a plus! 
 
 ### Focus of DDD
 

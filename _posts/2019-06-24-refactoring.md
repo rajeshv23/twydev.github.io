@@ -3,22 +3,28 @@ title: "Refactoring"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Book Review
+  - Coding
 tags:
-  - engineering
+  - refactoring
   - best practice
+  - martin fowler
+  - books
 ---
+
+A general approach to refactoring our code. It attempts to classify issues in our code into categories, and demonstrate the solutions to overcoming those issues. The list examples are not exhaustive, but it is sufficient for everyone to get started. 
+
+Half of the book is made up of a reference catalog for you to quickly access the refactoring techniques that deals with the specific problem you are facing. Overall I felt that Clean Code by Uncle Bob was an easier read and may be more relevant to our daily work.
+
+___
+
+# Refactoring
 
 **Refactoring** *Improving the Design of Existing Code* - Martin Fowler, Kent Beck, John Brant, William Opdyke, Don Roberts, 2002
 {: .notice--primary}
 
 Everyone aims to write efficient software. However, writing legible software is equally, if not more, important. Clearly and cleanly structured code makes the software much easier to maintain and enhance, delivering more value in the long run.
 
-This book provides us with a general approach to refactoring our code. It attempts to classify issues we faced in our code into various categories, and demonstrate the solutions to overcoming those issues. The list examples are not exhaustive, but it is sufficient for everyone to get started. Half of the book is made up of a reference catalog for you to quickly access the refactoring techniques that deals with the specific problem you are facing.
-
-___
-
-## What is refactoring and why do we refactor codes?
+## What is refactoring?
 
 ### Chapter 1: Refactoring, A First Example
 This chapter showcase a small program that is part of a larger software, responsible for computing rental charges and printing customer statements. The initial version of the program cannot easily incorporate new features or changes to business logic.

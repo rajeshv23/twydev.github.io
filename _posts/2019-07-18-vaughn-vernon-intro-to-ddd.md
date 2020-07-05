@@ -3,17 +3,24 @@ title: "Introduction to Domain Driven Design"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Online Course
+  - Software Design
 tags:
   - domain driven design
+  - best practice
+  - vaughn vernon
+  - online course
 ---
+
+Domain Driven Design (DDD) is a software development approach to implement complex software by dividing the solution into domains that serves specific purposes, using tools such as Ubiquitous Language, Bounded Context, Domain Events and Aggregate Patterns.
+
+___
+
+# Distilling Domain-Driven Design
 
 **Distilling Domain-Driven Design** - Vaughn Vernon, accessed on Kalele 2019
 {: .notice--primary}
 
-Domain Driven Design (DDD) is a software development approach to implement complex software by dividing the solution into domains that serves specific purposes. This way of thinking not only helps us to keep the software maintainable as it scales up in complexity, but also guides the behavior of a cross-functional development team, consisting of software developers and domain experts, towards higher efficiency.
-
-___
+DDD helps to keep the software maintainable as it scales up in complexity, but also guides the behavior of a cross-functional development team, consisting of software developers and domain experts, towards better collaboration and higher efficiency.
 
 ## Chapter 1: Introduction and Overview
 There are two parts to DDD, Strategic and Tactical Design.

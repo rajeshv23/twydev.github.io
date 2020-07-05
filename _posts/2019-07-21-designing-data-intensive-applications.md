@@ -3,41 +3,45 @@ title: "Designing Data-Intensive Applications"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Book Review
+  - Database
 tags:
-  - data systems
-  - software design
+  - distributed computing
+  - data storage
+  - foundational
 ---
+
+Status: `draft`
+
+Explores the tradeoffs of data storage and processing technologies available today, and the hard problems facing distributed computing. Key topics include data structures of databases (B-Trees and LSM-Trees), Replication, Partitioning, Transactions, Consistency, Consensus, MapReduce, Stream Processing, and Event Driven.
+
+___
+
+# Designing Data-Intensive Applications
 
 **Designing Data-Intensive Applications** *The Big Ideas Behind Reliable, Scalable, and Maintainable Systems* - Martin Kleppmann, 2017
 {: .notice--primary}
 
-I like the opening quote from Alan Kay. While we dive into a mad rush to implement new technologies, we forgot about the fundamental principles that make good software and applications.
+I like the opening quote from Alan Kay. While we dive into a mad rush to implement new technologies, we forgot about the fundamental principles that make good software and applications. This book aims to help everyone understand which kind of data storage and processing technology is appropriate for which purpose. The focus is on software architecture. Very important in our current industry filled with buzzwords and hype.
 
-___
+## Foundations of Data Systems
 
-# Preface
-This book aims to help everyone understand which kind of data storage and processing technology is appropriate for which purpose. The focus is on software architecture. Very important in our current industry filled with buzzwords and hype.
-
-# Foundations of Data Systems
-
-## Chapter 1: Reliable, Scalable, and Maintainable Applications
+### Chapter 1: Reliable, Scalable, and Maintainable Applications
 This book focus on three primary concerns:
 
-### 1. Reliability
+#### 1. Reliability
 The system should continue to work correctly (performing the correct function at desired level of performance) even in the face of adversity (hardware or software faults, and even human error). The trend for modern software is to be resilient to hardware faults at the application level, such as ability to quickly scale up and down, or migrate instances without data loss.
 
-### 2. Scalability
+#### 2. Scalability
 The system should have options to keep performance good even when load increases. The key metrics here are load and performance, which are measured using different parameters depending on the software. Could be requests traffic vs response time, or data volume vs throughput, and etc.
 
-### 3. Maintainability
+#### 3. Maintainability
 Making life better for engineering and operations team. General rules are to use good abstractions, reduce complexity of software (does not mean weak features), make it easy to extend and modify for new use cases. While the software is operating, everyone should have easy and good visibility of system health to address issues before failures.
 
 > Good operations can often work around the limitations of bad software, but good software cannot run reliably with bad operations
 
-## Chapter 2: Data Models and Query Languages
+### Chapter 2: Data Models and Query Languages
 
-### Relational Model
+#### Relational Model
 
 Classic RDB. Data are stored in rows of records. Sequence of record usually do not matter (due to external structure like indexes). Tables can have relations to other tables.
 
@@ -54,7 +58,7 @@ Classic RDB. Data are stored in rows of records. Sequence of record usually do n
 - Schema-on-write, therefore provides less flexibility to store evolving data, or heterogeneous data. (it may be impractical to store every object as a table)
 - Modern RDB supports high performance DB migration to step up or step down the schema, but may still take a long time for large DBs.
 
-### NoSQL Model / Document Model
+#### NoSQL Model / Document Model
 
 Think JSON. Storing the entire JSON into a data storage.
 
@@ -72,25 +76,25 @@ Think JSON. Storing the entire JSON into a data storage.
 - Typically requires data to be denormalized.
 - Not good at searching across all entities.
 
-### What to choose?
+#### What to choose?
 
 As a general rule, select the data storage that helps you build simpler and cleaner applications. And this really depends on your features and use-cases, there is no one-size-fit-all, and some have adopted a polyglot persistence strategy.
 
-### Convergence
+#### Convergence
 
 It seems like RDB and NoSQL technologies are converging, as the platforms release increasingly similar features.
 
 - RDB like PostGreSQL and MySQL allows storing and querying of fields nested in JSON.
 - RethinkDB supports joins. Some MongoDB emulates join by performing the loop on the client side.
 
-### Query Languages
+#### Query Languages
 
 - Declarative languages (e.g. SQL) are more concise, easier to work with, and abstracts implementation details (which makes it possible for DBMS to optimize the query), and hence supports parallel execution better.
 - Imperative languages (e.g. most programming languages) explicitly describes the query execution, which may not offer higher performance, but allows you to describe complex query more easily.
 
 MapReduce is an example that combines both declarative and imperative query.
 
-### Graph-Like Data Model
+#### Graph-Like Data Model
 
 Essentially consists of Vertices (or Objects) and Edges (relationships between Objects, which can be directional). Since this data model serves very specific use-cases, they cannot really be compared side-by-side with the above two storage models when you are designing your application.
 
@@ -99,7 +103,7 @@ Essentially consists of Vertices (or Objects) and Edges (relationships between O
 - there are specialized query languages to concisely declare the search query instead of having to write a recursive function.
 - schema-on-read
 
-## Chapter 3. Storage and Retrieval
+### Chapter 3. Storage and Retrieval
 
 
 

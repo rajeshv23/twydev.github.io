@@ -1,21 +1,26 @@
 ---
-title: "Clean Architecture"
+title: "Clean Architecture (PluralSight Course)"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Online Course
+  - Software Architecture
 tags:
-  - domain driven design
+  - database-centric
+  - online course
 ---
+
+Extremely high level course on clean architecture, briefly covering Domain-Centric vs Database-Centric designs, Component Cohesions, Microservices, Testing, and extensibility of the architecture.
+
+___
+
+# Clean Architecture Course
 
 **Clean Architecture** *Patterns, Practices, and Principles* - Matthew Renze, accessed on PluralSight 2019
 {: .notice--primary}
 
 I have skipped over CQRS, which is a topic covered in greater details in other online courses. This course is an introduction to the concept of Clean Architecture. Many of the good principles covered in this course overlap with Domain Driven Design and feels more like a high-level refresher to modern architecture design approach than any thing new.
 
-___
-
-### Domain-Centric vs Database-Centric Architecture
+## Domain-Centric vs Database-Centric Architecture
 From Uncle Bob: the first concern of an architect should be the usability of the software, not the implementation details. This thinking puts into perspective what parts of software development are essential vs what are merely details.
 
 In the domain-centric approach, domain and use-cases are deemed essential, and presentation and persistence are merely implementation details.
@@ -33,19 +38,19 @@ Abstraction should not depend on details. Details should depend on abstraction. 
 
 We can achieve this by using Interfaces to abstract away the actual implementation of each layers / services (Dependency Injection pattern).
 
-### Functional Cohesion
+## Functional Cohesion
 Organizing codes into folders and namespaces that follows business use-cases (e.g. Orders, Sales, Products) instead of software components (Models, Views, Controllers).
 
 Projects can still be categorized at a high level by layers (e.g. Presentation, Application, Domain, Persistence, Infrastructure, Common), however within each layer, the classes and methods should be sub-categorized by functions.
 
 This approach to organizing software code provides spatial locality, ease navigation, and avoid locking the code into specific implementation technologies, however we would lose all advantages of other framework conventions and possible automatic scaffolding.
 
-### Microservices
+## Microservices
 Each Bounded Context in the business domain may be implemented as distinct Microservices. This approach will force the separation of contexts physically through the implementation.
 
 Advantage of Microservices is independence of each services, which allows separate development and scaling. However, this approach requires higher up-front cost and managing a distributed system also introduces another set of complexities.
 
-### Testable Architecture
+## Testable Architecture
 The course makes an accurate observation on the current state of testing in our industry. I have personally made the same observation.
 
 Development teams do very little testing, ineffective and inefficient testing, which still lead to high bug count in production. The top reasons being:
@@ -74,7 +79,7 @@ If we could instead, by designing our architecture in a testable way, use servic
 
 {% include figure image_path="/assets/images/screenshots/service-test-as-acceptance.png" alt="" caption="Implement Acceptance Testing using Service Test only" %}
 
-### Evolving Architecture
+## Evolving Architecture
 
 **Last Responsible Moment**
 
@@ -86,7 +91,7 @@ Deferring implementation decisions to the last responsible moment can be advanta
 
 Even after implementing the software, an evolutionary design coupled with agile development approach provides the flexibility for the software to continually improve and adopt to changing market, changing technology, and changing preferences.
 
-### Further Readings
+## Further Readings
 
 **Books**
 - Patterns of Enterprise Application Architecture, by Martin Fowler

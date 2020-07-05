@@ -16,3 +16,4 @@ Todo List:
 
 - Move images to CDN
 - Grammarly integration
+- blog consolidation and migration from other platforms

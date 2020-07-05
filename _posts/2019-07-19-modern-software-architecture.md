@@ -3,19 +3,26 @@ title: "Modern Software Architecture: Domain Models, CQRS, and Event Sourcing"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Online Course
+  - Software Design
+  - Software Architecture
 tags:
   - domain driven design
   - cqrs
   - event sourcing
+  - best practice
+  - online course
 ---
+
+Using Domain Driven Design (DDD) as the main approach perform Domain Analysis on the real world problems, we may choose from three software architectures to support our implementation: Domain Models, Command Query Responsibility Separation (CQRS), and Event Sourcing.
+
+___
+
+# Modern Software Architecture
 
 **Modern Software Architecture** *Domain Models, CQRS, and Event Sourcing* - Dino Esposito, accessed on PluralSight 2019
 {: .notice--primary}
 
-This course is a great introduction to the state of modern software design. The course seems to suggests that our usual practice of writing database-centric software is the root cause of our applications eventually growing into unmaintainable monstrosities. I find that mind-blowing, to think that our traditional approach to building software is wrong.
-
-___
+This course is a great introduction to the state of modern software design. The course seems to suggests that our usual practice of writing database-centric software is the root cause of our applications eventually growing into unmaintainable monstrosities.
 
 ## Course Overview
 The course covers 3 topics.
