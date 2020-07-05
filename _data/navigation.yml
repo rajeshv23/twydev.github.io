@@ -1,13 +1,11 @@
 main:
   # - title: "notes"
   #   url: /notes/
-  # - title: "categories"
-  #   url: /categories/
-  # - title: "weekly-digest"
-  #   url: /digests/
   - title: "notes"
     url: /categories/
   - title: "tags"
     url: /tags/
+  - title: "lifestyle"
+    url: /lifestyle/
   - title: "about"
     url: /about/

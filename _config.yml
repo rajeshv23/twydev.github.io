@@ -46,7 +46,7 @@ footer:
       url: "https://github.com/twydev/"
 
 collections:
-  digests:
+  lifestyle:
     output: true
     permalink: /:collection/:path/
 
@@ -71,8 +71,8 @@ defaults:
       author_profile: true
   # _digests
   - scope:
-      path: ""
-      type: digests
+      path: "_lifestyle"
+      type: lifestyle
     values:
       layout: single
       read_time: false
@@ -87,3 +87,6 @@ category_archive:
 tag_archive:
   type: liquid
   path: /tags/
+lifestyle_archive:
+  type: liquid
+  path: /lifestyle/

@@ -1,5 +1,5 @@
 ---
-title: "Notes by Category"
+title: "Categories"
 layout: categories
 permalink: /categories/
 author_profile: false
