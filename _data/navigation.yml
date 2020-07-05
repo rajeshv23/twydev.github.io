@@ -1,8 +1,8 @@
 main:
-  # - title: "notes"
+  # - title: "years"
   #   url: /notes/
-  - title: "notes"
-    url: /categories/
+  # - title: "categories"
+  #   url: /categories/
   - title: "tags"
     url: /tags/
   - title: "lifestyle"

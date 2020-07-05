@@ -7,3 +7,5 @@ entries_layout: grid
 author_profile: false
 classes: wide
 ---
+
+For posts that do not relate to engineering.
