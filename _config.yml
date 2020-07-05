@@ -35,14 +35,20 @@ author:
   bio    : "Hi"
   links:
     - label: "GitHub"
-      icon: "fab fa-fw fa-github"
+      icon: "fab fa-fw fa-github-square"
       url: "https://github.com/twydev/"
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://sg.linkedin.com/in/wei-yang-tan"
 
 footer:
   links:
     - label: "GitHub"
-      icon: "fab fa-fw fa-github"
+      icon: "fab fa-fw fa-github-square"
       url: "https://github.com/twydev/"
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://sg.linkedin.com/in/wei-yang-tan"
 
 collections:
   lifestyle:
