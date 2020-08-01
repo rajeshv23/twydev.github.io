@@ -10,7 +10,7 @@ tags:
   - foundational
 ---
 
-Status: `draft`
+*Work in progress.*
 
 Explores the tradeoffs of data storage and processing technologies available today, and the hard problems facing distributed computing. Key topics include data structures of databases (B-Trees and LSM-Trees), Replication, Partitioning, Transactions, Consistency, Consensus, MapReduce, Stream Processing, and Event Driven.
 

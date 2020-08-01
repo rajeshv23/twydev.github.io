@@ -1,31 +1,32 @@
 ---
-title: "Clean Code"
+title: "Clean Code (PluralSight Course)"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Online Course
+  - Coding
 tags:
-  - software development
   - best practice
 ---
+
+A very brief and general introduction to clean code by Cory House. Applicable to all languages. Touch on topics such as naming, conditionals, functions, classes, and comments.
 
 **Clean Code** *Writing Code for Humans* - Cory House, accessed on PluralSight 2019
 {: .notice--primary}
 
-The most valuable diagram in this course is:
+The main takeaway from this course:
 
 {% include figure image_path="/assets/images/screenshots/clean-code-foundation-stack.png" alt="" caption="Clean Code Foundation Stack" %}
 
 This pyramid provides a path for everyone to establish a strong foundation in software development.
 
-# Naming
+## Naming
 
 - Classes should indicate their responsibility.
 - Methods should reflect their action / purpose.
   - if a name contains conjunction, you are likely violating Single Responsibility principle, and you should refactor.
 - Avoid abbreviations.
 
-# Conditionals
+## Conditionals
 
 - Use positive boolean, instead of naming variables as "isNotTrue".
 - Avoid "Stringly Typed" conditions. Use Enum to hold string values.
@@ -33,7 +34,7 @@ This pyramid provides a path for everyone to establish a strong foundation in so
 - Use polymorphism to replace conditionals.
 - Use table records (in DB or some storage) to determine condition.
 
-# Functions
+## Functions
 
 - Create functions to reuse code and avoid duplication.
   - a good sign is either spotting the exact same code block or similar code structure.
@@ -44,13 +45,13 @@ This pyramid provides a path for everyone to establish a strong foundation in so
 - Avoid loose / short-lived local variables. Replace them with method calls.
 - Use exceptions to catch problems.
 
-# Classes
+## Classes
 
 - Used to group attributes and methods of the same responsibility together.
 - Should not have too much knowledge of other classes. 
   - Use inversion of control pattern to deal with such scenarios.
 
-# Comments
+## Comments
 
 - With proper naming and clean coding, comments are unnecessary most of the time.
 - May be used to document design decisions, trade-offs, and design intent.
@@ -59,7 +60,7 @@ This pyramid provides a path for everyone to establish a strong foundation in so
 - Avoid formatting characters, as they are nice to view but hard to maintain.
 - Avoid tagging issue numbers, ticket numbers using comments, as that can already be handled with commit messages / branches using source control.
 
-# Final Reminders
+## Final Reminders
 
 - If not broken, why fix?
 - If broken, please fix. (avoid the Broken Windows Theory, which essentially means technical debt).

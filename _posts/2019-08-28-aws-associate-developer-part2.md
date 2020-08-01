@@ -3,14 +3,12 @@ title: "Ultimate AWS Certified Developer Associate 2019 - Part 2"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Online Course
+  - AWS
 tags:
-  - aws
+  - online course
 ---
 
-# Development
-
-Part 2 of this course covers the key knowledge that developers should have when working with AWS. The knowledge will be sufficient for developers to develop software using AWS SDK and use services that allows them to focus on the software code without worrying about infrastructure.
+Part 2 covers software development using AWS. Topics include the use of AWS CLI and AWS SDK, tools for troubleshooting IAM roles and policies, using IAM permissions with EC2, Elastic BeanStalk, and AWS CICD suite (CodeCommit, CodePipeline, CodeBuild, CodeDeploy, CodeStar).
 
 ## AWS CLI - Command Line Interface
 

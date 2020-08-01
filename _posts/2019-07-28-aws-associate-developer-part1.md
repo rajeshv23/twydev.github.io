@@ -3,12 +3,14 @@ title: "Ultimate AWS Certified Developer Associate 2019 - Part 1"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Online Course
+  - AWS
 tags:
-  - aws
+  - online course
 ---
 
-# Exam Coverage
+Part 1 of this Udemy course by Stephane Maarek. Covers the fundamentals of AWS services, including IAM, EC2, ELB, ASG, EBS, Route 53, RDS, ElastiCache, VPC, and S3.
+
+## Exam Coverage
 
 - 22% - Deployment
     - CICD, Beanstalk, Serverless
@@ -20,10 +22,6 @@ tags:
     - AWS services best for migration
 - 12% - Monitoring & Troubleshooting
     - CloudWatch, CloudTrail, X-Ray
-
-# Fundamentals
-
-Part 1 of this course covers the fundamental services provided by AWS. The knowledge is sufficient for us to deploy a multi-tier architecture software using the AWS console.
 
 ## IAM - Identity & Access Management
 
@@ -352,8 +350,6 @@ Route 53 is a global service not bounded by AWS regions.
     - latency
     - weighted
 - Alias record provides better performance (than CNAME) when routing AWS resources
-
-# Fundamentals - Data Storage
 
 ## RDS - Relational Database Service
 

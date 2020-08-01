@@ -3,5 +3,4 @@ permalink: /about/
 title: "About"
 ---
 
-> I remember that I am here not because of the path that lies before me but because of the path that lies behind me.
-> ~ Morpheus
+I like to gather my insights from books/videos into notes. But I don't fancy self-help/inspirational/motivational contents.

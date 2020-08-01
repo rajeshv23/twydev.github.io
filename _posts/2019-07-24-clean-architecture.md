@@ -11,10 +11,6 @@ tags:
 
 Extremely high level course on clean architecture, briefly covering Domain-Centric vs Database-Centric designs, Component Cohesions, Microservices, Testing, and extensibility of the architecture.
 
-___
-
-# Clean Architecture Course
-
 **Clean Architecture** *Patterns, Practices, and Principles* - Matthew Renze, accessed on PluralSight 2019
 {: .notice--primary}
 

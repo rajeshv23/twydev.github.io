@@ -1,14 +1,12 @@
 ---
-title: "Setting up Python project"
+title: "Setting up a Python project"
 toc: true
 toc_label: "Sections"
 categories:
-  - Development
+  - Coding
 tags:
   - python
 ---
-
-# Introduction
 
 This guide is for Windows users, to help us set up Python projects systematically and consistently.
 
@@ -18,7 +16,7 @@ References:
 
 First, install **Chocolatey**.
 
-# Install Python
+## Install Python
 
 - Install **Python**. Good thing about Chocolatey is the automatic adding of python executable to PATH environment variable in Windows. (At the time of writing, latest Python version is 3.7.4)
 
@@ -34,7 +32,7 @@ First, install **Chocolatey**.
   python -m pip install --upgrade pip
   ```
 
-# Using VENV
+## Using VENV
 
 I feel that using some form virtual environment, much like using containers, is the Python way of keep our dependencies isolated from other projects on the same machine, and to facilitate collaboration with other developers.
 
@@ -44,7 +42,7 @@ I feel that using some form virtual environment, much like using containers, is 
   pip install -U venv
   ```
 
-# (optional) Notebook
+## (optional) Notebook
 
 Popular for data science projects.
 
@@ -54,7 +52,7 @@ Popular for data science projects.
   pip install -U jupyter
   ```
 
-# Create Project
+## Create Project
 
 - Start a project folder, create a new virtual environment, and activate it.
 
@@ -79,7 +77,7 @@ Popular for data science projects.
   >>> print(sys.prefix)
   ```
 
-# (Optional) Cookiecutter Scaffolding
+## (Optional) Cookiecutter Scaffolding
 
 - Install **cookiecutter** to scaffold Python projects. Use a cookiecutter template to set up project directory structure. (TBC need to research more on uses of cookiecutter);
 
@@ -87,7 +85,7 @@ Popular for data science projects.
   pip install -U cookiecutter
   ```
 
-# Managing Dependencies
+## Managing Dependencies
 
 - Save current dependencies of project.
 

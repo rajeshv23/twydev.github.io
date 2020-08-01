@@ -1,14 +1,16 @@
 ---
 title: "AWS Certified Associate Developer Cheat Sheet"
 toc: true
-toc_label: "Chapters"
+toc_label: "Topics"
 categories:
-  - Online Course
+  - AWS
 tags:
-  - aws
+  - cheat sheet
 ---
 
-# FAQs
+Realising that I am likely to fail the certification if I solely rely on a Udemy course, this is a compilation of notes from other reading materials, mostly from TutorialsDojo.
+
+# Topics
 
 ## EC2
 

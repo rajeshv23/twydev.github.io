@@ -13,10 +13,6 @@ tags:
 
 Domain Driven Design (DDD) is a software development approach to implement complex software by dividing the solution into domains that serves specific purposes, using tools such as Ubiquitous Language, Bounded Context, Domain Events and Aggregate Patterns.
 
-___
-
-# Distilling Domain-Driven Design
-
 **Distilling Domain-Driven Design** - Vaughn Vernon, accessed on Kalele 2019
 {: .notice--primary}
 

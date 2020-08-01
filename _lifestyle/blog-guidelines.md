@@ -14,6 +14,8 @@ When creating new blog posts take note of the following.
 
 Todo List:
 
-- Move images to CDN
+- Move images to CDN?
+  - Pros: Better performance, smaller repository
+  - Cons: Un-managed mapping between image and post
 - Grammarly integration
 - blog consolidation and migration from other platforms

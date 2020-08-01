@@ -3,14 +3,12 @@ title: "Ultimate AWS Certified Developer Associate 2019 - Part 3"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Online Course
+  - AWS
 tags:
-  - aws
+  - online course
 ---
 
-# Infrastructure
-
-Part 3 of this course covers infrastructure as code using AWS CloudFormation, monitoring of applications on AWS and integration components such as SQS and SNS.
+Part 3 covers infrastructure as code using AWS CloudFormation, monitoring using CloudWatch, X-Ray and CloudTrail, and integrating applications using SQS, SNS and Kinesis.
 
 ## AWS CloudFormation
 
@@ -131,8 +129,6 @@ Conditions:
 - On Stack **Update** Failure
   - Stack automatically rollback to previous working state
   - See the logs to find error messages
-
-# Monitoring
 
 ## AWS CloudWatch
 
@@ -288,8 +284,6 @@ X-Ray additional exam tips
   - central service map visualization
   - latency, errors, fault analysis
   - request tracking across distributed system
-
-# Integration
 
 ## SQS
 

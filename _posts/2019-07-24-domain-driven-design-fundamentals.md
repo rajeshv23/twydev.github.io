@@ -13,10 +13,6 @@ tags:
 
 Comprehensive course covering Domain Modelling, Entities and Value Objects, Aggregate Pattern, Domain Services, Bounded Context, Repository Pattern, and Domain Events.
 
-___
-
-# Domain-Driven Design Fundamentals
-
 **Domain-Driven Design Fundamentals** - Steve Smith and Julie Lerman, accessed on PluralSight 2019
 {: .notice--primary}
 

@@ -8,13 +8,10 @@ categories:
 tags:
   - event storming
   - domain driven design
+  - webinar
 ---
 
 This talk covers the essence of Event Storming: use of color-coded Post-it notes to model our domain, involving all stakeholders to craft our Ubiquitous Language, Process Model, and rapidly develop UI that are user-centric.
-
-___
-
-# 50,000 Orange Stickies Later
 
 **50,000 Orange Stickies Later** - Alberto Brandolini, Explore DDD Conference (Denver), 2017
 {: .notice--primary}

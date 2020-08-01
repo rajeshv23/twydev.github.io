@@ -1,17 +1,19 @@
 ---
-title: "Setting up a Serverless + NodeJS project (feat. GitLab CI/CD)"
+title: "Setting up a Serverless + NodeJS project"
 toc: true
 toc_label: "Sections"
 categories:
-  - Development
+  - Coding
 tags:
   - serverless
-  - nodeJS
-  - gitLab
+  - nodejs
+  - gitlab
   - ci/cd
 ---
 
-# Git Repo Set Up
+How to set up a serverless nodeJS project from scratch. Includes instructions for Git, GitLab CI and Runner set up, ESLint, Jest, Winston, Complexity Report, and dotenv.
+
+## Git Repo Set Up
 
 1. create repository in GitLab
 2. ensure SSH key has been generated and in place on local machine
@@ -33,7 +35,7 @@ tags:
    git push --set-upstream origin <feature-name-of-branch>
    ```
 
-# Start the Project (Serverless + NodeJS)
+## Start the Project (Serverless + NodeJS)
 
 1. install yarn
 2. create project
@@ -65,7 +67,7 @@ tags:
    serverless invoke local -f <functionName>
    ```
 
-# Set Up GitLab Runner with AWS EC2 (Docker) and set up CI/CD
+## Set Up GitLab Runner with AWS EC2 (Docker) and set up CI/CD
 
 Read Hacker Noon [blog post](https://hackernoon.com/configuring-gitlab-ci-on-aws-ec2-using-docker-7c359d513a46) along side the documentations.
 
@@ -177,7 +179,7 @@ Build:
     - echo ""Successfully Ran Build on GitLab Runner"
 ```
 
-# Set up Dev Dependencies (Code Style + Lint)
+## Set up Dev Dependencies (Code Style + Lint)
 
 1. Install Prettier and ESLint. I opted out of editor config since prettier + linter does the job across all editors.
    ```
@@ -234,7 +236,7 @@ Build:
    ```
 8. Test to see if the linting works `npm run lint`.
 
-# Set Up Unit Test Framework (Jest)
+## Set Up Unit Test Framework (Jest)
 
 1. Install Jest
    ```
@@ -256,7 +258,7 @@ Build:
    ```
 4. Create a simple test and see if the test goes well `npm run test`
 
-### Set Up Logger
+## Set Up Logger
 
 1. I chose to use winston.
    ```
@@ -311,7 +313,7 @@ const logger = () => {
 module.exports = logger();
 ```
 
-# Set Up Complexity Report
+## Set Up Complexity Report
 
 1. Install complexity report library. This can help us track how complex our code is.
    ```
@@ -346,7 +348,7 @@ Some metrics to be aware of (refer to https://radon.readthedocs.io/en/latest/int
 - **Maintainability**: calculated using a factored formula consisting of Cyclomatic Complexity, SLOC, and Halstead Volume. (Microsoft Variant of the index is between 0 to 100)
 - **Dependency Count**: number of CommonJS/AMD dependencies for the module.
 
-# Setting up Environment Variables
+## Setting up Environment Variables
 
 Main goals of setting up environment variables:
 

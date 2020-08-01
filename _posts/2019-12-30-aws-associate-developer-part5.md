@@ -3,18 +3,16 @@ title: "Ultimate AWS Certified Developer Associate 2019 - Part 5"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Online Course
+  - AWS
 tags:
-  - aws
+  - online course
 ---
 
-# Other AWS Services
+Part 5 of this course covers ECS, Fargate, Encryption Strategies, KMS, Systems Manager SSM, IAM Best Practices, CloudFront, Step Functions, SWF, SES, ACM, and other loose ends that are required for the exam.
 
-Part 5 of this course covers ECS, KMS, and other loose ends that are required for the exam.
+## AWS Elastic Container Service (ECS)
 
-# AWS Elastic Container Service (ECS)
-
-## Docker
+### Docker
 
 It is essential to have a basic understanding of Docker before using ECS.
 
@@ -25,7 +23,7 @@ It is essential to have a basic understanding of Docker before using ECS.
 - More lightweight than VMs since there are no guest OS involved.
 - Dockerfile builds Docker Images, which can be pushed to Repositories, or deployed as Containers.
 
-## ECS Clusters
+### ECS Clusters
 
 - Clusters are logical groups of EC2 instances
 - EC2 instances runs a special AMI optimized for ECS
@@ -58,7 +56,7 @@ It is essential to have a basic understanding of Docker before using ECS.
 - Adding an ALB to an ECS Service needs to be done at creation, and will need you to recreate a Service for existing ECS Services.
 - Needs to configure security group, allowing EC2 fleet and ALB to reach each other.
 
-## Elastic Container Repository (ECR)
+### Elastic Container Repository (ECR)
 
 - Private Docker Repository by AWS
 - Access controlled through IAM
@@ -80,7 +78,7 @@ docker pull <new-name-from-prev-command>
 - To use ECR images, need to configure Task Definitions
 - EC2 instances needs to have permissions to pull from ECR
 
-# AWS Fargate
+## AWS Fargate
 
 Without Fargate, to scale ECS clusters require manual launching and adding of EC2 instances to the cluster.
 
@@ -90,7 +88,7 @@ Fargate abstracts away infrastructure management, so that developers only need t
 - Similarly, Clusters and Services needs to be created with Fargate compatibility.
 - Note: Fargate tasks / containers can have IAM roles.
 
-## X-Ray Integration
+### X-Ray Integration
 
 For ECS Clusters (using EC2 fleet):
 
@@ -105,37 +103,37 @@ For Fargate Clusters, we have to use the side car pattern to configure X-Ray Dae
 > Set Environment Variable called AWS_XRAY_DAEMON_ADDRESS to the daemon defined above
 > Link the daemon to the application container
 
-## Elastic Beanstalk Single / Multi Docker Container Mode
+### Elastic Beanstalk Single / Multi Docker Container Mode
 
 - Requires a config file at source code root, **Dockerrun.aws.json**
 - This mode helps to create ECS Cluster, EC2 fleet configured with ECS agents, Load Balancer, Task Definitions and Execution.
 - Must separately pre-build Docker images in ECR
 
-# AWS Encryption Strategies
+## AWS Encryption Strategies
 
-## Encryption In Flight (SSL)
+### Encryption In Flight (SSL)
 
 - SSL Certificates required (HTTPS)
 - Ensures no Man In The Middle attack
 
-## Server Side Encryption at Rest
+### Server Side Encryption at Rest
 
 - Server encrypts data received, and decrypts data before sending out
 - Service will manage the encryption / descryption, using a data key it has access to
 
-## Client Side Encryption
+### Client Side Encryption
 
 - Data is encrypted before sending to Server
 - Server is not able to decrypt data it is storing
 - Data retrieved from Server will be decrypted on Client-Side
 
-# AWS Key Management Service (KMS)
+## AWS Key Management Service (KMS)
 
 - Control access to data by having AWS manage the keys
 - Fully integrated with IAM for Authorization
 - Integrated with many AWS services, with CLI / SDK support
 
-## Overview of KMS
+### Overview of KMS
 
 - Used for sharing sensitive information
 - Data is encrypted by KMS using Customer Master Key (CMK), that will never be revealed to users
@@ -170,7 +168,7 @@ Decryption
 - KMS receives encrypted data key, and decrypt using CMK
 - Client receives plaintext data key to decrypt data
 
-# AWS Systems Manager (SSM) Parameter Store
+## AWS Systems Manager (SSM) Parameter Store
 
 - secure storage of configurations and secrets
 - serverless, scalable, durable, easy SDK, free
@@ -180,7 +178,7 @@ Decryption
 - nofications with CloudWatch Events
 - integrations with CloudFormation
 
-# IAM Best Practices
+## IAM Best Practices
 
 - never use root credentials, enable MFA on root account
 - grant least priviledge
@@ -195,7 +193,7 @@ Decryption
   - source account user calls AWS Security Token Service (STS) to retrieve credentials
   - source account user impersonate role and access target account resources
 
-## IAM Policies Evaluation Sequence
+### IAM Policies Evaluation Sequence
 
 1. Authorization starts at DENY by default
 2. Evaluate all policies related
@@ -206,11 +204,11 @@ Decryption
 
 AWS will evaluate the UNION of both IAM and S3 policies and provide an authorization.
 
-## IAM Dynamic Policies
+### IAM Dynamic Policies
 
 IAM policies allow the use of AWS variables to authorize access to resources dynamically. Example to allow respective users to only access folders in a bucket that are named after their user name, so instead of having one policy per user, having one dynamic policy will grant the same least priviledge access.
 
-## IAM Policy Variants
+### IAM Policy Variants
 
 **AWS Managed Policy**
 
@@ -228,7 +226,7 @@ IAM policies allow the use of AWS variables to authorize access to resources dyn
 - strict one-to-one relationship between IAM principal and policy
 - deletion of IAM principal will also delete the policy
 
-# AWS CloudFront
+## AWS CloudFront
 
 It is a Content Delivery Network (CDN) with 136 Points of Presence around the global, caching contents on the edge.
 
@@ -237,7 +235,7 @@ It is a Content Delivery Network (CDN) with 136 Points of Presence around the gl
 - Provide SSL encryption (HTTPS) for incoming connections, and communications to applications
 - Support RTMP protocol for videos and media
 
-# AWS Step Functions
+## AWS Step Functions
 
 - JSON state machine to orchestrate serverless visual workflow
 - for lambda functions but also works with EC2, ECS, on-premise servers, API gateway
@@ -246,7 +244,7 @@ It is a Content Delivery Network (CDN) with 136 Points of Presence around the gl
 - can implement human approval workflows.
 - Use cases: order fulfillment, data processing, web applications, any workflows
 
-# AWS Simple Workflow Service (SWF)
+## AWS Simple Workflow Service (SWF)
 
 - similar to Step Functions, but AWS seems to be stopping support for this service
 - code runs on EC2, with 1 year max runtime
@@ -255,13 +253,13 @@ It is a Content Delivery Network (CDN) with 136 Points of Presence around the gl
   - we have external signals to intervene in the processes
   - we require child processes that return values to parent processes
 
-# AWS Simple Email Service (SES)
+## AWS Simple Email Service (SES)
 
 Service allows you to send email using SMTP interface or AWS SDK.
 
 Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control email sending permissions.
 
-# Summary of Databases Available
+## Summary of Databases Available
 
 - Relational Databases (RDS), largely used for OLTP
   - PostgreSQL, MySQL, Oracle ...
@@ -280,7 +278,7 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 - Data Migration Service, DMS
   - to move existing DB to any of the AWS services
 
-# AWS Certificate Manager (ACM)
+## AWS Certificate Manager (ACM)
 
 - host public SSL certificates in AWS
   - either upload your own certificates to ACM
@@ -291,9 +289,9 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
   - API Gateway
 - ACM makes it easy to manage and replace expiring SSL certificates without disrupting operations
 
-# AWS Exam CheatSheet
+## AWS Exam CheatSheet
 
-## ECS
+### ECS
 
 - Task Placement Strategy
   - Binpack = consume all CPU from an instance first
@@ -308,7 +306,7 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 - Used with Elastic Beanstalk
   - if need to provisioning of the resources, load balancing, auto-scaling, monitoring, and placing the containers across the cluster.
 
-## CloudWatch
+### CloudWatch
 
 - Metrics granularity
   - Standard Resolution = 1 minute
@@ -325,7 +323,7 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 - Cloudwatch Metrics for RDS = hypervisor of servers running DB sending the metrics
 - RDS Enhanced Monitoring = agent running on DB instance sends metrics (more precise)
 
-## SAM
+### SAM
 
 - Resources
   - AWS::Serverless::Function = lambda function
@@ -335,7 +333,7 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 - Transform
   - this section is used to specify resources using SAM syntax. Will be converted to CF syntax before deployment.
 
-## CodeDeploy
+### CodeDeploy
 
 - Deploys to:
   - EC2, on-premise
@@ -353,13 +351,13 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 - AppSpec hooks
   - beforeAllowTraffic, afterAllowTraffic
 
-## CloudFront
+### CloudFront
 
 - Viewer >requests> CloudFront >requests> Origin
   - each way of communication maintains its own SSL encryption
 - SSL Cert for CloudFront needs to first be managed by **AWS Certificate Manager (ACM)** or **IAM Certificate Store**
 
-## DynamoDB
+### DynamoDB
 
 - Throughput
   - 1 write = 1 KBps
@@ -397,7 +395,7 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
   - INDEXES = with subtotal breakdowns
   - NONE
 
-## Elastic Beanstalk
+### Elastic Beanstalk
 
 - Deployment
   - all at once
@@ -410,12 +408,12 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 - Configs
   - most configs are stored in `.ebextensions` directory
 
-## AWS CLI
+### AWS CLI
 
 - pagination
   - CLI still retrieves all items, but makes more API calls in background to retrieve pages
 
-## X-Ray
+### X-Ray
 
 - Segment Document
   - default contains host, request, response, work done and issues occurred.
@@ -441,7 +439,7 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
   - AWS_XRAY_CONTEXT_MISSING = behaviour in event of missing tracing header
   - AWS_XRAY_DAEMON_ADDRESS = IP_ADDRESS:PORT 
 
-## Lambda
+### Lambda
 
 - **Concurrent Execution** = (max number of invocation per second) x (duration of each execution)
 - AWS default unreserved concurrency = 100 (minimum)
@@ -454,7 +452,7 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
 - Alias = pointer to a specific lambda function
   - can use `routing-config` to route traffic between alias
 
-## ElastiCache
+### ElastiCache
 
 - Memcached
   - simplest model
@@ -466,7 +464,7 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
   - more durable across reboots
   - single threaded. scales by having multiple instances.
 
-## API Gateway
+### API Gateway
 
 - Integration Types
   - HTTP = calls your own HTTP endpoint. Transforms input to custom HTTP request.
@@ -477,21 +475,21 @@ Can also receive emails. Integrates with S3, SNS and Lambda. Uses IAM to control
   - **INTEGRATION_FAILURE** server flaw in backend integrated app.
   - **INTEGRATION_TIMEOUT** occasional occurrence.
 
-## S3
+### S3
 
 - **SSE-KMS**
   - regardless of KMS key id in request header, S3 will use KMS key id stated in policy.
 - **Cross Region Replication (CRR)**
   - requires versioning
 
-## CloudFormation
+### CloudFormation
 
 - AWS CloudFormation StackSets
   - Cross-AWS Account CF Stacks CRUD
 - inline lambda coding
   - can be done by adding code string to property of lambda resource > Code > ZipFile
 
-## Admin
+### Admin
 
 - **AWS Organizations**
   - manage across AWS accounts

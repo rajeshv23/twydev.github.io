@@ -15,10 +15,6 @@ tags:
 
 Using Domain Driven Design (DDD) as the main approach perform Domain Analysis on the real world problems, we may choose from three software architectures to support our implementation: Domain Models, Command Query Responsibility Separation (CQRS), and Event Sourcing.
 
-___
-
-# Modern Software Architecture
-
 **Modern Software Architecture** *Domain Models, CQRS, and Event Sourcing* - Dino Esposito, accessed on PluralSight 2019
 {: .notice--primary}
 

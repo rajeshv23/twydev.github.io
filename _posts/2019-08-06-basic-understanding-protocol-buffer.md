@@ -1,10 +1,12 @@
 ---
-title: "What I always wanted to know about Protocol Buffer"
+title: "Basic understanding of Protocol Buffer"
 categories:
-  - Technology
+  - Software Library
 tags:
-  - data
+  - protobuf
 ---
+
+Understanding what is Protocol Buffer (Protobuf) and how we can use it.
 
 **Is Protocol Buffer a data format, like JSON?**
 
@@ -32,4 +34,4 @@ Also, as mentioned earlier, the code to handle communication messages can be aut
 
 **Any good library/framework to get started with?**
 
-?
+TBC

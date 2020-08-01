@@ -3,11 +3,15 @@ title: "Clean Architecture"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Book Review
+  - Software Design
+  - Software Architecture
 tags:
-  - software development
   - best practice
 ---
+
+*Work in progress.*
+
+# Clean Architecture
 
 **Clean Architecture** *A Craftsman's Guide to Software Structure and Design* - Robert C. Martin (Uncle Bob), 2018
 {: .notice--primary}
@@ -18,7 +22,7 @@ There are many things to look out for when reviewing a Merge Request/Pull Reques
 
 *Robert C. Martin*
 
-# Introduction
+## Introduction
 
 The goal of software architecture is to **minimize** the **human resources** required to **build and maintain** the required system.
 
@@ -29,17 +33,17 @@ A software system however, brings two value to the business stakeholders.
 
 Very often, urgency of delivering functional features outweigh the importance of creating good software architecture. It is the responsibility of the development team to advocate and assert the importance of architecture over the urgency of features.
 
-# The Building Blocks
+## The Building Blocks
 
 A piece of software is made up of building blocks, each building block has its own good practice and principles that we should seek to learn and follow.
 
-## Programming Paradigm
+### Programming Paradigm
 
 The book introduced the three paradigms in sequence, to show that each paradigm incrementally removes capabilities from the programmer. Each paradigm imposes extra discipline and advocates what negative practice the programmer should be avoiding.
 
 The book also stated that there were no new paradigms discovered after year 1968, suggesting that this is an exhaustive list.
 
-### Structured Programming
+#### Structured Programming
 
 > Structured programming imposes discipline on direct transfer of control
 
@@ -53,7 +57,7 @@ However, as the book has pointed out, such code cannot be decomposed recursively
 
 Modern day programming language already removed unrestrained `goto` support, and control structures like `if/then/else` and `do/while` are provided by default, hence we are already influenced to do structured programming without even realising, and we all adhere to certain *discipline on direct transfer of control*.
 
-### Object-Oriented Programming
+#### Object-Oriented Programming
 
 > Object-oriented programming imposes discipline on indirect transfer of control
 
@@ -69,7 +73,7 @@ Polymorphism also enabled the widespread adoption of **plugin architecture**, th
 
 *Absolute control over the direction of all source code dependencies, not constrained to align with flow of program control.*
 
-### Functional Programming
+#### Functional Programming
 
 > Function programming imposes discipline upon assignment
 

@@ -1,17 +1,19 @@
 ---
 title: "Introduction to TDD - TDD and the Terminator"
 categories:
-  - Webinar
+  - Coding
 tags:
-  - software development
   - test driven development
   - best practice
+  - webinar
 ---
+
+Webinar hosted by JetBrains that provides an introduction to TDD, the key concepts to write a failing test first on established interfaces, write minimal code to pass the test, and to follow a Red-Green-Refactor flow to gradually implement the software.
 
 **TDD and The Terminator - An Introduction to Test Driven Development** - Layla Porter, accessed on JetBrains Webinar 2019
 {: .notice--primary}
 
-# Key Takeaways
+## Key Takeaways
 
 If you remember nothing from the talk, remember these:
 
@@ -19,7 +21,7 @@ If you remember nothing from the talk, remember these:
 > 2. If you need to make a private method public in order to test it, then its time to refactor. 
 > 3. Write the least amount of code possible to make the test pass.
 
-# How to do TDD?
+## How to do TDD?
 
 1. Write a failing test. 
     - make use of interfaces (for strongly typed languages). Interfaces act as coding contracts, and empowers asynchronous development within the team.
@@ -196,7 +198,7 @@ If you remember nothing from the talk, remember these:
     }
     ``` 
 
-# Why people fail at TDD?
+## Why people fail at TDD?
 
 - Underestimating the learning curve. 
   - if we were to start on this journey, we need to be patient with the team
@@ -211,7 +213,7 @@ If you remember nothing from the talk, remember these:
   - turning private methods public to test is bad bad practice and smelly smelly code.
 - Not actually doing TDD. (it is possible to check all the checkboxes in TDD practices without having a TDD mindset)
 
-# Is TDD suitable for you?
+## Is TDD suitable for you?
 
 - It can be controversial and is a significant culture change.
 - Initial drop in productivity can be disconcerting.

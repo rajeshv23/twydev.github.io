@@ -11,10 +11,6 @@ tags:
 
 The rules on writing to help everyone feel more confident in addressing a wider audience. It contains great examples to help us understand the application of each rule and how adopting the rules leads to better writing.
 
-___
-
-# The Elements of Style
-
 **The Elements of Style** - W. Strunk Jr. & E. B. White
 {: .notice--primary}
 

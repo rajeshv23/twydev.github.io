@@ -14,10 +14,6 @@ Effective time management helps to deliver projects on time. The key to effectiv
 
 Scenarios and examples provided in the book are very relevant and relatable to all professional engineers. I encourage everyone to grab a copy and start reading.
 
-___
-
-# The Effective Engineer
-
 **The Effective Engineer** *How to Leverage your Efforts in Software Engineering to Make a Disproportionate and Meaningful Impact* - Edmund Lau, 2015
 {: .notice--primary}
 

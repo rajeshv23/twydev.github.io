@@ -1,20 +1,22 @@
 ---
 title: "Lessons from my first product launch"
+toc: true
+toc_label: "Lessons"
 categories:
-  - Development
+  - Project Management
 tags:
-  - management
+  - product launch
 ---
 
-Our product aims to replace an existing e-commerce platform targeting B2B customers. I was with the project since the planning and ideation stage and I was heavily involved until the launch. Here are some of the lessons learnt.
+I have participated in the launch of a B2B e-commerce platform. Here are some of the lessons I have learnt in terms of resource management, engineering process, as well as the preparation leading up to the launch.
 
-## Outsource vs Inhouse Engineers
+## Outsource vs In-house Engineers
 
-We were able to build the software from scratch and launch it in 6 months thanks to the help of a huge outsource team of engineers. Outsourcing increased our speed of going to market and allowed us to push out a lot more features than what our inhouse team was capable of delivering.
+We were able to build the software from scratch and launch it in 6 months thanks to the help of a huge outsource team of engineers. Outsourcing increased our speed of going to market and allowed us to push out a lot more features than what our in-house team was capable of delivering.
 
 However, we had to struggle with poor code quality, miscommunications and wrong assumptions due to language barrier, and high rate of bugs.
 
-## Engineering processes can be better
+## Engineering processes can be improved
 
 A number of things were not put in place before we started the project, and it resulted in massive technical debts just so that we can go to market on time. If we were to start a new product all over again, here is what I would do in sequence:
 
@@ -36,7 +38,7 @@ Some of the less critical but important improvements that should be made:
 - proper AWS IAM execution roles management (for system)
 - proper AWS access management (for users)
 
-## Getting Ready for Launch
+## Preparation before Launch
 
 The number one lesson is to not overwork. I pushed pretty hard, sleeping 4 hours a day for almost 2 weeks just to meet the deadline of launch. However, our launch date got delayed due to critical bugs still not fixed on time, and every additional day of delay means that I need to continue my unsustainable lifestyle for another day, until the software gets launched. Situation did not improve post launch due to other operational issues occuring. In the end, I was burning out and I could not function efficiently for the next 2 weeks. In conclusion, it was simply not worth it to go overtime.
 

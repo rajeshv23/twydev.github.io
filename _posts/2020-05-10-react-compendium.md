@@ -1,19 +1,16 @@
 ---
-title: "My React Compendium"
+title: "My React & React Native Compendium"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Collection
+  - Software Library
 tags:
   - javascript
   - react
+  - react native
 ---
 
-Disclaimer: This is a piece of working document.
-
----
-
-# Overview
+React is a frontend library that is performant and lightweight. In order to use React well, we need to understand the basics of lifecycle, states, and props, the difference between React and React Native, and some basic understanding of Redux and Testing in React.
 
 My notes are derived mostly from [reactjs.org](https://reactjs.org/) and [edX course, HarvardX: CS50M](https://courses.edx.org/courses/course-v1:HarvardX+CS50M+Mobile/).
 
@@ -26,7 +23,7 @@ My notes are derived mostly from [reactjs.org](https://reactjs.org/) and [edX co
 
 ---
 
-# JSX
+## JSX
 
 JSX = JavaScript XML, is a language used by React that will be transpiled to JavaScript. React acknowledges that logic and UI are coupled, and it may be more beneficial to be able to declare both using a single langauge. Separation of concern can be acheived by organizing our code into reusable components.
 
@@ -34,7 +31,7 @@ JSX = JavaScript XML, is a language used by React that will be transpiled to Jav
 - uppercase tags are React component tags.
 - ReactDOM escapes any values from JSX and convert them to string before rendering, protecting us against injection attacks.
 
-# React Element
+## React Element
 
 JSX objects are transpiled into React elements. Elements are the building blocks used to render to the DOM. These are pure objects, therefore they are cheaper to create and maintain, as compared to DOM elements.
 
@@ -45,7 +42,7 @@ JSX objects are transpiled into React elements. Elements are the building blocks
 
 ---
 
-# React Components
+## React Components
 
 React Components are reusable JavaScript functions that form the building blocks of React application logic.
 
@@ -56,7 +53,7 @@ If a component tag is used to to define a React Element, any JSX attributes and 
 
 _Creating a Component as a JavaScript class provides access to additional functionalities such as state and lifecycle. If we don't we will be creating Stateless Functional Components (SFC)_
 
-## State and Lifecycle
+### State and Lifecycle
 
 As long as we render a component (class) into the same DOM node, only a single instance of the class will be used. This allows us to use `state` to manage our Component internals over time, instead of strictly depending on Props. The class also inherit a set of lifecycle methods that runs at certain critical juncture of React Component's lifecycle.
 
@@ -107,7 +104,7 @@ State must be updated with `setState()` method.
 - When using object as input to `setState()`, the object will be merged with current state. (Since updates may be batched, all the inputs will be merged, therefore we may not observe all updates rendered to DOM).
 - Callback function can be used as input to `setState()`. Callback should expect two inputs `(state, prop)`, the first being the existing state before update, and second is the props at the time of update. Callback should return the updated state object.
 
-## Props
+### Props
 
 Props are immutable, with respect to their React components.
 
@@ -115,7 +112,7 @@ Props are immutable, with respect to their React components.
 
 `props.children` will be populated if the current component has been called with child element included within the component tag in JSX.
 
-### PropTypes
+#### PropTypes
 
 - Only runs in **development mode**.
 - Validate type of component props at runtime.
@@ -123,13 +120,13 @@ Props are immutable, with respect to their React components.
 
 To use, we need to import PropTypes, and attach types declaration to a React component. Since it provides additional checking, we should use it. However, if we are using TypeScript with React, this may be unnecessary.
 
-## Data Flow
+### Data Flow
 
 - Component state is encapsulated without component. Parent or child components should not know whether a component is stateful or stateless.
 - We can allow state updates to flow down from parent to child, by passing it as props to the child.
 - Therefore, data can only flow down, to the next component below in the tree.
 
-## Losing Callback Context
+### Losing Callback Context
 
 As with all callback functions in JavaScript, if we pass a class method as a callback event handler, when it is eventually invoked, reference to context object `this` will be lost.
 
@@ -144,7 +141,7 @@ This is an expected JavaScript behavior and is not a limitation of React or JSX.
 
 [reactjs.org](https://reactjs.org/docs/handling-events.html) recommends the 2nd or 3rd approach to avoid extra re-rendering in child components. (If we define an arrow function in our props passed to a child component, the child will re-render whenever the parent element re-render and re-create that arrow function);
 
-## Handling Events
+### Handling Events
 
 - There is no need to explicitly call `addEventListener`, since we can simply register a handler when an element is rendered.
 - Event default behavior can be suppressed using `event.preventDefault`
@@ -157,11 +154,11 @@ This is an expected JavaScript behavior and is not a limitation of React or JSX.
 
 An event handler function can be set as callback at multiple locations in the React element, and it can vary its behavior based on e.g. `name` of the element that triggered the event, or other input properties.
 
-## Render Null
+### Render Null
 
 Returning `null` in a component render method will prevent it from rendering, however the component will still go through the component lifecycle as usual (related lifecycle methods will still be called).
 
-## Render Lists
+### Render Lists
 
 JavaScript arrays can be first mapped to a list of `<li>...</li>` elements. An array of such element can be directly injected into JSX and will be rendered as a HTML list (provided we insert the appropriate `<ul>` tags).
 
@@ -182,7 +179,7 @@ const listItems = numbers.map((number) => {
 );
 ```
 
-## Controlled Components
+### Controlled Components
 
 Certain HTML elements has their own internal states and will conflict with React state if not managed properly.
 
@@ -195,7 +192,7 @@ The idea is straightforward:
 - these handlers extra the required update, and update React component state.
 - this triggers re-rendering, and updates value of HTML element.
 
-## Lifting State
+### Lifting State
 
 {% include figure image_path="/assets/images/screenshots/react-lifting-state-up.png" alt="" caption="Lifting State Up" %}
 
@@ -207,7 +204,7 @@ _Visualisation of components used in this [example](https://reactjs.org/docs/lif
 
 ---
 
-# Design Pattern
+## Design Pattern
 
 React documentation guide recommends using Composition instead of Inheritance to achieve any software designs we want.
 
@@ -215,7 +212,7 @@ If we want to focus on business logic, then we should implement it in a separate
 
 React application should focus on what it does best, building good UI. Therefore, Composition should be sufficient.
 
-## Thinking in React
+### Thinking in React
 
 Summary of an example thinking process provided by React documentation guide:
 
@@ -228,9 +225,9 @@ Summary of an example thinking process provided by React documentation guide:
 
 ---
 
-# React Native
+## React Native
 
-## Introduction
+### Introduction
 
 - Based on React Core. JavaScript gets bundled for mobile. Write once run anywhere.
 - Unlike browsers that runs rendering and JavaScript on one main thread, on mobile, separate threads will be used for UI, Layout, and JavaScript. In other words, JS thread maybe blocked but UI is still working.
@@ -239,7 +236,7 @@ Summary of an example thinking process provided by React documentation guide:
 - No access to browser API. (some functions have been poly filled)
 - Not globally scoped, React Native needs to be imported.
 
-## Style
+### Style
 
 - Uses JavaScript objects for styling instead of CSS file.
   - Object keys are CSS properties.
@@ -248,21 +245,21 @@ Summary of an example thinking process provided by React documentation guide:
 - Lengths are unitless.
 - `style` props can take an array of styles.
 
-## Event Handling
+### Event Handling
 
 - Only a few "touchable" elements in React Native can accept event handler
 - Callback function interface is not consistent. Need to consult documentation before use.
 
-## Lists
+### Lists
 
-### ScrollView
+#### ScrollView
 
 Most basic scrolling view. (Unlike React Web, we will not be able to scroll unless we use a component with such interactivity).
 
 - Components in an array need a unique key prop.
 - Renders all children before appearing.
 
-### FlatList
+#### FlatList
 
 Performant scrolling view that "lazily" renders components.
 
@@ -270,14 +267,14 @@ Performant scrolling view that "lazily" renders components.
 - Virtualized. Rows are recycled, and rows that exits visibility may be unmounted. (Note: component state will be lost if unmounted).
 - Takes an array of data, and a `renderItem` function as props. (refer to docs for renderItem function signature).
 
-### SectionList
+#### SectionList
 
 Extends `FlatList` with sections.
 
 - Each section has its own data array and can override its own `renderItem` function
 - `renderSectionHeader` function used to render header.
 
-## User Input
+### User Input
 
 React recommends using controlled components to render input, making react component states the source of truth.
 
@@ -291,13 +288,13 @@ React recommends using controlled components to render input, making react compo
   - Specify behavior when virtual keyboard appears by adjusting padding, height, or position of view.
   - However, the view moves independently from any child text inputs, so may not be good for complex form.
 
-## Navigation
+### Navigation
 
 - Web navigation is oriented around URLs
 - Mobile navigation API is completely different, on both iOS and Android.
 - React Navigation library provides an platform agnostic alternative
 
-### Navigator, Routes and Screens
+#### Navigator, Routes and Screens
 
 - Navigator is a React component that implements a navigation pattern.
 - Route is a child of a navigator.
@@ -309,25 +306,25 @@ React recommends using controlled components to render input, making react compo
   - We can't use props since that was pass through the parent navigator.
   - similar concept URL param in web.
 
-### Switch Navigator
+#### Switch Navigator
 
 - Inactive screens are unmounted.
 - The only action allowed is to switch from one route to another.
 
-### Stack Navigator
+#### Stack Navigator
 
 - State of inactive screens are maintained and remains mounted.
 - Platform specific layout, animations and gestures.
 - Screens can be pushed/popped from the stack, or replaced.
 
-### Tab Navigator
+#### Tab Navigator
 
 - State of inactive screens are maintained and remains mounted.
 - Provides a tab bar to switch between tabs.
 - Platform specific layout, animations and gestures.
 - By default `goBack()` returns to first tab.
 
-### Composing Navigator
+#### Composing Navigator
 
 - A navigator can be a screen component of a route under another navigator.
   - Do not render a navigator within screen component.
@@ -335,9 +332,9 @@ React recommends using controlled components to render input, making react compo
 - An app should only have one top level navigator, but we can navigate to any route in the app.
 - `goBack` works for the whole app (supports Android back button).
 
-## Development Tools
+### Development Tools
 
-### Expo
+#### Expo
 
 Expo is a suite of tools to accelerate React Native development. Comes with:
 
@@ -345,7 +342,7 @@ Expo is a suite of tools to accelerate React Native development. Comes with:
 - Client - run project on mobile devices while developing.
 - SDK - exposes cross-platform libraries and APIs.
 
-### Debugging
+#### Debugging
 
 - React error/warnings
   - `console.error` triggers a full page error display
@@ -363,7 +360,7 @@ Expo is a suite of tools to accelerate React Native development. Comes with:
   - run with CLI command (works with React Native Inspector)
   - allows live edit of style, props, etc.
 
-### Performance
+#### Performance
 
 - React Native Perf Monitor.
   - shows refresh rate of UI and JS threads.
@@ -371,7 +368,7 @@ Expo is a suite of tools to accelerate React Native development. Comes with:
   - only in development mode.
   - flame chart showing time taken to render each component.
 
-## Common Performance Inefficiencies
+### Common Performance Inefficiencies
 
 - Rendering too often
   - Props changes not related to UI was passed to component.
@@ -393,9 +390,9 @@ Expo is a suite of tools to accelerate React Native development. Comes with:
   - Implementing animation in native (Swift, Java) may not be easy to manage project.
   - Use `Animated` API to declare computation in JS, to be run on UI thread instead. (but we can't use native driver for layout props).
 
-# Redux
+## Redux
 
-## Flux Architecture
+### Flux Architecture
 
 Redux is inspired by the Flux architecture. A Flux architecture has the following characteristics:
 
@@ -414,26 +411,26 @@ Motivation of using such an architecture is to manage complexity of numerous mod
 
 Redux data management uses a single store. **Actions** trigger **Reducers** which update the **Store**.
 
-### Reducers
+#### Reducers
 
 - Pure functions. No side effects. Output determined by inputs.
 - Takes previous state and an action to return new state.
 - A new state object should be returned for immutability.
 
-### Store
+#### Store
 
 - Expose getter functions to obtain current state.
 - Can only be updated using dispatch function (which works with reducers).
 - Allows adding of listeners to run callbacks when state changes.
 
-### Actions
+#### Actions
 
 - Data object containing information for state update.
 - Usually contains a `type` key to indicate the type of state update.
 - Created by Action Creator Functions.
 - Actions must be dispatched.
 
-## react-redux
+### react-redux
 
 - Official React bindings for Redux
 - Recommended to use Higher Order Component manage state updates and re-rendering using this library.
@@ -442,7 +439,7 @@ Redux data management uses a single store. **Actions** trigger **Reducers** whic
   - Register callback `mapDispatchToProps` to bind action creator function to store dispatch, and expose it to wrapped component as props.
   - Library needs to register a store using `Provider`, usually at the top level component. The registered store will be available to all nested components that are using the `connect()` API.
 
-## Redux Middleware
+### Redux Middleware
 
 - Allows us to extend redux without modifying redux implementation.
 - Any function with the following prototype can be a middleware:
@@ -454,22 +451,22 @@ Redux data management uses a single store. **Actions** trigger **Reducers** whic
 - Intercepts and modify incoming action to the reducer.
   - Can be used to trigger and respond to async calls before updating state.
 
-## redux-persist
+### redux-persist
 
 - abstracts the persistance of store (uses `AsyncStorage` under the hood).
 - allow us to persist store when app closes and re-opens.
 - display loading screen while waiting for store to rehydrate.
 
-## Container vs Presentation Components
+### Container vs Presentation Components
 
 To manage complexity as our application grows, we can consider:
 
 - Having components that are aware of redux state (containers).
 - Components that only renders what was passed as props (presentation).
 
-## Testing
+### Testing
 
-### Jest for Redux Actions
+#### Jest for Redux Actions
 
 Besides using the standard Jest test functions, we can make use of snapshots.
 
@@ -477,12 +474,12 @@ Besides using the standard Jest test functions, we can make use of snapshots.
 - Will throw error if snapshot does not match.
 - We can choose to update snapshot with new outputs.
 
-### Jest for Async Redux Actions
+#### Jest for Async Redux Actions
 
 - We may use mock functions or mock external libraries.
 - Dependency injection pattern in our code design will help us pass mock functions.
 
-### Jest for React Component
+#### Jest for React Component
 
 - We can also use snapshots to compare render output.
 - `react-test-renderer` allows rendering of a component outside the context of an app.
@@ -490,7 +487,7 @@ Besides using the standard Jest test functions, we can make use of snapshots.
 
 ---
 
-# Additional Reading
+## Additional Reading
 
 - React Advanced Guide [page1](https://reactjs.org/docs/accessibility.html)
 - Why props update also cause re-rendering, besides setState? Or is it because re-rendering of parent (passing new props down) also re-render child components?

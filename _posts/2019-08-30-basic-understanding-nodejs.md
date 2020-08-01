@@ -1,10 +1,12 @@
 ---
-title: "What I always wanted to know about NodeJS"
+title: "Basic understanding of NodeJS"
 categories:
-  - Technology
+  - Software Library
 tags:
-  - nodeJS
+  - nodejs
 ---
+
+*Work in progress.*
 
 **Why does my command not work in shell but works in npm run-script?**
 

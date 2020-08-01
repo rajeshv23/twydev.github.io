@@ -15,10 +15,6 @@ A general approach to refactoring our code. It attempts to classify issues in ou
 
 Half of the book is made up of a reference catalog for you to quickly access the refactoring techniques that deals with the specific problem you are facing. Overall I felt that Clean Code by Uncle Bob was an easier read and may be more relevant to our daily work.
 
-___
-
-# Refactoring
-
 **Refactoring** *Improving the Design of Existing Code* - Martin Fowler, Kent Beck, John Brant, William Opdyke, Don Roberts, 2002
 {: .notice--primary}
 

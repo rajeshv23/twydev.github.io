@@ -3,18 +3,16 @@ title: "Ultimate AWS Certified Developer Associate 2019 - Part 4"
 toc: true
 toc_label: "Chapters"
 categories:
-  - Online Course
+  - AWS
 tags:
-  - aws
+  - online course
 ---
 
-# Serverless
+Part 4 covers components offered by AWS that forms the technology stack for serverless applications (Lambda and Step Functions, DynamoDB, Cognito, API Gateway, S3, SNS, SQS, Kinesis, Aurora Serverless).
 
-Part 4 of this course covers Serverless components offered by AWS (Lambda and Step Functions, DynamoDB, Cognito, API Gateway, S3, SNS, SQS, Kinesis, Aurora Serverless)
+## AWS Lambda
 
-# AWS Lambda
-
-## Benefits of Lambda
+### Benefits of Lambda
 
 - pay per request and compute time
   - usually very cheap that is why it is popular
@@ -26,7 +24,7 @@ Part 4 of this course covers Serverless components offered by AWS (Lambda and St
   - up to 3GB RAM
   - larger RAM sizes also mean larger CPU and network resources
 
-## Lambda Configuration
+### Lambda Configuration
 
 - Timeout, 3s (default) to 15 mins
 - Environment Variables
@@ -123,7 +121,7 @@ X-Ray
 - provides transient cache across multiple invocations (if context is frozen, helpful for checkpointing work)
 - recommended to use S3 if persistence is required
 
-## Best Practices
+### Best Practices
 
 - Perform heavy-duty work outside of function handler, such as
   - connect to db
@@ -138,7 +136,7 @@ X-Ray
 - avoid using recursive code (have lambda function calls itself)
 - recommended not to use VPC unless necessary
 
-## Lambda@Edge
+### Lambda@Edge
 
 Deploy Lambda functions alongside CloudFront CDN
 
@@ -168,9 +166,9 @@ Use cases
 - user prioritization
 - user tracking and analytics
 
-# AWS DynamoDB
+## AWS DynamoDB
 
-## DynamoDB Overview
+### DynamoDB Overview
 
 Traditional RDB have strong requirements on how data should be modelled. Supports join, aggregations, computations, and have to be scaled vertically with more CPU power and RAM and IO throughput.
 
@@ -197,7 +195,7 @@ DynamoDB is
   - Document Type: List, Map
   - Set Types: String Set, Number Set, Binary Set
 
-## Throughputs
+### Throughputs
 
 Read Capacity Units (RCU) and Write Capacity Units (WCU):
 
@@ -218,7 +216,7 @@ Solutions to throttling:
 - distribute partition keys better to avoid hot partitions
 - for higher Read performance, use DynamoDB Accelerator (DAX)
 
-## APIs
+### APIs
 
 - PutItem - full replace / write new item
 - UpdateItem - partial update of some attributes
@@ -247,8 +245,6 @@ Solutions to throttling:
   - **--max-item** option specifies the number of items to be returned in total by the api call.
   - **--starting-token** option, for the next api call to continue scanning the table from a location
 
-## Indexes
-
 ### Local Secondary Index (LSI)
 
 - up to 5 LSI per table
@@ -270,11 +266,11 @@ Solutions to throttling:
   - LSI uses RCU / WCU of main table, no special considerations
 - possible to add GSI after table creation
 
-## Concurrency
+### Concurrency
 
 DynamoDB provides conditional updates / deletes to achieve **optimistic locking**
 
-## DynamoDB Accelerator (DAX)
+### DynamoDB Accelerator (DAX)
 
 - Seamless cache with no application re-writes, click on button
 - micro-second latency
@@ -282,7 +278,7 @@ DynamoDB provides conditional updates / deletes to achieve **optimistic locking*
 - 5 minutes TTL for cache by default
 - up to 10 nodes, multi-AZ, IAM integrated
 
-## DynamoDB Streams
+### DynamoDB Streams
 
 - Changes in DB (create / update / delete) ends up in Stream
   - stream of events can trigger Lambda for real-time processing or analytics
@@ -290,7 +286,7 @@ DynamoDB provides conditional updates / deletes to achieve **optimistic locking*
   - 24 hours data retention in Stream
   - streams keys only / new change / old image / new and old
 
-## DynamoDB TTL
+### DynamoDB TTL
 
 Automatically delete an item after expiry time (TTL, in epoch time)
 
@@ -299,7 +295,7 @@ Automatically delete an item after expiry time (TTL, in epoch time)
 - items that expire are also deleted from GSI and LSI
 - activating DynamoDB Streams can help recover expired items
 
-## Transactions
+### Transactions
 
 New feature to perform have a single transaction for multiple create / update / delete on
 
@@ -307,7 +303,7 @@ New feature to perform have a single transaction for multiple create / update / 
 - across multiple tables
 - Consumes 2x of WCU / RCU of standard write mode / read mode
 
-## Security and Extra Features
+### Security and Extra Features
 
 - VPC endpoint for private subnet access
 - IAM access control
@@ -318,9 +314,7 @@ New feature to perform have a single transaction for multiple create / update / 
 - Amazon DMS helps to migrate from other DBs straight to DynamoDB
 - Local DynamoDB for development purposes
 
-# AWS API Gateway
-
-## Overview
+## AWS API Gateway
 
 - managed service
 - handles API versioning, different environment (dev, prod, ...)
@@ -331,7 +325,7 @@ New feature to perform have a single transaction for multiple create / update / 
 - generate SDK and API specifications
 - Cache API responses
 
-## Deployment Stages
+### Deployment Stages
 
 - API changes needs to be deployed, and deployed to Stages
 - Each stages have its own config params, and can be rolled back
@@ -342,7 +336,7 @@ New feature to perform have a single transaction for multiple create / update / 
   - Common use case is to use Stage Variable to point to Lambda Aliases, to invoke the right function for the right Stage
 - Enable canary deployments (to split traffic to certain canary channel)
 
-## Mapping Templates
+### Mapping Templates
 
 Used to modify integration requests / responses
 
@@ -353,13 +347,13 @@ Used to modify integration requests / responses
 - uses Velocity Template Language (VTL)
 - filter output results
 
-## API Specifications
+### API Specifications
 
 - Import / Export to Swagger
 - Import / Export to OpenAPI spec
 - generate SDK using Swagger file
 
-## Caching
+### Caching
 
 - Default TTL 300 seconds
 - Cache per Stage, encryption option, capacity between 0.5 to 237 GB
@@ -367,7 +361,7 @@ Used to modify integration requests / responses
 - Ability to invalidate cache immediately
 - **Authorized clients** can invalidate / by-pass cache with request header "Cache-Control: max-age=0"
 
-## Logging, Monitoring, Tracing
+### Logging, Monitoring, Tracing
 
 - CloudWatch Logs
   - log at Stage level
@@ -379,7 +373,7 @@ Used to modify integration requests / responses
 - X-Ray
   - tracing for end-to-end full picture
 
-## Enabling Cross-Origin Resource Sharing (CORS)
+### Enabling Cross-Origin Resource Sharing (CORS)
 
 - must be enabled to receive API calls from another domain
 - OPTIONS pre-flight request must contain these headers
@@ -387,7 +381,7 @@ Used to modify integration requests / responses
   - Access-Control-Allow-Headers
   - Access-Control-Allow-Origin
 
-## Usage Plans & API Keys
+### Usage Plans & API Keys
 
 Usage plans can be used to define:
 
@@ -398,8 +392,6 @@ Usage plans can be used to define:
 API Keys can be generated for each user client (your external customer), and can be associated to usage plans
 
 API Keys usage can also be tracked
-
-## Security
 
 ### IAM Permissions
 
@@ -424,9 +416,9 @@ For external client usage, especially with OAuth / SAML / third party authentica
 - Gateway will verify the token with Cognito directly
 - does not handle authorization, therefore authorization will need to be build into backend
 
-# AWS Cognito
+## AWS Cognito
 
-## Cognito User Pools
+### Cognito User Pools
 
 - User sign in functionality
   - creates a serverless database of users
@@ -435,7 +427,7 @@ For external client usage, especially with OAuth / SAML / third party authentica
 - Integrates with API Gateway
   - returns JWT token after login for clients to forward to Gateway
 
-## Cognito Identity Pools (Federated Identity)
+### Cognito Identity Pools (Federated Identity)
 
 - Provide AWS credentials to users to access AWS resources directly
   - login to federated identity provider (may / may not be Cognito User Pools)
@@ -445,7 +437,7 @@ For external client usage, especially with OAuth / SAML / third party authentica
   - use-case: allow temporary access to write to S3 using Facebook login
 - Integrate with Cognito User Pools as an identity provider
 
-## Cognito Sync
+### Cognito Sync
 
 - Synchronize data from device to Cognito
   - stores user preferences, configurations
@@ -453,9 +445,7 @@ For external client usage, especially with OAuth / SAML / third party authentica
   - supports offline mode and cross device sync
 - Deprecated by AppSync
 
-# Serverless Application Model (SAM)
-
-## Overview
+## Serverless Application Model (SAM)
 
 - Framework for developing and deploying serverless applications
 - Uses simple YAML template to generate complex CloudFormation
