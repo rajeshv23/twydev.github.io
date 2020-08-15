@@ -249,3 +249,138 @@ Looking at both Instability *I* and Abstractness *A*, we can identify the charac
 So it seems like the line that connects (*I* = 0, *A* = 1) and (*I* = 1, *A* = 0) is where we should strive be place our component. (The book calls this line the Main Sequence). To put it into words, an increasingly stable component should be increasingly abstract.
 
 These metrics, *I* and *A*, and the distance between the current component's metric from the Main Sequence line can be collected over several releases to perform statistical analysis and process control, to monitor and measure design changes in our software.
+
+## Architecture
+
+Software architects pull back from code to focus on higher-level issues. This is a MISCONCEPTION. Software architects are programmers, the best in the team. They cannot do their jobs properly if they are not experiencing the same problems they are creating for the rest of the team.
+
+### Architecture Objectives
+
+Software architects aim to create the shape of a software system, which is described by:
+
+- how the system is divided into components
+- how those components are arranged
+- how those components communicate with each other
+
+And the main objective of any architecture should be to facilitate development, deployment, maintenance and use case + operation. The general strategy behind that facilitation is to *leave as many options open as possible, for as long as possible*.
+
+(Even though use case + operation is one of the main objective, very often good architecture has little bearing on whether the system works. We have all seen terrible architecture that works. They are terrible because they have neglected all other objectives besides their use case + operation. And very often, we end up with terrible architecture because we locked ourselves out from other possible options and limited the flexibility of our system, because we think that in order to meet timelines and ship our release fast, we need to take shortcuts in our design.)
+
+#### Facilitate Development
+
+A well-defined architecture with reliably stable interfaces facilitates development for most team structures. And systems that are more develop-able have long shelf life.
+
+Failure to craft out a good design upfront either results in a monolithic system run by a single team of engineers, or a per-component-per-team architecture in a multi-teams environment, plagued with collaboration and communication issues.
+
+#### Facilitate Deployment
+
+The higher the cost of deployment, the less useful the system is.
+
+A classic example is the decision to use micro-service architecture early as it has well defined component boundaries, making development easy. However, the teams eventually find it a nightmare to deploy the architecture due to the daunting task of configuring connections between services and the tricky dependency of their deployment sequence.
+
+#### Facilitate Operation
+
+Operational needs of the architecture can often be solved by using more and better hardware resources, and it is often easier to make a bad architecture work, than to facilitate development, deployment and maintenance.
+
+However, good architecture should strive to reveal the operation by elevating the use cases, features, and required behaviors of the system as first-class entities, so that it is apparent to all engineers of the system. This also benefits development and maintenance.
+
+#### Facilitate Maintenance
+
+Maintenance is the most costly aspect, due to the vast amount of manpower it consumes to dig through existing code, make changes for new features, and inadvertently causing more bugs and defects.
+
+Good architecture creates stable interfaces of isolated components, making it easier to update the system with new features, and limit the risk of major breakage.
+
+#### Defer Decisions As Much As Possible
+
+All software system can be decomposed to two major elements:
+
+- Policy = embodies all the business rules and procedures
+- Details = interacts with external dependencies, devices, and users
+
+Ideally, the architecture of our system should recognize policy as the most essential element, and that details are irrelevant to policy since they should never influence our software behavior. So decisions regarding details should be delayed and deferred as much as possible until the last moment.
+
+This lazy decision making buys us more time and information to make a better implementation decision, and retains the flexibility for us to experiment with different technology while preserving the core system behavior (a nod to Domain Driven Design and Onion Layered Architecture).
+
+### Achieving Independence
+
+All things mentioned above are easier said than done in the real world. As a system moves through its life cycle, team structure of engineers, user requirements, system behavior and use cases change. However, some good principles of architecture are eternal, and following these principles can help us make the system easy to change.
+
+#### Decoupling Layers
+
+A system can be decoupled by horizontal layers, as an example just to name a few:
+
+- the UI
+- the application-specific business rules (e.g. validation of input fields)
+- the application-independent business rules (e.g. compute interest on account balance)
+- the persistence (e.g. database)
+
+#### Decoupling Use Cases
+
+Use cases are narrow vertical slices that cut through the horizontal layers of the system, and between use cases they change at different rates and for different reasons. Such decoupling that cut through the horizontal layers allows each use cases to use a different aspect of e.g. UI and the database, so that adding new use cases will not affect existing UI and database aspects.
+
+#### Decoupling Mode
+
+Operational needs may different for different use cases. For e.g. some may need to run at large scale, some may need to be strongly consistent. We may need to create separate services to meet the different operation modes, and communicate over the network.
+
+This can be done at a few levels:
+
+- Source code level decoupling = they are only logically separated, but it is still a monolithic structure. The best we can achieve is perhaps to avoid recompiling other components, by properly structuring the dependencies of decoupled source code. All components still needs to be deployed together, and they execute as a single executable loaded in computer memory.
+- Deployment level decoupling = components are decoupled into independently deployable units, like JAR files, GEM files, DLLs, or NPM packages. They may still be executing in a single shared memory.
+- Service level decoupling = components are entirely decoupled (source, binary, and deployment) and only communicates over network.
+
+Uncle Bob recommends delaying the decision to the last moment. Build our system with a good architecture approach that protects majority of our source code from such decoupling of mode. We can start with monolith, only move to services when the requirements arise, and still have the flexibility to slide back to monolith when system life cycle further evolves.
+
+#### Special Note: Duplication
+
+Do not be tempted to commit the sin of knee-jerk elimination of duplication. There are two kinds of duplication:
+
+- True duplication = in which every change in one instance necessitates the same changes to every other instance.
+- Accidental duplication = it so happens that right now, the code in two instances are exactly the same, but over time they may evolve along a different path.
+
+My guess is, true duplication would be the copy-pasting of code to create the same objects and models in frontend and backend code, which will force you to keep the code always in sync. These are the duplication we want to eliminate by unifying the code either through code-gen from API contracts, or importing of packages/SDKs.
+
+On the other hand, accidental duplications are two UI screens looking very similar, but to operate on different use cases. Over time these two use cases are expected to evolve along different paths, and pre-mature unification of duplicated screens are going to pose a challenge to future development.
+
+### Drawing Boundaries
+
+In this chapter, Uncle Bob shares a personal anecdote about delaying implementation decisions to the last moment, and developed a fully working version of FitNesse for over a year without a database. It was a nice story that turns a lot of software design tutorials we know on its head.
+
+The key point here is to partition the system into components, where business logic components are at the core, and other components such as IO, databases, frameworks, are simply plugins to the architecture, which depends on the core, but are free to change without interfering with the core. This is done through the application of Dependency Inversion Principle and Stable Abstractions Principle.
+
+In general the "level" that a component resides depends on its distance from the inputs and outputs of the software. Therefore the core logic is the furthest from the inputs and outputs, and is at the highest level, whereas IO is at a low level with direct interaction with the inputs. Low level components should depend on high level components, and does not necessary align with the direction of control flow or data flow.
+
+### Business Rules
+
+At the core, we identify a set of Critical Business Rules that work on Critical Business Data. They are critical because they are the main value proposition of our business. Even without software, if we are using humans to carry out the rules and operate on the data, it is still a profitable business.
+
+#### Entities
+
+Entity objects encapsulate critical business rules as methods that operates on critical business data.
+
+It is a no-nonsense, pure-business, object, decoupled from everything else in the system.
+
+#### Use Cases
+
+Use case is a description of a way that an automated system is used. It specifies:
+
+- input to be provided to the use case
+- output to be expected from the use case
+- processing steps needed to produce the output
+
+It describes application-specific business rules as opposed to critical business rules within entities. Use cases specify how and when critical business rules within entities are invoked.
+
+Other important notes:
+
+- Use cases are lower level compared to entities, therefore dependencies point towards entities (i.e. entities do not know what use cases are using them)
+- Use cases do not deal with UI, IO, or frameworks. It still deals in the core of the software, but is application-specific business rules.
+- Use cases accepts simple request data structures as input, and returns simple response data structures as output. These are also independent of devices and technology. They are also entirely decoupled from entities even though they may contain the exact same data!
+
+### Screaming Architecture
+
+The architecture should scream the use case and the purpose of the system. It should be apparent to the engineers joining the team just by reading the code. And the new members have the freedom to adopt new frameworks, libraries and technologies as plugin to the core system easily.
+
+Uncle Bob emphasize in this chapter to develop a strategy that prevents any specific framework that we may adopt from taking over our architecture, and preserve our use cases as our core concerns.
+
+Personal reflection: I think this applies to modern frontend applications that make heavy use of frameworks, e.g. a React application. Just because we have a framework, and endless online tutorials teaching us how to build React components, it should not prevent us from keeping our business logic clean and decoupled, and use case driven.
+
+## The Clean Architecture
