@@ -384,3 +384,93 @@ Uncle Bob emphasize in this chapter to develop a strategy that prevents any spec
 Personal reflection: I think this applies to modern frontend applications that make heavy use of frameworks, e.g. a React application. Just because we have a framework, and endless online tutorials teaching us how to build React components, it should not prevent us from keeping our business logic clean and decoupled, and use case driven.
 
 ## The Clean Architecture
+
+{% include figure image_path="/assets/images/screenshots/clean-architecture-onion-layers.jpg" alt="" caption="The Clean Architecture diagram. From The Clean Code Blog by Uncle Bob." %}
+
+The principles behind this concentric image has been discussed in great details throughout the book. The layers are expected to evolve at different rate, with the inner most layer being least likely to change over time.
+
+**Interface Adapter**
+
+This is the layer responsible for converting data most convenient for use cases and entities, to the format most convenient for external agency like the database or the UI. For e.g., it consists of the entire MVC architecture of some UI framework, or any persistence framework that works with certain database.
+
+**Frameworks and Drivers**
+
+Generally we don't write much code in this layer besides the glue code to communicate with the next layer inside the circle, since these implementation details will be provided by the technology we choose to use. 
+
+**Crossing Boundaries**
+
+Personal reflection: This is perhaps the hardest concept for me, as I struggled for a long time to understand what it truly means for dependency to oppose the direction of control flow.
+
+The lower right diagram shows the flow of control in the layers, it is fine for controller to depend on the inner use case layer. However, after use case processing, in order to pass the data back to the presenter, the use case MUST NOT have a dependency on the presenter. So we mitigate this by depending on an interface instead, and use dependency injection to inject the actual presenter. This ensures that dependency flows in the opposite direction of control.
+
+**Data Across Boundaries**
+
+Data that are passed between layers should be simple structures or DTO. NEVER be tempted to pass raw database records or JSON requests into inner layers, violating the dependency rule.
+
+### Humble Objects Pattern
+
+The idea is simple, split a software behavior that is hard to test into two modules:
+
+- One is a humble module, that contains all the hard-to-test behavior stripped down too their barest essence. It is dumb, with almost no logic.
+- Another module will contain all the testable behaviors stripped from the first humble object.
+
+For e.g., a View is a humble object. We do not intend to test the view since it is difficult, so we keep the View as dumb as possible. The View renders what ever is provided by a Presenter (that is why the View is humble). The Presenter contains all the testable behavior, to transform all the given input into a simple data structure expected by the View. This allows us to easily test the Presenter by setting our inputs and asserting the outputs.
+
+For e.g., a database gateway is a humble object, using SQL queries directly depending on the technology we choose to use. The use case interactors depend on gateway interfaces, which allows us to test the interactors easily but have flexibility to mock or stub our gateway implementations. By this logic, ORMs belong to gateway layer, and are therefore humble objects. (Note, Uncle Bob seems to hate the term ORM, as calling data structures "objects" are misleading in the OOP paradigm. He prefers to call them "data mappers" instead of ORM).
+
+For e.g., service listeners for external devices or services, are also humble objects.
+
+### Partial Boundaries
+
+Three approaches to having placeholder boundaries, which provides flexibility to creating full-fledged boundaries as architecture evolves, but do not incur upfront overhead.
+
+1. Define all the boundaries, but keep the code within one component. It will still require development effort, but do not have any release management overhead.
+2. Strategy Pattern, to set up a one dimensional boundary using an interface, without a reciprocal boundary interface (Note: I do not understand what Uncle Bob is saying...)
+3. Facade Pattern, to allow clients to depend on a Facade class that accesses other services.
+
+### Implementing Boundaries
+
+We are always balancing between the YAGNI principle to avoid building costly boundaries that we will never use, and the risk of under-engineering and breakage when we eventually do want to add in architectural boundaries.
+
+Our goal as architects is to implement the boundaries right at the inflection point where the cost of implementing becomes less than the cost of ignoring.
+
+### The Main Component
+
+The `main` component should be the dirtiest low-level module in our architecture, to set up initial conditions and configurations, gather all outside resources before handing over control to higher level components.
+
+However, we should also think of it as a plugin, meaning we can potentially have many `main` components plugging into our architecture, perhaps one for *Dev*, one for *Prod*, one for each country or each tenant of our software etc.
+
+### Services
+
+There are two fallacies related to services.
+
+- Services are no more rigorous, or formal, or better defined than traditional function interfaces. Services are essentially function calls, over the network instead of within a process. Tightly coupled services still change in lock step. Therefore, it is important to remember that microservices, SOA, are not architecture, in the same sense that this book has been discussing, but rather deployment/operation modes of certain components in our architecture.
+- Services do not really offer the benefit of independent development and deployment, since tight coupling and deployment dependencies can still occur. Also, any new features with cross cutting concerns affects all services, so there are no benefit to deployment or development in using services in this scenario.
+
+Personal reflection: It is surprise to hear Uncle Bob point out that services are not architecturally significant elements. Architecture are solely defined by component boundaries within the system, and their dependency rule, regardless of the physical mechanism by which the program communicates and executes (which are services!)
+
+A service may house a single architectural component, or several components with clear architectural boundaries.
+
+In conclusion, adopting micro-services/SOA do not equate to good architecture. Good architecture requires the application of good design principles.
+
+### Test Boundary
+
+Tests are part of our system. It is a component that sits on the most outer layer. No system code depends on our test, making it a most ideal plugin component of our architecture.
+
+**Fragile Test Problem**
+
+This problem occurs when we realise that a small code change breaks hundreds of tests, which inevitably makes our system rigid to changes. Therefore, the golden rule to software design, whether for tests or for other components, is to NOT DEPEND ON VOLATILE THINGS.
+
+Personal reflection: It is funny to know that Uncle Bob thinks GUIs are volatile, and therefore tests that depends on GUI (e.g. mimicking user click actions on login pages) must be fragile. Makes me wonder what frontend engineers think about this comment and what is their philosophy to testing.
+
+#### The Testing API
+
+A set of API, that is the superset of the suite of interactors and interface adapters that are used by the UI, that allow our tests to call. This API have superpowers to bypass expensive resource initializations, external conditions, security constraints, and can immediately put our system into a particular test state. Having this API helps us decouple the structure of our test from the structure of our application.
+
+If we have deep structural coupling, creating a test class for every single production class, and a set of test methods for every production method, the overhead from making small code changes will be overwhelming. The testing API will help hide the structure of the application, allowing our tests to assert for very specific outputs, but allow our production code to evolve and become more generic and flexible.
+
+Note: if security is a concern, this testing API should be deployed independently as yet another plug-able component, and never deployed in production.
+
+## Details
+
+TBC
