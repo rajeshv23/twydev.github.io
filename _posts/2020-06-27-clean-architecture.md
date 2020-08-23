@@ -473,4 +473,36 @@ Note: if security is a concern, this testing API should be deployed independentl
 
 ## Details
 
-TBC
+The database the web, and the rest of the frameworks are details. They should not affect our core architecture since dependencies point inwards.
+
+- Database technology can change. We may need to adopt new database technologies very rapidly, and a good architecture will allow us to do so without changing the core business logic.
+- The web is merely a detail that determines how the server and the client communicates. This may change as our project evolve. We may need native support on mobile devices. Again, a good architecture will allow those transitions without affecting the core logic.
+- Frameworks are dangerous, because the framework author and other advocates will encourage you to allow the framework to dictate your architecture. It works for them, because they created it to suit their specific goals, but most of the time you will not find a perfect match for your own project. And your project will evolve over time, and there is no guarantee that the framework will continue to grow in the same trajectory. Framework should be a plugin to your own architecture.
+
+### Packaging by Layer
+
+Traditional horizontal packaging of layered architecture works as a good starting point for most architecture, but will not be able to keep up with complexity well. Each layer will grow into a huge repository by itself, with implementation of features cutting through all layers spread across these packages.
+
+### Packaging by Feature
+
+This is vertical packaging. Within each package contains code that cuts across all layers. This approach is also sub-optimal as it is difficult to keep up with complexity.
+
+### Package by Ports and Adaptors
+
+This approach packages the domain, and keep it isolated from external details, which can be in their separate packages since they are merely adaptors that plugin to our domain. The issue with this approach is the lack of control, as adaptors can directly communicate with each other, potentially modifying data through persistence layer.
+
+### Package by Component
+
+This approach takes the above Ports and Adaptor approach one step further, by splitting the domain up into components. Components group similar concepts into a single unit, so that we only expose a single clean interface for each concept to the adaptors that are plugging into our architecture. The persistence layer will be part of our component, so that it will not be exposed to other adaptors outside of the components.
+
+### Conclusion
+
+The conclusion in this section has got to be the worst advice, because it is just a high level reminder of the challenges you will face.
+
+When planning your implementation strategy, consider:
+
+- how to map design into a desired code structure, and how to organize that code.
+- which decoupling mode to apply during runtime and compile-time.
+- leave options open where applicable but be pragmatic.
+- size of your team, their skill level, the complexity of the plan, budget and time constraint, before making a decision.
+- tools like compiler features, to help enforce the chosen architectural style.
