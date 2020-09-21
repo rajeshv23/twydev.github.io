@@ -1,7 +1,7 @@
 ---
 title: "Philosophize This! Podcast 01: Thales to Democritus"
 header:
-  teaser: https://images.squarespace-cdn.com/content/5ed93e72d9d43b5bb06c8f18/1591819811995-EQ9XXGBKFWY0XOA6A1BF/cropped-cropped-philosophize-this_header-1-300x77.png?content-type=image%2Fpng
+  teaser: https://upload.wikimedia.org/wikipedia/commons/c/c6/Illustrerad_Verldshistoria_band_I_Ill_107.jpg
 ---
 
 Highly entertaining and educational podcast. Please support the original [content creator](https://www.philosophizethis.org/).
@@ -33,7 +33,7 @@ Instead of studying philosophy by purely looking at the ideas, this podcast prov
 - Defy the conventional wisdom of his time (natural phenomenon explained through gods and deities, by the [authoritative text](https://en.wikipedia.org/wiki/Theogony) of his time) to predict a good harvest using his observations of the climate and profit from it.
 - Doing it to prove a point. Probably viewed as an outsider by people of his time for his radical thinking.
 - Thinks that water is the fundamental element of all existence, due to the various physical states and fluid behavior that water exhibits.
-- Taught philosophy. Started the Milesian school of thought.
+- Taught philosophy. Started the Milesian school of thought. The OG of philosophy.
 
 [Anaximander](https://en.wikipedia.org/wiki/Anaximander)
 
